@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SYLLA — Parrainage</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --gold:#F5C842;--gold-l:#FFE67A;--gold-d:#B8960C;
+  --orange:#FF7A35;--orange-l:#FFA070;
+  --green:#00D166;--green-l:#4ADE80;--green-d:#009948;
+  --teal:#00C9C0;--teal-l:#00EDDE;
+  --purple:#A064FF;--red:#FF3B4E;--amber:#FFB830;
+  --bg:#0C0A00;--bg2:#1A1400;
+  --text:#FFFDF0;--text2:#C4A840;--text3:#5A4A10;
+  --nav-h:70px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;padding-bottom:calc(var(--nav-h)+24px);}
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 65% 50% at 50% -5%, rgba(245,200,66,.18) 0%,transparent 55%),
+    radial-gradient(ellipse 50% 60% at 5% 90%, rgba(255,122,53,.1) 0%,transparent 55%),
+    radial-gradient(ellipse 40% 50% at 95% 80%, rgba(0,209,102,.07) 0%,transparent 50%),
+    linear-gradient(160deg,#0C0A00 0%,#1A1400 55%,#100E00 100%);}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(245,200,66,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(245,200,66,.04) 1px,transparent 1px);
+  background-size:50px 50px;}
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.star{position:absolute;border-radius:50%;background:#F5C842;animation:twinkle linear infinite;}
+@keyframes twinkle{0%,100%{opacity:0}50%{opacity:1}}
+
+/* LOADING */
+.loading-screen{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .5s,visibility .5s;}
+.loading-screen.hide{opacity:0;visibility:hidden;pointer-events:none;}
+.load-logo{font-family:'Bebas Neue',cursive;font-size:48px;letter-spacing:8px;background:linear-gradient(135deg,var(--gold),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:pulse 1.5s ease-in-out infinite;}
+.load-bar{width:120px;height:2px;background:rgba(245,200,66,.15);border-radius:2px;overflow:hidden;}
+.load-fill{height:100%;background:linear-gradient(90deg,var(--gold-d),var(--gold));border-radius:2px;animation:lf 1.5s ease-in-out infinite;}
+@keyframes lf{0%{width:0%;margin-left:0}50%{width:100%;margin-left:0}100%{width:0%;margin-left:100%}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounceIn{0%{transform:scale(0) rotate(-10deg);opacity:0}60%{transform:scale(1.12) rotate(2deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(245,200,66,.3)}50%{box-shadow:0 0 50px rgba(245,200,66,.6)}}
+
+.page{position:relative;z-index:2;padding:0 16px 20px;}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;position:sticky;top:0;z-index:50;background:rgba(12,10,0,.93);backdrop-filter:blur(20px);border-bottom:1px solid rgba(245,200,66,.12);margin:0 -16px 0;}
+.back-btn{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:8px 14px;border:1px solid rgba(245,200,66,.3);border-radius:20px;transition:all .2s;}
+.back-btn:hover{background:rgba(245,200,66,.08);}
+.page-title{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:4px;background:linear-gradient(135deg,var(--gold),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.bal-pill{font-family:'Bebas Neue',cursive;font-size:13px;letter-spacing:2px;color:var(--gold);background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.2);border-radius:20px;padding:7px 12px;}
+
+/* HERO BANNER */
+.hero-banner{background:linear-gradient(135deg,rgba(245,200,66,.14),rgba(255,122,53,.08),rgba(0,209,102,.05));border:1.5px solid rgba(245,200,66,.25);border-radius:24px;padding:24px 20px;margin:20px 0 18px;text-align:center;position:relative;overflow:hidden;animation:fadeUp .4s ease both;}
+.hero-banner::before{content:'🎁';position:absolute;right:-12px;top:-12px;font-size:100px;opacity:.06;transform:rotate(15deg);}
+.hb-title{font-family:'Bebas Neue',cursive;font-size:38px;letter-spacing:4px;background:linear-gradient(135deg,var(--gold),var(--orange),var(--gold-l));background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite;line-height:1;}
+.hb-sub{font-size:13px;font-weight:300;color:var(--text2);margin-top:6px;line-height:1.6;}
+.hb-gains{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px;}
+.hg{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;border:1px solid;}
+
+/* CODE CARD */
+.code-card{background:linear-gradient(135deg,rgba(245,200,66,.12),rgba(255,122,53,.06));border:2px solid rgba(245,200,66,.3);border-radius:22px;padding:22px 20px;margin-bottom:16px;animation:fadeUp .4s .05s ease both;animation:glow 3s ease-in-out infinite;}
+.cc-label{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(245,200,66,.55);margin-bottom:10px;}
+.cc-code{font-family:'Bebas Neue',cursive;font-size:42px;letter-spacing:10px;color:var(--gold);text-shadow:0 0 30px rgba(245,200,66,.4);margin-bottom:10px;}
+.cc-link{font-size:11px;font-weight:300;color:var(--text3);word-break:break-all;line-height:1.5;background:rgba(0,0,0,.3);border-radius:8px;padding:8px 12px;margin-bottom:14px;}
+.cc-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.cc-btn{padding:13px;border-radius:12px;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:all .2s;}
+.cb-copy{background:rgba(245,200,66,.1);color:var(--gold);border:1.5px solid rgba(245,200,66,.3);}
+.cb-copy:hover{background:rgba(245,200,66,.18);}
+.cb-share{background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#000;box-shadow:0 6px 20px rgba(245,200,66,.3);}
+.cb-share:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(245,200,66,.4);}
+.cb-wa{background:linear-gradient(135deg,#1DA851,#25D366);color:#fff;box-shadow:0 6px 20px rgba(37,211,102,.25);}
+.cb-wa:hover{transform:translateY(-2px);}
+.cc-btns-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;animation:fadeUp .4s .1s ease both;}
+.sg-item{background:rgba(255,255,255,.03);border:1px solid rgba(245,200,66,.1);border-radius:18px;padding:16px;text-align:center;}
+.sg-val{font-family:'Bebas Neue',cursive;font-size:36px;letter-spacing:2px;line-height:1;}
+.sg-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-top:4px;}
+.sg-sub{font-size:11px;font-weight:300;color:var(--text3);margin-top:3px;}
+
+/* HOW IT WORKS */
+.how-card{background:rgba(255,255,255,.03);border:1px solid rgba(245,200,66,.1);border-radius:20px;padding:18px;margin-bottom:16px;animation:fadeUp .4s .15s ease both;}
+.how-title{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.how-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(245,200,66,.3),transparent);}
+.how-steps{display:flex;flex-direction:column;gap:0;}
+.how-step{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid rgba(245,200,66,.06);position:relative;}
+.how-step:last-child{border-bottom:none;}
+.hs-left{display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0;}
+.hs-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:16px;color:#000;flex-shrink:0;}
+.hs-line{width:2px;flex:1;min-height:16px;}
+.hs-body{padding-top:4px;flex:1;}
+.hs-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:.5px;color:var(--text);}
+.hs-desc{font-size:12px;font-weight:300;color:var(--text3);margin-top:3px;line-height:1.6;}
+.hs-pill{display:inline-flex;align-items:center;gap:5px;font-family:'Bebas Neue',cursive;font-size:16px;letter-spacing:1px;padding:5px 12px;border-radius:8px;margin-top:7px;}
+
+/* LEVELS */
+.levels-card{background:rgba(255,255,255,.03);border:1px solid rgba(245,200,66,.1);border-radius:20px;padding:18px;margin-bottom:16px;animation:fadeUp .4s .2s ease both;}
+.levels-title{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.levels-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(245,200,66,.3),transparent);}
+.level-row{display:flex;align-items:center;gap:14px;padding:13px 14px;border-radius:14px;margin-bottom:8px;border:1px solid;}
+.lr-ico{font-size:28px;flex-shrink:0;}
+.lr-body{flex:1;}
+.lr-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--text);letter-spacing:.5px;}
+.lr-desc{font-size:12px;font-weight:300;color:var(--text3);margin-top:2px;line-height:1.5;}
+.lr-gain{font-family:'Bebas Neue',cursive;font-size:24px;letter-spacing:2px;text-align:right;flex-shrink:0;}
+
+/* FILLEULS LIST */
+.filleuls-card{background:rgba(255,255,255,.03);border:1px solid rgba(245,200,66,.1);border-radius:20px;padding:18px;margin-bottom:16px;animation:fadeUp .4s .25s ease both;}
+.fc-title{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.fc-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(245,200,66,.3),transparent);}
+.filleul-item{display:flex;align-items:center;gap:12px;padding:12px;background:rgba(0,0,0,.2);border-radius:12px;margin-bottom:8px;border:1px solid rgba(245,200,66,.08);}
+.fi-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--gold-d),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:18px;color:#000;flex-shrink:0;}
+.fi-info{flex:1;min-width:0;}
+.fi-name{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.fi-date{font-size:10px;font-weight:300;color:var(--text3);margin-top:1px;}
+.fi-badge{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:4px 9px;border-radius:6px;flex-shrink:0;}
+.fi-gain{font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:1px;color:var(--green);flex-shrink:0;}
+.empty-filleuls{text-align:center;padding:28px 16px;color:var(--text3);}
+.ef-ico{font-size:48px;margin-bottom:12px;opacity:.5;}
+.ef-txt{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;color:var(--text3);}
+.ef-sub{font-size:12px;font-weight:300;color:var(--text3);margin-top:4px;line-height:1.5;}
+
+/* TOAST */
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);background:rgba(245,200,66,.95);backdrop-filter:blur(12px);color:#000;padding:10px 22px;border-radius:100px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;z-index:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.err{background:rgba(255,59,78,.9);color:#fff;}
+
+/* BOT NAV */
+.bot-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;height:var(--nav-h);background:rgba(12,10,0,.96);backdrop-filter:blur(24px);border-top:1px solid rgba(245,200,66,.1);display:grid;grid-template-columns:repeat(4,1fr);box-shadow:0 -8px 32px rgba(0,0,0,.5);}
+.nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;text-decoration:none;padding:8px 4px;position:relative;}
+.nav-item::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,var(--gold),var(--orange));transform:scaleX(0);transition:transform .3s;}
+.nav-item.active::before{transform:scaleX(1);}
+.nav-item.active .nav-ico,.nav-item.active .nav-lbl{color:var(--gold);}
+.nav-ico{font-size:20px;color:var(--text3);}
+.nav-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
+.ld{display:inline-block;width:13px;height:13px;border:2px solid rgba(0,0,0,.3);border-top-color:#000;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
+</style>
+</head>
+<body>
+
+<div class="loading-screen" id="loader">
+  <div class="load-logo">🎁 PARRAINAGE</div>
+  <div class="load-bar"><div class="load-fill"></div></div>
+</div>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+<div class="stars" id="stars"></div>
+<div class="toast" id="toast"></div>
+
+<div class="page">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <a href="dashboard.html" class="back-btn">← Accueil</a>
+    <div class="page-title">🎁 PARRAINAGE</div>
+    <div class="bal-pill">💰 <span id="bal-display">…</span> F</div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero-banner">
+    <div class="hb-title">GAGNEZ SANS LIMITES</div>
+    <div class="hb-sub">Invitez vos proches, ils investissent, <strong style="color:var(--gold)">vous gagnez</strong> automatiquement — à vie.</div>
+    <div class="hb-gains">
+      <div class="hg" style="background:rgba(245,200,66,.1);border-color:rgba(245,200,66,.3);color:var(--gold)">🥇 Niveau 1 · +10%</div>
+      <div class="hg" style="background:rgba(255,122,53,.1);border-color:rgba(255,122,53,.3);color:var(--orange)">🥈 Niveau 2 · +5%</div>
+      <div class="hg" style="background:rgba(0,209,102,.1);border-color:rgba(0,209,102,.3);color:var(--green)">🎁 Inscription · +500F</div>
+    </div>
+  </div>
+
+  <!-- CODE CARD -->
+  <div class="code-card">
+    <div class="cc-label">🏷 Votre code de parrainage unique</div>
+    <div class="cc-code" id="my-code">SYLLA-——</div>
+    <div class="cc-link" id="my-link">Chargement du lien…</div>
+    <div class="cc-btns">
+      <button class="cc-btn cb-copy" onclick="copyCode()">📋 Copier le code</button>
+      <button class="cc-btn cb-share" onclick="copyLink()">🔗 Copier le lien</button>
+    </div>
+    <div class="cc-btns-3" style="margin-top:8px">
+      <button class="cc-btn cb-wa" onclick="shareWhatsApp()">💬 WhatsApp</button>
+      <button class="cc-btn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--text)" onclick="shareTelegram()">✈️ Telegram</button>
+      <button class="cc-btn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--text)" onclick="shareNative()">📤 Partager</button>
+    </div>
+  </div>
+
+  <!-- STATS GRID -->
+  <div class="stats-grid">
+    <div class="sg-item">
+      <div class="sg-val" style="color:var(--gold)" id="stat-n1">0</div>
+      <div class="sg-lbl">Filleuls Niveau 1</div>
+      <div class="sg-sub">Parrainés directement</div>
+    </div>
+    <div class="sg-item">
+      <div class="sg-val" style="color:var(--orange)" id="stat-n2">0</div>
+      <div class="sg-lbl">Filleuls Niveau 2</div>
+      <div class="sg-sub">Filleuls de vos filleuls</div>
+    </div>
+    <div class="sg-item">
+      <div class="sg-val" style="color:var(--green)" id="stat-earn">0</div>
+      <div class="sg-lbl">Gains totaux (FCFA)</div>
+      <div class="sg-sub">Depuis le début</div>
+    </div>
+    <div class="sg-item">
+      <div class="sg-val" style="color:var(--purple)" id="stat-pending">0</div>
+      <div class="sg-lbl">En attente</div>
+      <div class="sg-sub">À encaisser</div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="how-card">
+    <div class="how-title">💡 Comment ça fonctionne</div>
+    <div class="how-steps">
+
+      <div class="how-step">
+        <div class="hs-left">
+          <div class="hs-num" style="background:var(--gold)">1</div>
+          <div class="hs-line" style="background:linear-gradient(180deg,var(--gold),var(--orange))"></div>
+        </div>
+        <div class="hs-body">
+          <div class="hs-title">Partagez votre lien unique</div>
+          <div class="hs-desc">Envoyez votre lien à vos amis, votre famille, ou partagez-le sur WhatsApp, Telegram, Facebook, ou n'importe quel réseau social.</div>
+        </div>
+      </div>
+
+      <div class="how-step">
+        <div class="hs-left">
+          <div class="hs-num" style="background:var(--orange)">2</div>
+          <div class="hs-line" style="background:linear-gradient(180deg,var(--orange),var(--green))"></div>
+        </div>
+        <div class="hs-body">
+          <div class="hs-title">Votre filleul s'inscrit</div>
+          <div class="hs-desc">Dès son inscription, votre filleul reçoit automatiquement un bonus de bienvenue.</div>
+          <div class="hs-pill" style="background:rgba(0,209,102,.1);border:1px solid rgba(0,209,102,.25);color:var(--green)">🎁 +1 000 FCFA pour le filleul</div>
+          <div class="hs-pill" style="background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.25);color:var(--gold);margin-top:6px">💰 +500 FCFA pour vous immédiatement</div>
+        </div>
+      </div>
+
+      <div class="how-step">
+        <div class="hs-left">
+          <div class="hs-num" style="background:var(--green)">3</div>
+          <div class="hs-line" style="background:linear-gradient(180deg,var(--green),var(--gold))"></div>
+        </div>
+        <div class="hs-body">
+          <div class="hs-title">Il investit → Vous gagnez 10%</div>
+          <div class="hs-desc">À chaque investissement de votre filleul, <strong style="color:var(--gold)">10% du montant</strong> est automatiquement crédité sur votre solde. Sans limite. À vie.</div>
+          <div class="hs-pill" style="background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.25);color:var(--gold);margin-top:7px">🥇 Exemple : il investit 50 000F → vous gagnez 5 000F</div>
+        </div>
+      </div>
+
+      <div class="how-step">
+        <div class="hs-left">
+          <div class="hs-num" style="background:var(--orange)">4</div>
+        </div>
+        <div class="hs-body">
+          <div class="hs-title">Niveau 2 — Vos filleuls parrainent</div>
+          <div class="hs-desc">Quand votre filleul invite quelqu'un à son tour, vous gagnez aussi <strong style="color:var(--orange)">5% des investissements</strong> de ce niveau 2. La richesse se multiplie !</div>
+          <div class="hs-pill" style="background:rgba(255,122,53,.1);border:1px solid rgba(255,122,53,.25);color:var(--orange);margin-top:7px">🥈 Exemple : son filleul investit 30 000F → vous gagnez 1 500F</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LEVELS -->
+  <div class="levels-card">
+    <div class="levels-title">🏆 Barème des commissions</div>
+
+    <div class="level-row" style="background:rgba(245,200,66,.07);border-color:rgba(245,200,66,.2)">
+      <div class="lr-ico">🎁</div>
+      <div class="lr-body">
+        <div class="lr-title">Bonus d'inscription filleul</div>
+        <div class="lr-desc">Reçu dès qu'un filleul s'inscrit avec votre code</div>
+      </div>
+      <div class="lr-gain" style="color:var(--gold)">+500F</div>
+    </div>
+
+    <div class="level-row" style="background:rgba(245,200,66,.07);border-color:rgba(245,200,66,.2)">
+      <div class="lr-ico">🥇</div>
+      <div class="lr-body">
+        <div class="lr-title">Commission Niveau 1</div>
+        <div class="lr-desc">Sur chaque investissement de vos filleuls directs</div>
+      </div>
+      <div class="lr-gain" style="color:var(--gold)">+10%</div>
+    </div>
+
+    <div class="level-row" style="background:rgba(255,122,53,.07);border-color:rgba(255,122,53,.2)">
+      <div class="lr-ico">🥈</div>
+      <div class="lr-body">
+        <div class="lr-title">Commission Niveau 2</div>
+        <div class="lr-desc">Sur chaque investissement des filleuls de vos filleuls</div>
+      </div>
+      <div class="lr-gain" style="color:var(--orange)">+5%</div>
+    </div>
+
+    <div class="level-row" style="background:rgba(0,209,102,.05);border-color:rgba(0,209,102,.15)">
+      <div class="lr-ico">🎯</div>
+      <div class="lr-body">
+        <div class="lr-title">Bonus de performance</div>
+        <div class="lr-desc">Pour les parrains avec 10+ filleuls actifs</div>
+      </div>
+      <div class="lr-gain" style="color:var(--green)">+2%</div>
+    </div>
+
+  </div>
+
+  <!-- FILLEULS LIST -->
+  <div class="filleuls-card">
+    <div class="fc-title">👥 Mes filleuls</div>
+    <div id="filleuls-list">
+      <div style="text-align:center;padding:16px;color:var(--text3);font-size:13px">Chargement…</div>
+    </div>
+  </div>
+
+  <!-- EARNINGS HISTORY -->
+  <div class="filleuls-card">
+    <div class="fc-title">💰 Historique des gains parrainage</div>
+    <div id="earn-list">
+      <div style="text-align:center;padding:16px;color:var(--text3);font-size:13px">Chargement…</div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="bot-nav">
+  <a href="dashboard.html" class="nav-item"><span class="nav-ico">🏠</span><span class="nav-lbl">Accueil</span></a>
+  <a href="plan.html" class="nav-item"><span class="nav-ico">🚀</span><span class="nav-lbl">Plans</span></a>
+  <a href="retrait.html" class="nav-item"><span class="nav-ico">💸</span><span class="nav-lbl">Retrait</span></a>
+  <a href="profil.html" class="nav-item"><span class="nav-ico">👤</span><span class="nav-lbl">Profil</span></a>
+</nav>
+
+<script>
+const{createClient}=supabase;
+const sb=createClient('https://fqiotqrraobmsrcyewsi.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc');
+
+let cu=null, myCode='', myLink='';
+let toastT=null;
+
+/* ══ STARS ══ */
+(function(){
+  const c=document.getElementById('stars');
+  for(let i=0;i<40;i++){
+    const s=document.createElement('div');s.className='star';
+    const sz=Math.random()*2+1;
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;opacity:0;animation-duration:${Math.random()*4+2}s;animation-delay:${Math.random()*4}s;`;
+    c.appendChild(s);
+  }
+})();
+
+async function init(){
+  try{
+    const{data:{session}}=await sb.auth.getSession();
+    if(!session){window.location.href='index.html';return;}
+    cu=session.user;
+    buildCode();
+    await Promise.allSettled([loadBalance(),loadStats(),loadFilleuls(),loadEarnings()]);
+  }catch(e){console.error(e);}
+  finally{document.getElementById('loader').classList.add('hide');}
+}
+
+function buildCode(){
+  myCode='SYLLA-'+cu.id.replace(/-/g,'').substring(0,6).toUpperCase();
+  myLink=window.location.origin+'/index.html?ref='+myCode;
+  document.getElementById('my-code').textContent=myCode;
+  document.getElementById('my-link').textContent=myLink;
+}
+
+async function loadBalance(){
+  let total=0;
+  try{
+    const{data}=await sb.from('transactions').select('amount,type,status').eq('user_id',cu.id);
+    if(data?.length){
+      data.forEach(t=>{
+        const a=Number(t.amount);
+        if(['bonus_bienvenue','depot','gain','referral','coffre_retrait'].includes(t.type))total+=a;
+        if(['investissement','coffre_depot'].includes(t.type))total-=a;
+        if(t.type==='retrait'&&t.status!=='pending'&&t.status!=='rejected')total-=a;
+      });
+    }
+  }catch(e){}
+  document.getElementById('bal-display').textContent=fmt(Math.max(0,total));
+}
+
+async function loadStats(){
+  let n1=0,n2=0,earned=0,pending=0;
+  try{
+    // Count filleuls niveau 1 from referrals table
+    const{data:refs,error:re}=await sb.from('referrals')
+      .select('id,niveau,bonus_parrain')
+      .eq('referrer_id',cu.id);
+
+    if(!re&&refs?.length){
+      refs.forEach(r=>{
+        if(r.niveau===1)n1++;
+        else if(r.niveau===2)n2++;
+      });
+    }
+
+    // Sum referral earnings from transactions
+    const{data:txs,error:te}=await sb.from('transactions')
+      .select('amount,status')
+      .eq('user_id',cu.id)
+      .eq('type','referral');
+
+    if(!te&&txs?.length){
+      txs.forEach(t=>{
+        const a=Number(t.amount);
+        if(t.status==='credited')earned+=a;
+        else pending+=a;
+      });
+    }
+  }catch(e){}
+
+  document.getElementById('stat-n1').textContent=n1;
+  document.getElementById('stat-n2').textContent=n2;
+  document.getElementById('stat-earn').textContent=fmt(earned);
+  document.getElementById('stat-pending').textContent=fmt(pending);
+}
+
+async function loadFilleuls(){
+  const list=document.getElementById('filleuls-list');
+  try{
+    // Get my referrals level 1
+    const{data:refs,error}=await sb.from('referrals')
+      .select('referred_id,niveau,created_at,bonus_parrain')
+      .eq('referrer_id',cu.id)
+      .eq('niveau',1)
+      .order('created_at',{ascending:false})
+      .limit(20);
+
+    if(error||!refs?.length){
+      list.innerHTML=`
+        <div class="empty-filleuls">
+          <div class="ef-ico">👥</div>
+          <div class="ef-txt">Aucun filleul pour l'instant</div>
+          <div class="ef-sub">Partagez votre code pour commencer à gagner. Chaque filleul actif vous rapporte des commissions à vie !</div>
+        </div>`;
+      return;
+    }
+
+    // Get profile data for each filleul
+    const ids=refs.map(r=>r.referred_id);
+    const{data:profiles}=await sb.from('profiles')
+      .select('id,full_name,email')
+      .in('id',ids);
+
+    const profileMap={};
+    if(profiles)profiles.forEach(p=>profileMap[p.id]=p);
+
+    list.innerHTML=refs.map(r=>{
+      const p=profileMap[r.referred_id]||{};
+      const name=p.full_name||p.email||'Investisseur';
+      const initial=(name[0]||'I').toUpperCase();
+      const d=new Date(r.created_at);
+      const ds=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'});
+      return `
+        <div class="filleul-item">
+          <div class="fi-avatar">${initial}</div>
+          <div class="fi-info">
+            <div class="fi-name">${name}</div>
+            <div class="fi-date">Rejoint le ${ds}</div>
+          </div>
+          <div class="fi-badge" style="background:rgba(245,200,66,.1);color:var(--gold);border:1px solid rgba(245,200,66,.2)">Niv.1</div>
+          <div class="fi-gain">+${fmt(r.bonus_parrain||500)}F</div>
+        </div>`;
+    }).join('');
+
+  }catch(e){
+    list.innerHTML='<div style="text-align:center;padding:16px;color:var(--text3)">Données indisponibles</div>';
+  }
+}
+
+async function loadEarnings(){
+  const list=document.getElementById('earn-list');
+  try{
+    const{data,error}=await sb.from('transactions')
+      .select('*')
+      .eq('user_id',cu.id)
+      .eq('type','referral')
+      .order('created_at',{ascending:false})
+      .limit(20);
+
+    if(error||!data?.length){
+      list.innerHTML='<div style="text-align:center;padding:16px;color:var(--text3);font-size:13px">💰 Aucun gain de parrainage reçu pour l\'instant</div>';
+      return;
+    }
+
+    list.innerHTML=data.map(t=>{
+      const d=new Date(t.created_at);
+      const ds=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+      const stOk=t.status==='credited';
+      return `
+        <div class="filleul-item">
+          <div class="fi-avatar" style="background:linear-gradient(135deg,var(--green-d),var(--green));color:#fff;font-size:20px">💰</div>
+          <div class="fi-info">
+            <div class="fi-name">${t.label||'Commission parrainage'}</div>
+            <div class="fi-date">${ds}</div>
+          </div>
+          <div>
+            <div class="fi-gain">+${fmt(t.amount)}F</div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${stOk?'var(--green-l)':'var(--amber)'};text-align:right;margin-top:2px">${stOk?'✓ Reçu':'⏳ En cours'}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }catch(e){
+    list.innerHTML='<div style="text-align:center;padding:16px;color:var(--text3)">Historique indisponible</div>';
+  }
+}
+
+/* ══ SHARE FUNCTIONS ══ */
+function copyCode(){
+  navigator.clipboard.writeText(myCode).then(()=>showToast('✓ Code copié ! '+myCode));
+}
+function copyLink(){
+  navigator.clipboard.writeText(myLink).then(()=>showToast('✓ Lien copié !'));
+}
+function shareWhatsApp(){
+  const msg=`🚀 Rejoins SYLLA avec moi et reçois *1 000 FCFA* de bonus immédiatement !\n\n🔗 Clique ici : ${myLink}\n\n🏷 Ou utilise mon code : *${myCode}*\n\nSYLLA c'est des investissements rentables, des retraits sous 24h et un système de parrainage où tout le monde gagne ! 💰`;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+}
+function shareTelegram(){
+  const msg=`🚀 Rejoins SYLLA avec mon code ${myCode} et reçois 1 000 FCFA de bonus !\n${myLink}`;
+  window.open('https://t.me/share/url?url='+encodeURIComponent(myLink)+'&text='+encodeURIComponent('Rejoins SYLLA avec mon code '+myCode+' et reçois 1 000 FCFA de bonus !'),'_blank');
+}
+function shareNative(){
+  if(navigator.share){
+    navigator.share({
+      title:'Rejoins SYLLA et gagne 1 000 FCFA !',
+      text:'Inscris-toi avec mon code '+myCode+' et reçois 1 000 FCFA de bonus immédiatement !',
+      url:myLink
+    }).catch(()=>copyLink());
+  } else copyLink();
+}
+
+/* ══ HELPERS ══ */
+function fmt(n){return Number(n).toLocaleString('fr-FR');}
+function showToast(msg,err=false){
+  const t=document.getElementById('toast');t.textContent=msg;
+  err?t.classList.add('err'):t.classList.remove('err');
+  t.classList.add('show');clearTimeout(toastT);
+  toastT=setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+init();
+</script>
+</body>
+</html>
