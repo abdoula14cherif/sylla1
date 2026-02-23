@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SYLLA — Coffre Sécurisé</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --gold:#F5C842;--gold-l:#FFD87A;--gold-d:#B8960C;
+  --amber:#FFB830;--orange:#FF7A35;
+  --teal:#00C9C0;--teal-l:#00EDDE;
+  --purple:#A064FF;--green:#00D166;--red:#FF3B4E;
+  --bg:#0A0800;--bg2:#140E00;--bg3:#1C1500;
+  --text:#FFF9E6;--text2:#C4A855;--text3:#7A6020;
+  --nav-h:70px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;padding-bottom:calc(var(--nav-h)+20px);}
+
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 55% at 70% 0%, rgba(245,200,66,.13) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 55% at 8% 85%, rgba(255,122,53,.08) 0%,transparent 55%),
+    radial-gradient(ellipse 70% 70% at 50% 50%, rgba(245,200,66,.04) 0%,transparent 80%),
+    linear-gradient(160deg,#0A0800 0%,#140E00 55%,#100A00 100%);}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(245,200,66,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(245,200,66,.04) 1px,transparent 1px);
+  background-size:50px 50px;}
+
+/* LOADING */
+.loading-screen{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .5s,visibility .5s;}
+.loading-screen.hide{opacity:0;visibility:hidden;pointer-events:none;}
+.load-logo{font-family:'Bebas Neue',cursive;font-size:52px;letter-spacing:8px;background:linear-gradient(135deg,var(--gold),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:pulse 1.5s ease-in-out infinite;}
+.load-bar{width:120px;height:2px;background:rgba(245,200,66,.15);border-radius:2px;overflow:hidden;}
+.load-fill{height:100%;background:linear-gradient(90deg,var(--gold-d),var(--gold));border-radius:2px;animation:lf 1.5s ease-in-out infinite;}
+@keyframes lf{0%{width:0%;margin-left:0;}50%{width:100%;margin-left:0;}100%{width:0%;margin-left:100%;}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+@keyframes shineGold{0%{background-position:-200% center;}100%{background-position:200% center;}}
+@keyframes vaultPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,200,66,.2),0 0 40px rgba(245,200,66,.1);}50%{box-shadow:0 0 0 12px rgba(245,200,66,.0),0 0 60px rgba(245,200,66,.2);}}
+
+.page{position:relative;z-index:2;padding:0 16px 20px;}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;position:sticky;top:0;z-index:50;background:rgba(10,8,0,.94);backdrop-filter:blur(20px);border-bottom:1px solid rgba(245,200,66,.12);margin:0 -16px 0;}
+.back-btn{display:flex;align-items:center;gap:8px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:8px 14px;border:1px solid rgba(245,200,66,.3);border-radius:20px;transition:all .2s;}
+.back-btn:hover{background:rgba(245,200,66,.08);}
+.page-title-top{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:4px;background:linear-gradient(135deg,var(--gold),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.balance-pill{display:flex;align-items:center;gap:6px;background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.2);border-radius:20px;padding:7px 14px;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--gold);}
+
+/* ═══ VAULT HERO ═══ */
+.vault-hero{
+  text-align:center;padding:24px 0 20px;
+  animation:fadeUp .6s ease both;
+}
+.vault-icon-wrap{
+  position:relative;width:100px;height:100px;
+  margin:0 auto 16px;
+}
+.vault-icon{
+  width:100px;height:100px;border-radius:28px;
+  background:linear-gradient(135deg,#3D2800,#6B4400,#3D2800);
+  display:flex;align-items:center;justify-content:center;
+  font-size:44px;
+  border:2px solid rgba(245,200,66,.3);
+  box-shadow:0 0 0 0 rgba(245,200,66,.2),0 0 40px rgba(245,200,66,.1);
+  animation:vaultPulse 3s ease-in-out infinite;
+  position:relative;overflow:hidden;
+}
+.vault-icon::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(245,200,66,.2),transparent,rgba(255,122,53,.15));
+}
+.vault-shine{
+  position:absolute;top:-50%;left:-50%;
+  width:200%;height:200%;
+  background:linear-gradient(45deg,transparent 40%,rgba(255,255,200,.12) 50%,transparent 60%);
+  animation:shinePass 4s ease-in-out infinite;
+}
+@keyframes shinePass{0%,100%{transform:translateX(-100%);}50%{transform:translateX(100%);}}
+
+.vault-title{font-family:'Bebas Neue',cursive;font-size:clamp(28px,8vw,44px);letter-spacing:4px;background:linear-gradient(135deg,var(--gold-l),var(--gold),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.vault-sub{font-size:13px;font-weight:300;color:var(--text2);margin-top:6px;line-height:1.5;max-width:280px;margin-inline:auto;}
+
+/* ═══ COFFRE BALANCE ═══ */
+.coffre-balance{
+  background:linear-gradient(135deg,rgba(245,200,66,.1),rgba(255,122,53,.06),rgba(245,200,66,.08));
+  border:1.5px solid rgba(245,200,66,.25);
+  border-radius:22px;padding:20px;margin:16px 0;
+  position:relative;overflow:hidden;
+  animation:fadeUp .6s .05s ease both;
+}
+.coffre-balance::before{
+  content:'';position:absolute;top:0;right:0;
+  width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(rgba(245,200,66,.12),transparent 70%);
+}
+.cb-label{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(245,200,66,.6);margin-bottom:6px;}
+.cb-amount{font-family:'Bebas Neue',cursive;font-size:52px;letter-spacing:3px;line-height:1;background:linear-gradient(135deg,#fff,var(--gold-l),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 4px 16px rgba(245,200,66,.3));}
+.cb-currency{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:500;color:var(--gold);margin-left:4px;vertical-align:bottom;}
+.cb-interest{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(0,209,102,.1);border:1px solid rgba(0,209,102,.25);border-radius:100px;
+  padding:5px 14px;margin-top:10px;
+  font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);
+}
+.cb-breakdown{display:flex;gap:0;margin-top:14px;background:rgba(0,0,0,.25);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.05);}
+.cbd-item{flex:1;padding:10px 8px;text-align:center;border-right:1px solid rgba(255,255,255,.05);}
+.cbd-item:last-child{border-right:none;}
+.cbd-val{font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:1px;line-height:1;}
+.cbd-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-top:3px;}
+
+/* ═══ VIP SYSTEM ═══ */
+.vip-section{margin:4px 0 16px;animation:fadeUp .6s .1s ease both;}
+.vip-card{
+  border-radius:20px;padding:16px 18px;
+  position:relative;overflow:hidden;
+  border:1.5px solid var(--vc,rgba(245,200,66,.3));
+  background:var(--vbg,rgba(245,200,66,.06));
+}
+.vip-card::after{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(var(--vglow,rgba(245,200,66,.1)),transparent 70%);}
+.vip-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.vip-badge-big{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:3px;color:var(--vc2,var(--gold));}
+.vip-perks{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
+.vip-progress-row{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.vip-prog-bar{flex:1;height:6px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;}
+.vip-prog-fill{height:100%;border-radius:4px;transition:width 1s ease;}
+.vip-prog-pct{font-family:'Bebas Neue',cursive;font-size:14px;letter-spacing:1px;flex-shrink:0;}
+.vip-next{font-size:11px;font-weight:300;color:var(--text3);}
+.vip-perks-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+.vp-item{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--text2);}
+
+/* ═══ LOCK OPTIONS ═══ */
+.lock-section{animation:fadeUp .6s .15s ease both;}
+.sec-title{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin:20px 0 12px;display:flex;align-items:center;gap:10px;}
+.sec-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(245,200,66,.2),transparent);}
+
+.lock-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
+.lock-opt{
+  background:rgba(255,255,255,.03);
+  border:1.5px solid rgba(245,200,66,.12);
+  border-radius:16px;padding:14px 8px;
+  text-align:center;cursor:pointer;transition:all .25s;
+  position:relative;
+}
+.lock-opt:hover{border-color:rgba(245,200,66,.35);background:rgba(245,200,66,.05);}
+.lock-opt.selected{border-color:var(--gold);background:rgba(245,200,66,.1);box-shadow:0 0 20px rgba(245,200,66,.12);}
+.lock-opt.selected::before{content:'✓';position:absolute;top:6px;right:8px;font-size:10px;color:var(--gold);font-weight:700;}
+.lo-days{font-family:'Bebas Neue',cursive;font-size:26px;letter-spacing:2px;color:var(--gold);line-height:1;}
+.lo-label{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-top:3px;}
+.lo-bonus{
+  display:inline-block;margin-top:6px;
+  font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;
+  padding:3px 8px;border-radius:6px;
+  background:rgba(0,209,102,.12);color:var(--green);
+}
+
+/* ═══ DEPOSIT FORM ═══ */
+.deposit-form{background:rgba(255,255,255,.03);border:1px solid rgba(245,200,66,.12);border-radius:20px;padding:18px;margin-bottom:16px;}
+.df-label{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,200,66,.7);margin-bottom:8px;display:block;}
+.amount-input-wrap{position:relative;margin-bottom:14px;}
+.amount-input{width:100%;background:rgba(245,200,66,.05);border:1.5px solid rgba(245,200,66,.2);border-radius:12px;padding:14px 70px 14px 16px;font-family:'Bebas Neue',cursive;font-size:28px;letter-spacing:2px;color:var(--gold);outline:none;transition:all .25s;}
+.amount-input::placeholder{color:rgba(245,200,66,.2);font-size:22px;}
+.amount-input:focus{border-color:var(--gold);background:rgba(245,200,66,.09);box-shadow:0 0 0 4px rgba(245,200,66,.08);}
+.currency-tag{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;color:rgba(245,200,66,.5);}
+
+.quick-amounts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.qa-btn{padding:8px 14px;border-radius:10px;border:1px solid rgba(245,200,66,.2);background:rgba(245,200,66,.05);color:var(--gold);font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;cursor:pointer;transition:all .2s;}
+.qa-btn:hover{background:rgba(245,200,66,.12);border-color:var(--gold);}
+
+/* Preview box */
+.preview-box{
+  background:linear-gradient(135deg,rgba(245,200,66,.08),rgba(0,0,0,.2));
+  border:1px solid rgba(245,200,66,.15);border-radius:14px;
+  padding:14px 16px;margin-bottom:14px;
+}
+.pb-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.pb-row:last-child{border-bottom:none;margin-top:4px;padding-top:10px;}
+.pb-lbl{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
+.pb-val{font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:1px;}
+
+.deposit-btn{width:100%;padding:15px;border:none;border-radius:14px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--bg);background:linear-gradient(135deg,var(--gold-d),var(--gold),var(--gold-l));box-shadow:0 8px 30px rgba(245,200,66,.35);position:relative;overflow:hidden;transition:all .3s;}
+.deposit-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);transition:left .5s;}
+.deposit-btn:hover::before{left:100%;}
+.deposit-btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(245,200,66,.45);}
+.deposit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+
+/* ═══ LOCKED ENTRIES ═══ */
+.locked-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.locked-item{
+  background:rgba(255,255,255,.03);border-radius:18px;
+  border:1px solid rgba(245,200,66,.12);
+  overflow:hidden;
+}
+.li-header{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(245,200,66,.06);}
+.li-ico{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,rgba(245,200,66,.15),rgba(255,122,53,.08));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.li-info{flex:1;min-width:0;}
+.li-name{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;color:var(--text);}
+.li-date{font-size:11px;font-weight:300;color:var(--text3);margin-top:2px;}
+.li-amount{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:1px;flex-shrink:0;}
+.li-progress{padding:12px 16px;}
+.li-prog-row{display:flex;justify-content:space-between;margin-bottom:6px;}
+.li-prog-lbl{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
+.li-prog-pct{font-family:'Bebas Neue',cursive;font-size:14px;letter-spacing:1px;color:var(--gold);}
+.li-prog-bar{height:5px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;margin-bottom:10px;}
+.li-prog-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--gold-d),var(--gold));transition:width .8s ease;}
+.li-actions{display:flex;gap:8px;}
+.unlock-btn{flex:1;padding:10px;border-radius:10px;border:1.5px solid rgba(0,209,102,.3);background:rgba(0,209,102,.07);color:var(--green);cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:all .2s;}
+.unlock-btn:hover{background:rgba(0,209,102,.14);}
+.unlock-btn:disabled{opacity:.4;cursor:not-allowed;}
+.countdown-chip{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:10px;background:rgba(245,200,66,.06);border:1px solid rgba(245,200,66,.15);}
+.cc-timer{font-family:'Bebas Neue',cursive;font-size:14px;letter-spacing:2px;color:var(--gold);}
+.cc-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text3);}
+
+/* ═══ ANTI-IMPULSE BANNER ═══ */
+.anti-impulse{
+  display:flex;align-items:flex-start;gap:12px;
+  background:rgba(255,122,53,.07);border:1px solid rgba(255,122,53,.2);
+  border-radius:14px;padding:14px;margin-bottom:16px;
+}
+.ai-ico{font-size:22px;flex-shrink:0;margin-top:2px;}
+.ai-text h4{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;color:var(--amber);}
+.ai-text p{font-size:12px;font-weight:300;color:var(--text2);margin-top:4px;line-height:1.5;}
+
+/* ═══ MODALS ═══ */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.9);backdrop-filter:blur(16px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s;}
+.modal-overlay.show{opacity:1;pointer-events:all;}
+.modal{width:100%;max-width:480px;background:linear-gradient(160deg,#1A1200 0%,#0C0900 100%);border:1.5px solid rgba(245,200,66,.2);border-radius:28px 28px 0 0;padding:10px 20px 36px;transform:translateY(100%);transition:transform .4s cubic-bezier(.34,1.4,.64,1);}
+.modal-overlay.show .modal{transform:translateY(0);}
+.modal-handle{width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);margin:14px auto 20px;}
+.modal-title{font-family:'Bebas Neue',cursive;font-size:28px;letter-spacing:3px;color:var(--gold);margin-bottom:4px;}
+.modal-sub{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:18px;}
+.modal-recap{background:rgba(0,0,0,.4);border-radius:16px;border:1px solid rgba(255,255,255,.06);overflow:hidden;margin-bottom:18px;}
+.recap-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.04);}
+.recap-row:last-child{border-bottom:none;}
+.recap-lbl{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
+.recap-val{font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:1px;}
+.modal-warn{display:flex;align-items:flex-start;gap:10px;background:rgba(255,59,78,.07);border:1px solid rgba(255,59,78,.2);border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;font-weight:300;color:rgba(255,180,100,.9);line-height:1.5;}
+.modal-err{display:none;background:rgba(255,59,78,.1);border:1px solid rgba(255,59,78,.3);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:#FF6B7A;}
+.modal-btns{display:grid;grid-template-columns:1fr 1.6fr;gap:10px;}
+.btn-cancel{padding:14px;border-radius:14px;border:1.5px solid rgba(255,255,255,.1);background:transparent;color:var(--text3);cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:all .2s;}
+.btn-cancel:hover{background:rgba(255,255,255,.05);}
+.btn-gold{padding:14px;border-radius:14px;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--bg);background:linear-gradient(135deg,var(--gold-d),var(--gold));box-shadow:0 8px 24px rgba(245,200,66,.3);transition:all .3s;}
+.btn-gold:hover{transform:translateY(-2px);}
+.btn-gold:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+.ld{display:inline-block;width:13px;height:13px;border:2px solid rgba(10,8,0,.4);border-top-color:var(--bg);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
+
+.modal-success{display:none;text-align:center;padding:20px 0;}
+.modal-success.show{display:block;}
+.ms-ico{font-size:56px;margin-bottom:14px;}
+.ms-title{font-family:'Bebas Neue',cursive;font-size:34px;letter-spacing:3px;color:var(--gold);}
+.ms-msg{font-size:14px;font-weight:300;color:var(--text2);margin-top:8px;line-height:1.5;}
+.ms-btn{margin-top:20px;padding:13px 32px;border-radius:14px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--gold-d),var(--gold));font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--bg);box-shadow:0 8px 24px rgba(245,200,66,.3);}
+
+/* TOAST */
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);background:rgba(0,209,102,.9);backdrop-filter:blur(12px);color:#fff;padding:10px 22px;border-radius:100px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;z-index:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.err{background:rgba(255,59,78,.9);}
+
+/* BOT NAV */
+.bot-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;height:var(--nav-h);background:rgba(10,8,0,.95);backdrop-filter:blur(24px);border-top:1px solid rgba(245,200,66,.1);display:grid;grid-template-columns:repeat(4,1fr);box-shadow:0 -8px 32px rgba(0,0,0,.5);}
+.nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;text-decoration:none;transition:all .2s;padding:8px 4px;position:relative;}
+.nav-item::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,var(--gold),var(--amber));transform:scaleX(0);transition:transform .3s;}
+.nav-item.active::before{transform:scaleX(1);}
+.nav-item.active .nav-ico,.nav-item.active .nav-lbl{color:var(--gold);}
+.nav-ico{font-size:20px;color:var(--text3);transition:color .2s;}
+.nav-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);transition:color .2s;}
+</style>
+</head>
+<body>
+
+<div class="loading-screen" id="loader">
+  <div class="load-logo">🏦 COFFRE</div>
+  <div class="load-bar"><div class="load-fill"></div></div>
+</div>
+
+<div class="bg-mesh"></div><div class="bg-grid"></div>
+<div class="toast" id="toast"></div>
+
+<!-- DEPOSIT CONFIRM MODAL -->
+<div class="modal-overlay" id="dep-modal" onclick="closeDepModal(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div id="dep-main">
+      <div class="modal-title">🔐 Verrouiller au Coffre</div>
+      <div class="modal-sub" id="dep-modal-sub">—</div>
+      <div class="modal-recap">
+        <div class="recap-row"><div class="recap-lbl">Montant</div><div class="recap-val" id="dm-amount" style="color:var(--gold)">—</div></div>
+        <div class="recap-row"><div class="recap-lbl">Durée de verrouillage</div><div class="recap-val" id="dm-dur" style="color:var(--amber)">—</div></div>
+        <div class="recap-row"><div class="recap-lbl">Bonus intérêts</div><div class="recap-val" id="dm-bonus" style="color:var(--green)">—</div></div>
+        <div class="recap-row"><div class="recap-lbl">Total à récupérer</div><div class="recap-val" id="dm-total" style="color:var(--gold-l)">—</div></div>
+        <div class="recap-row"><div class="recap-lbl">Disponible après</div><div class="recap-val" id="dm-avail" style="color:var(--text2)">—</div></div>
+      </div>
+      <div class="modal-warn">⚠️ <span>Votre argent sera <strong>verrouillé</strong> pour la durée choisie. Un délai supplémentaire de <strong>24h</strong> s'applique à chaque demande de retrait.</span></div>
+      <div class="modal-err" id="dep-err"></div>
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="closeDepModal()">Annuler</button>
+        <button class="btn-gold" id="dep-confirm-btn" onclick="confirmDeposit()">🔐 Verrouiller</button>
+      </div>
+    </div>
+    <div class="modal-success" id="dep-success">
+      <div class="ms-ico">🏦</div>
+      <div class="ms-title" id="dep-s-title">Coffre verrouillé !</div>
+      <div class="ms-msg" id="dep-s-msg">Votre épargne est sécurisée et génère des intérêts.</div>
+      <button class="ms-btn" onclick="closeDepModal();renderAll()">Voir mon coffre</button>
+    </div>
+  </div>
+</div>
+
+<!-- UNLOCK CONFIRM MODAL -->
+<div class="modal-overlay" id="unlock-modal" onclick="closeUnlockModal(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div id="unlock-main">
+      <div class="modal-title">💸 Demande de retrait</div>
+      <div class="modal-sub">Retrait du coffre avec délai 24h</div>
+      <div class="modal-recap">
+        <div class="recap-row"><div class="recap-lbl">Montant principal</div><div class="recap-val" id="um-principal" style="color:var(--gold)">—</div></div>
+        <div class="recap-row"><div class="recap-lbl">Intérêts bonus</div><div class="recap-val" id="um-bonus" style="color:var(--green)">—</div></div>
+        <div class="recap-row"><div class="recap-lbl">Total à recevoir</div><div class="recap-val" id="um-total" style="color:var(--gold-l)">—</div></div>
+      </div>
+      <div class="modal-warn" style="background:rgba(245,200,66,.07);border-color:rgba(245,200,66,.2);color:rgba(245,200,66,.9);">
+        🛡️ <span>Sécurité anti-impulsion : un délai de <strong>24 heures</strong> est appliqué avant tout retrait du coffre. Cela vous protège des décisions hâtives.</span>
+      </div>
+      <div class="modal-err" id="unlock-err"></div>
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="closeUnlockModal()">Annuler</button>
+        <button class="btn-gold" id="unlock-confirm-btn" onclick="confirmUnlock()">Confirmer la demande</button>
+      </div>
+    </div>
+    <div class="modal-success" id="unlock-success">
+      <div class="ms-ico">⏳</div>
+      <div class="ms-title">Demande Envoyée !</div>
+      <div class="ms-msg">Votre retrait de coffre sera traité dans <strong>24 heures</strong>. Revenez demain pour récupérer vos fonds.</div>
+      <button class="ms-btn" onclick="closeUnlockModal();renderAll()">Compris ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+  <div class="topbar">
+    <a href="dashboard.html" class="back-btn">← Accueil</a>
+    <div class="page-title-top">🏦 COFFRE</div>
+    <div class="balance-pill">💰 <span id="bal-display">…</span> F</div>
+  </div>
+
+  <!-- VAULT HERO -->
+  <div class="vault-hero">
+    <div class="vault-icon-wrap">
+      <div class="vault-icon">
+        🏦
+        <div class="vault-shine"></div>
+      </div>
+    </div>
+    <div class="vault-title">MON COFFRE<br>FORT</div>
+    <div class="vault-sub">Épargne sécurisée · Intérêts garantis · Protection anti-impulsion</div>
+  </div>
+
+  <!-- COFFRE BALANCE -->
+  <div class="coffre-balance">
+    <div class="cb-label">💰 Épargne totale dans le coffre</div>
+    <div>
+      <span class="cb-amount" id="coffre-total">0</span>
+      <span class="cb-currency">FCFA</span>
+    </div>
+    <div class="cb-interest" id="coffre-interest">✨ +0 FCFA d'intérêts accumulés</div>
+    <div class="cb-breakdown">
+      <div class="cbd-item"><div class="cbd-val" style="color:var(--gold)" id="coffre-principal">0</div><div class="cbd-lbl">Principal</div></div>
+      <div class="cbd-item"><div class="cbd-val" style="color:var(--green)" id="coffre-bonus-val">0</div><div class="cbd-lbl">Intérêts</div></div>
+      <div class="cbd-item"><div class="cbd-val" style="color:var(--amber)" id="coffre-count">0</div><div class="cbd-lbl">Dépôts actifs</div></div>
+    </div>
+  </div>
+
+  <!-- VIP CARD -->
+  <div class="vip-section" id="vip-section"></div>
+
+  <!-- ANTI-IMPULSE INFO -->
+  <div class="anti-impulse">
+    <div class="ai-ico">🛡️</div>
+    <div class="ai-text">
+      <h4>Protection Anti-Impulsion Activée</h4>
+      <p>Chaque retrait du coffre nécessite un délai de <strong>24 heures</strong>. Cette protection vous aide à maintenir votre discipline d'épargne et à ne pas céder aux décisions impulsives.</p>
+    </div>
+  </div>
+
+  <!-- LOCK OPTIONS -->
+  <div class="lock-section">
+    <div class="sec-title">Choisir la durée de verrouillage</div>
+    <div class="lock-grid">
+      <div class="lock-opt selected" onclick="selectLock(7, this)">
+        <div class="lo-days">7J</div>
+        <div class="lo-label">Rapide</div>
+        <div class="lo-bonus">+5%</div>
+      </div>
+      <div class="lock-opt" onclick="selectLock(30, this)">
+        <div class="lo-days">30J</div>
+        <div class="lo-label">Standard</div>
+        <div class="lo-bonus">+15%</div>
+      </div>
+      <div class="lock-opt" onclick="selectLock(90, this)">
+        <div class="lo-days">90J</div>
+        <div class="lo-label">Premium</div>
+        <div class="lo-bonus">+25%</div>
+      </div>
+    </div>
+
+    <div class="deposit-form">
+      <label class="df-label">Montant à déposer dans le coffre</label>
+      <div class="amount-input-wrap">
+        <input class="amount-input" type="number" id="deposit-amount" placeholder="0" min="500" oninput="updatePreview()">
+        <span class="currency-tag">FCFA</span>
+      </div>
+      <div class="quick-amounts">
+        <button class="qa-btn" onclick="setAmount(1000)">1 000</button>
+        <button class="qa-btn" onclick="setAmount(5000)">5 000</button>
+        <button class="qa-btn" onclick="setAmount(10000)">10 000</button>
+        <button class="qa-btn" onclick="setAmount(25000)">25 000</button>
+      </div>
+      <div class="preview-box" id="preview-box" style="display:none">
+        <div class="pb-row"><div class="pb-lbl">Montant déposé</div><div class="pb-val" style="color:var(--gold)" id="prev-amount">—</div></div>
+        <div class="pb-row"><div class="pb-lbl">Durée</div><div class="pb-val" style="color:var(--amber)" id="prev-dur">—</div></div>
+        <div class="pb-row"><div class="pb-lbl">Bonus intérêts</div><div class="pb-val" style="color:var(--green)" id="prev-bonus">—</div></div>
+        <div class="pb-row"><div class="pb-lbl">Total récupéré</div><div class="pb-val" style="color:var(--gold-l)" id="prev-total">—</div></div>
+      </div>
+      <button class="deposit-btn" onclick="openDepModal()">🔐 Verrouiller dans le Coffre</button>
+    </div>
+  </div>
+
+  <!-- LOCKED ENTRIES -->
+  <div class="sec-title" style="margin-top:4px;">Épargnes verrouillées</div>
+  <div class="locked-list" id="locked-list">
+    <div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">🏦 Aucune épargne verrouillée pour l'instant</div>
+  </div>
+
+</div>
+
+<!-- BOT NAV -->
+<nav class="bot-nav">
+  <a href="dashboard.html" class="nav-item"><span class="nav-ico">🏠</span><span class="nav-lbl">Accueil</span></a>
+  <a href="plan.html" class="nav-item"><span class="nav-ico">🚀</span><span class="nav-lbl">Plans</span></a>
+  <a href="retrait.html" class="nav-item"><span class="nav-ico">💸</span><span class="nav-lbl">Retrait</span></a>
+  <a href="profil.html" class="nav-item"><span class="nav-ico">👤</span><span class="nav-lbl">Profil</span></a>
+</nav>
+
+<script>
+const{createClient}=supabase;
+const sb=createClient('https://fqiotqrraobmsrcyewsi.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc');
+
+/* ── VIP LEVELS ── */
+const VIP=[
+  {min:0,     label:'🥉 Bronze',  perk:'Coffre standard',       color:'#CD7F32',bg:'rgba(205,127,50,.08)',border:'rgba(205,127,50,.25)',glow:'rgba(205,127,50,.1)',fill:'linear-gradient(90deg,#8B5E1A,#CD7F32)',rate:1},
+  {min:25000, label:'🥈 Argent',  perk:'+2% sur intérêts coffre',color:'#C0C0C0',bg:'rgba(192,192,192,.08)',border:'rgba(192,192,192,.25)',glow:'rgba(192,192,192,.1)',fill:'linear-gradient(90deg,#808080,#C0C0C0)',rate:1.02},
+  {min:75000, label:'🥇 Or',      perk:'+5% sur intérêts coffre',color:'#F5C842',bg:'rgba(245,200,66,.1)',border:'rgba(245,200,66,.3)',glow:'rgba(245,200,66,.15)',fill:'linear-gradient(90deg,#B8960C,#F5C842)',rate:1.05},
+  {min:200000,label:'💎 Diamant', perk:'+10% sur intérêts coffre + retraits prioritaires',color:'#A064FF',bg:'rgba(160,100,255,.1)',border:'rgba(160,100,255,.35)',glow:'rgba(160,100,255,.15)',fill:'linear-gradient(90deg,#5C1FA8,#A064FF)',rate:1.10},
+];
+const LOCK_RATES={7:.05,30:.15,90:.25};
+
+let currentUser=null,userBalance=0,lockedEntries=[],selectedDays=7,selectedUnlock=null,toastTimer=null;
+
+async function init(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='index.html';return;}
+  currentUser=session.user;
+  await loadBalance();
+  await loadLockedEntries();
+  await processPendingUnlocks();
+  renderAll();
+  document.getElementById('loader').classList.add('hide');
+}
+
+async function loadBalance(){
+  let total=1000;
+  try{
+    const{data}=await sb.from('transactions').select('amount,type').eq('user_id',currentUser.id);
+    if(data&&data.length){total=0;data.forEach(t=>{
+      if(['bonus_bienvenue','depot','gain','referral'].includes(t.type))total+=Number(t.amount);
+      if(t.type==='retrait')total-=Number(t.amount);
+      if(t.type==='investissement')total-=Number(t.amount);
+      if(t.type==='coffre_depot')total-=Number(t.amount);
+      if(t.type==='coffre_retrait')total+=Number(t.amount);
+    });}
+  }catch(e){}
+  userBalance=Math.max(0,total);
+  document.getElementById('bal-display').textContent=fmt(userBalance);
+}
+
+async function loadLockedEntries(){
+  try{
+    const{data}=await sb.from('coffre').select('*').eq('user_id',currentUser.id).in('status',['locked','pending_unlock']);
+    lockedEntries=data||[];
+  }catch(e){lockedEntries=[];}
+}
+
+async function processPendingUnlocks(){
+  const now=new Date();
+  for(const e of lockedEntries){
+    if(e.status==='pending_unlock'&&e.unlock_requested_at){
+      const req=new Date(e.unlock_requested_at);
+      const hoursElapsed=(now-req)/(1000*60*60);
+      if(hoursElapsed>=24){
+        try{
+          const total=Number(e.amount)+Number(e.bonus_amount);
+          await sb.from('transactions').insert({user_id:currentUser.id,type:'coffre_retrait',label:`Retrait Coffre — ${e.label}`,amount:total,status:'credited',created_at:now.toISOString()});
+          await sb.from('coffre').update({status:'withdrawn'}).eq('id',e.id);
+        }catch(ex){}
+      }
+    }
+  }
+  await loadLockedEntries();
+}
+
+function renderAll(){
+  renderVip();
+  renderCoffreBalance();
+  renderLockedList();
+}
+
+function getVipLevel(total){
+  let v=VIP[0];
+  VIP.forEach(l=>{if(total>=l.min)v=l;});
+  return v;
+}
+
+function renderVip(){
+  const coffreTotal=lockedEntries.reduce((s,e)=>s+Number(e.amount),0);
+  const v=getVipLevel(coffreTotal);
+  const nextIdx=VIP.indexOf(v)+1<VIP.length?VIP.indexOf(v)+1:-1;
+  const nextV=nextIdx>=0?VIP[nextIdx]:null;
+  const pct=nextV?Math.min(Math.round((coffreTotal-v.min)/(nextV.min-v.min)*100),100):100;
+
+  const perks=['Épargne protégée','Intérêts garantis',v.rate>1?`×${v.rate} multiplicateur`:'Taux standard','Retrait 24h sécurisé'];
+
+  document.getElementById('vip-section').innerHTML=`
+    <div class="vip-card" style="--vc:${v.border};--vbg:${v.bg};--vglow:${v.glow};--vc2:${v.color}">
+      <div class="vip-top">
+        <div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${v.color};opacity:.7;margin-bottom:4px;">Niveau Coffre</div>
+          <div class="vip-badge-big" style="color:${v.color}">${v.label}</div>
+        </div>
+        <div class="vip-perks">
+          <div style="color:${v.color};font-size:12px">${v.perk}</div>
+        </div>
+      </div>
+      ${nextV?`
+      <div class="vip-progress-row">
+        <div class="vip-prog-bar"><div class="vip-prog-fill" style="width:${pct}%;background:${v.fill}"></div></div>
+        <div class="vip-prog-pct" style="color:${v.color}">${pct}%</div>
+      </div>
+      <div class="vip-next">Prochain niveau <strong style="color:${nextV.color}">${nextV.label}</strong> à ${fmt(nextV.min)} FCFA dans le coffre</div>
+      `:`<div class="vip-next" style="color:${v.color}">🏆 Niveau maximum atteint !</div>`}
+      <div class="vip-perks-list">${perks.map(p=>`<div class="vp-item">✓ ${p}</div>`).join('')}</div>
+    </div>`;
+}
+
+function renderCoffreBalance(){
+  const active=lockedEntries.filter(e=>e.status==='locked'||e.status==='pending_unlock');
+  const principal=active.reduce((s,e)=>s+Number(e.amount),0);
+  const bonusTotal=active.reduce((s,e)=>s+Number(e.bonus_amount||0),0);
+  const total=principal+bonusTotal;
+  document.getElementById('coffre-total').textContent=fmt(total);
+  document.getElementById('coffre-interest').textContent='✨ +'+fmt(bonusTotal)+' FCFA d\'intérêts accumulés';
+  document.getElementById('coffre-principal').textContent=fmt(principal);
+  document.getElementById('coffre-bonus-val').textContent=fmt(bonusTotal);
+  document.getElementById('coffre-count').textContent=active.length;
+}
+
+function renderLockedList(){
+  const list=document.getElementById('locked-list');
+  const active=lockedEntries.filter(e=>e.status==='locked'||e.status==='pending_unlock');
+  if(!active.length){
+    list.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px;">🏦 Aucune épargne verrouillée pour l\'instant</div>';
+    return;
+  }
+  const now=new Date();
+  list.innerHTML=active.map(e=>{
+    const start=new Date(e.created_at);
+    const end=new Date(e.unlock_date);
+    const totalDuration=end-start;
+    const elapsed=Math.min(now-start,totalDuration);
+    const pct=Math.min(Math.round((elapsed/totalDuration)*100),100);
+    const isReady=now>=end;
+    const isPending=e.status==='pending_unlock';
+    const bonus=Number(e.bonus_amount||0);
+    const total=Number(e.amount)+bonus;
+
+    let actionHtml='';
+    if(isPending){
+      const req=new Date(e.unlock_requested_at);
+      const hoursLeft=Math.max(0,24-Math.floor((now-req)/(1000*60*60)));
+      actionHtml=`<div class="countdown-chip"><div class="cc-lbl">🔄 Retrait en cours</div><div class="cc-timer">${hoursLeft}H RESTANTES</div></div>`;
+    }else if(isReady){
+      actionHtml=`<button class="unlock-btn" onclick="openUnlockModal('${e.id}',${e.amount},${bonus})">💸 Retirer ${fmt(total)} FCFA</button>`;
+    }else{
+      const daysLeft=Math.ceil((end-now)/(1000*60*60*24));
+      actionHtml=`<button class="unlock-btn" disabled>🔒 Encore ${daysLeft} jour(s)</button>`;
+    }
+
+    return `
+    <div class="locked-item">
+      <div class="li-header">
+        <div class="li-ico">🔐</div>
+        <div class="li-info">
+          <div class="li-name">${e.label||'Épargne Coffre'}</div>
+          <div class="li-date">Verrouillé le ${new Date(e.created_at).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})}</div>
+        </div>
+        <div class="li-amount" style="color:var(--gold)">${fmt(Number(e.amount))} F</div>
+      </div>
+      <div class="li-progress">
+        <div class="li-prog-row"><div class="li-prog-lbl">${e.lock_days}j — ${pct}% écoulé</div><div class="li-prog-pct">+${fmt(bonus)} F bonus</div></div>
+        <div class="li-prog-bar"><div class="li-prog-fill" style="width:${pct}%"></div></div>
+        <div class="li-actions">${actionHtml}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── LOCK SELECTION ── */
+function selectLock(days,el){
+  selectedDays=days;
+  document.querySelectorAll('.lock-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  updatePreview();
+}
+
+function setAmount(v){document.getElementById('deposit-amount').value=v;updatePreview();}
+
+function updatePreview(){
+  const amount=Number(document.getElementById('deposit-amount').value)||0;
+  const rate=LOCK_RATES[selectedDays]||.05;
+  const vip=getVipLevel(lockedEntries.reduce((s,e)=>s+Number(e.amount),0));
+  const multiplier=vip.rate;
+  const bonus=Math.round(amount*rate*multiplier);
+  const total=amount+bonus;
+  const pb=document.getElementById('preview-box');
+  if(amount<=0){pb.style.display='none';return;}
+  pb.style.display='block';
+  document.getElementById('prev-amount').textContent=fmt(amount)+' FCFA';
+  document.getElementById('prev-dur').textContent=selectedDays+' jours';
+  document.getElementById('prev-bonus').textContent='+'+fmt(bonus)+' FCFA ('+Math.round(rate*100)+'%)';
+  document.getElementById('prev-total').textContent=fmt(total)+' FCFA';
+}
+
+/* ── DEPOSIT MODAL ── */
+function openDepModal(){
+  const amount=Number(document.getElementById('deposit-amount').value)||0;
+  if(amount<=0){showToast('Entrez un montant valide',true);return;}
+  if(amount<500){showToast('Minimum 500 FCFA',true);return;}
+  if(amount>userBalance){showToast('Solde insuffisant',true);return;}
+  const rate=LOCK_RATES[selectedDays]||.05;
+  const vip=getVipLevel(lockedEntries.reduce((s,e)=>s+Number(e.amount),0));
+  const bonus=Math.round(amount*rate*vip.rate);
+  const total=amount+bonus;
+  const unlockDate=new Date();unlockDate.setDate(unlockDate.getDate()+selectedDays);
+  document.getElementById('dm-amount').textContent=fmt(amount)+' FCFA';
+  document.getElementById('dm-dur').textContent=selectedDays+' jours';
+  document.getElementById('dm-bonus').textContent='+'+fmt(bonus)+' FCFA (+'+Math.round(rate*100)+'%)';
+  document.getElementById('dm-total').textContent=fmt(total)+' FCFA';
+  document.getElementById('dm-avail').textContent=unlockDate.toLocaleDateString('fr-FR',{day:'2-digit',month:'long'});
+  document.getElementById('dep-modal-sub').textContent=`${selectedDays} jours · Bonus +${Math.round(rate*100)}%`;
+  document.getElementById('dep-err').style.display='none';
+  document.getElementById('dep-main').style.display='block';
+  document.getElementById('dep-success').classList.remove('show');
+  document.getElementById('dep-confirm-btn').disabled=false;
+  document.getElementById('dep-confirm-btn').innerHTML='🔐 Verrouiller';
+  document.getElementById('dep-modal').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+
+function closeDepModal(e){
+  if(e&&e.target!==document.getElementById('dep-modal'))return;
+  document.getElementById('dep-modal').classList.remove('show');
+  document.body.style.overflow='';
+}
+
+async function confirmDeposit(){
+  const amount=Number(document.getElementById('deposit-amount').value)||0;
+  const rate=LOCK_RATES[selectedDays]||.05;
+  const vip=getVipLevel(lockedEntries.reduce((s,e)=>s+Number(e.amount),0));
+  const bonus=Math.round(amount*rate*vip.rate);
+  const btn=document.getElementById('dep-confirm-btn');
+  const errEl=document.getElementById('dep-err');
+  errEl.style.display='none';
+  if(amount>userBalance){errEl.style.display='block';errEl.textContent='Solde insuffisant.';return;}
+  btn.disabled=true;btn.innerHTML='<span class="ld"></span>Verrouillage…';
+  try{
+    const now=new Date();
+    const unlockDate=new Date(now.getTime()+selectedDays*24*60*60*1000);
+    const{error:e1}=await sb.from('transactions').insert({user_id:currentUser.id,type:'coffre_depot',label:`Dépôt Coffre ${selectedDays}j`,amount:amount,status:'credited',created_at:now.toISOString()});
+    if(e1)throw e1;
+    const{error:e2}=await sb.from('coffre').insert({user_id:currentUser.id,label:`Coffre ${selectedDays} jours (+${Math.round(rate*100)}%)`,amount:amount,bonus_amount:bonus,lock_days:selectedDays,status:'locked',unlock_date:unlockDate.toISOString(),created_at:now.toISOString()});
+    if(e2)throw e2;
+    document.getElementById('dep-main').style.display='none';
+    document.getElementById('dep-success').classList.add('show');
+    document.getElementById('dep-s-msg').textContent=`${fmt(amount)} FCFA verrouillés pendant ${selectedDays} jours. Vous récupérerez ${fmt(amount+bonus)} FCFA avec les intérêts !`;
+    userBalance-=amount;
+    document.getElementById('bal-display').textContent=fmt(userBalance);
+    await loadLockedEntries();
+    document.getElementById('deposit-amount').value='';
+    document.getElementById('preview-box').style.display='none';
+  }catch(err){
+    btn.disabled=false;btn.innerHTML='🔐 Verrouiller';
+    errEl.style.display='block';errEl.textContent='Erreur : '+(err.message||'Réessayez.');
+  }
+}
+
+/* ── UNLOCK MODAL ── */
+function openUnlockModal(id,principal,bonus){
+  selectedUnlock={id,principal:Number(principal),bonus:Number(bonus)};
+  const total=Number(principal)+Number(bonus);
+  document.getElementById('um-principal').textContent=fmt(Number(principal))+' FCFA';
+  document.getElementById('um-bonus').textContent='+'+fmt(Number(bonus))+' FCFA';
+  document.getElementById('um-total').textContent=fmt(total)+' FCFA';
+  document.getElementById('unlock-err').style.display='none';
+  document.getElementById('unlock-main').style.display='block';
+  document.getElementById('unlock-success').classList.remove('show');
+  document.getElementById('unlock-confirm-btn').disabled=false;
+  document.getElementById('unlock-confirm-btn').innerHTML='Confirmer la demande';
+  document.getElementById('unlock-modal').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+
+function closeUnlockModal(e){
+  if(e&&e.target!==document.getElementById('unlock-modal'))return;
+  document.getElementById('unlock-modal').classList.remove('show');
+  document.body.style.overflow='';
+}
+
+async function confirmUnlock(){
+  if(!selectedUnlock)return;
+  const btn=document.getElementById('unlock-confirm-btn');
+  btn.disabled=true;btn.innerHTML='<span class="ld"></span>Traitement…';
+  try{
+    await sb.from('coffre').update({status:'pending_unlock',unlock_requested_at:new Date().toISOString()}).eq('id',selectedUnlock.id);
+    document.getElementById('unlock-main').style.display='none';
+    document.getElementById('unlock-success').classList.add('show');
+    await loadLockedEntries();renderAll();
+  }catch(err){
+    btn.disabled=false;btn.innerHTML='Confirmer la demande';
+    document.getElementById('unlock-err').style.display='block';
+    document.getElementById('unlock-err').textContent='Erreur : '+(err.message||'Réessayez.');
+  }
+}
+
+/* HELPERS */
+function fmt(n){return Number(n).toLocaleString('fr-FR');}
+function showToast(msg,isErr=false){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  isErr?t.classList.add('err'):t.classList.remove('err');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+init();
+</script>
+</body>
+</html>
