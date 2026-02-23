@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SYLLA – Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:'Nunito',sans-serif;background:#F0F4FF;color:#1A1F3C;overflow-x:hidden}
+:root{
+  --bg:#F0F4FF;--white:#FFFFFF;
+  --blue:#1B3FA0;--blue-m:#2952C8;--blue-l:#EEF2FF;--blue-mid:#4A6FD4;
+  --red:#D42B2B;--red-l:#FFF0F0;
+  --orange:#F47B20;--orange-l:#FFF4EB;--orange-d:#C85F00;
+  --ink:#1A1F3C;--ink2:#3A4168;--ink3:#7B82A8;--line:#DDE3F5;
+  --sh:0 2px 14px rgba(27,63,160,.10);--sh-lg:0 8px 36px rgba(27,63,160,.16);--r:18px;
+}
+body{background:var(--bg)}
+.shell{max-width:430px;margin:0 auto;min-height:100vh;padding-bottom:96px}
+/* TOP NAV */
+.topnav{display:flex;align-items:center;gap:14px;padding:22px 20px 0}
+.back-btn{width:40px;height:40px;border-radius:12px;background:var(--white);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--sh);color:var(--ink);flex-shrink:0;transition:transform .2s}
+.back-btn:hover{transform:scale(1.06)}
+.page-title{font-size:18px;font-weight:900;color:var(--ink)}
+/* PAGE HEADER */
+.page-header{margin:20px 20px 0;border-radius:22px;padding:24px 22px;position:relative;overflow:hidden}
+.ph-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;opacity:.7;margin-bottom:6px}
+.ph-title{font-size:26px;font-weight:900;color:#fff;margin-bottom:4px}
+.ph-sub{font-size:13px;color:rgba(255,255,255,.75);font-weight:500}
+.ph-shine{position:absolute;top:-40%;right:-15%;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.1);pointer-events:none}
+/* CARD */
+.card{background:var(--white);border-radius:var(--r);padding:20px;box-shadow:var(--sh);margin:16px 20px 0;border:1.5px solid var(--line)}
+.card-title{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:14px}
+/* FORM */
+.f-grp{margin-bottom:14px}
+.f-lbl{display:block;font-size:11px;font-weight:800;color:var(--ink3);margin-bottom:7px;text-transform:uppercase;letter-spacing:.9px}
+.f-inp{width:100%;padding:13px 15px;background:var(--bg);border:2px solid var(--line);border-radius:14px;color:var(--ink);font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;outline:none;transition:border-color .2s}
+.f-inp:focus{border-color:var(--blue-m);box-shadow:0 0 0 3px rgba(41,82,200,.1)}
+.f-sel{appearance:none;cursor:pointer}
+/* BTN */
+.btn{display:block;width:100%;padding:15px;border:none;border-radius:16px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .24s;text-align:center;text-decoration:none}
+.btn:hover{transform:translateY(-2px)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-blue{background:linear-gradient(135deg,var(--blue-m),var(--blue));color:#fff;box-shadow:0 6px 20px rgba(41,82,200,.3)}
+.btn-ora{background:linear-gradient(135deg,#FFB347,var(--orange));color:#fff;box-shadow:0 6px 20px rgba(244,123,32,.3)}
+.btn-red{background:linear-gradient(135deg,#FF6B6B,var(--red));color:#fff;box-shadow:0 6px 20px rgba(212,43,43,.25)}
+.btn-wh{background:var(--white);color:var(--blue-m);border:2px solid var(--blue-l);}
+/* ROW */
+.info-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)}
+.info-row:last-child{border-bottom:none}
+.ir-lbl{font-size:13px;color:var(--ink3);font-weight:600}
+.ir-val{font-size:13px;font-weight:800;color:var(--ink)}
+/* STATUS PILL */
+.status{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:100px;font-size:11px;font-weight:800}
+.s-pending{background:#FFF8E1;color:#F57F17}
+.s-ok{background:#E8F5E9;color:#2E7D32}
+.s-err{background:var(--red-l);color:var(--red)}
+/* BOTTOM NAV */
+.bot-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--white);border-top:1.5px solid var(--line);display:flex;justify-content:space-around;align-items:center;padding:10px 0 20px;z-index:90;box-shadow:0 -4px 20px rgba(27,63,160,.08)}
+.bn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 14px;border-radius:12px;cursor:pointer;border:none;background:transparent;color:var(--ink3);font-family:'Nunito',sans-serif;transition:background .2s}
+.bn.active{color:var(--blue-m)}
+.bn:hover{background:var(--blue-l)}
+.bn-lbl{font-size:9.5px;font-weight:700;letter-spacing:.3px}
+.bn-dot{width:4px;height:4px;border-radius:50%;background:var(--orange);display:none}
+.bn.active .bn-dot{display:block}
+/* TOAST */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);z-index:500;padding:12px 22px;border-radius:100px;font-size:13px;font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:8px;box-shadow:0 8px 32px rgba(0,0,0,.2);transition:transform .38s cubic-bezier(.34,1.56,.64,1),opacity .38s;opacity:0;max-width:calc(100vw - 40px)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.success{background:linear-gradient(135deg,#2E7D32,#43A047);color:#fff}
+.toast.error{background:linear-gradient(135deg,var(--red),#FF4444);color:#fff}
+.toast.info{background:linear-gradient(135deg,var(--blue),var(--blue-m));color:#fff}
+/* EMPTY */
+.empty{text-align:center;padding:40px 20px;color:var(--ink3)}
+.empty-ico{font-size:48px;margin-bottom:12px}
+.empty-txt{font-size:14px;font-weight:600}
+/* PLAN CARD */
+.plan-card{border-radius:16px;padding:18px;border:2px solid var(--line);background:var(--bg);margin-bottom:10px;cursor:pointer;transition:all .2s}
+.plan-card:hover,.plan-card.sel{border-color:var(--blue-m);background:var(--blue-l)}
+.pc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.pc-name{font-size:16px;font-weight:900;color:var(--ink)}
+.pc-ret{font-size:24px;font-weight:900;color:var(--blue-m)}
+.pc-ret small{font-size:11px;color:var(--ink3);font-weight:600}
+.pc-details{display:flex;gap:10px;flex-wrap:wrap}
+.pc-tag{font-size:10px;font-weight:800;padding:3px 10px;border-radius:100px}
+.t-blue{background:var(--blue-l);color:var(--blue)}
+.t-ora{background:var(--orange-l);color:var(--orange-d)}
+.t-red{background:var(--red-l);color:var(--red)}
+.t-green{background:#E8F5E9;color:#2E7D32}
+/* INVEST ACTIVE CARD */
+.inv-active{border-radius:16px;padding:18px;background:var(--white);border:1.5px solid var(--line);box-shadow:var(--sh);margin-bottom:12px}
+.ia-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.ia-name{font-size:16px;font-weight:900;color:var(--ink)}
+.progress-bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-bottom:6px}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--blue-m),var(--orange))}
+/* AVATAR */
+.big-av{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--red));display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900;color:#fff;margin:0 auto 16px;box-shadow:0 8px 24px rgba(244,123,32,.4)}
+/* REF BOX */
+.ref-box{background:linear-gradient(135deg,var(--blue-l),#E0E8FF);border-radius:16px;padding:24px;text-align:center;border:2px dashed rgba(41,82,200,.25);margin-bottom:16px}
+.ref-code{font-size:28px;font-weight:900;color:var(--ink);letter-spacing:4px;margin:8px 0}
+.spin{width:15px;height:15px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.fade{animation:fadeUp .4s ease both}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<div class="topnav">
+  <button class="back-btn" onclick="history.back()">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <span class="page-title">Plans d'Investissement</span>
+</div>
+<div class="page-header" style="background:linear-gradient(135deg,var(--blue),var(--blue-m))">
+  <div class="ph-shine"></div>
+  <div class="ph-label" style="color:rgba(255,255,255,.65)">SYLLA Invest</div>
+  <div class="ph-title">Choisissez votre Plan</div>
+  <div class="ph-sub">Faites fructifier votre capital en FCFA</div>
+</div>
+<div style="padding:16px 20px 0">
+  <div id="plans-container"><div class="empty"><div class="empty-ico">⏳</div><div class="empty-txt">Chargement des plans...</div></div></div>
+</div>
+<div style="padding:0 20px;margin-top:12px">
+  <div class="card" id="invest-form" style="display:none">
+    <div class="card-title" id="form-plan-name">Montant à investir</div>
+    <div class="f-grp">
+      <label class="f-lbl">Montant (FCFA)</label>
+      <input class="f-inp" type="number" id="invest-amount" placeholder="Ex : 50 000"/>
+    </div>
+    <div id="plan-info" style="background:var(--blue-l);border-radius:12px;padding:14px;margin-bottom:14px;font-size:13px;font-weight:600;color:var(--ink2);display:none">
+      Durée : <span id="pi-dur">--</span> jours &nbsp;|&nbsp; Rendement : <span id="pi-ret">--</span>%/j &nbsp;|&nbsp; Risque : <span id="pi-risk">--</span>
+    </div>
+    <button class="btn btn-blue" id="invest-btn" onclick="submitInvest()"><span id="invest-lbl">Lancer l'investissement 🚀</span></button>
+  </div>
+</div>
+
+</div>
+<nav class="bot-nav">
+  <button class="bn" onclick="location.href='dashboard.html'">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <span class="bn-lbl">Accueil</span><div class="bn-dot"></div>
+  </button>
+  <button class="bn" onclick="location.href='plan.html'">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    <span class="bn-lbl">Investir</span><div class="bn-dot"></div>
+  </button>
+  <button class="bn" onclick="location.href='actif.html'">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8z"/><path d="M16 12h.01"/></svg>
+    <span class="bn-lbl">Portefeuille</span><div class="bn-dot"></div>
+  </button>
+  <button class="bn" onclick="location.href='profil.html'">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span class="bn-lbl">Profil</span><div class="bn-dot"></div>
+  </button>
+</nav>
+<div id="toast" class="toast"><span id="t-msg"></span></div>
+<script>
+
+const{createClient}=supabase;
+const sb=createClient('https://fqiotqrraobmsrcyewsi.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc');
+let user=null,profile=null;
+async function checkAuth(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='index.html';return null;}
+  user=session.user;
+  const{data}=await sb.from('profiles').select('*').eq('id',user.id).single();
+  profile=data;
+  return data;
+}
+function fmt(n){return(n||0).toLocaleString('fr-FR')}
+let tTimer;
+function toast(msg,type='success'){clearTimeout(tTimer);const t=document.getElementById('toast');document.getElementById('t-msg').textContent=msg;t.className=`toast ${type} show`;tTimer=setTimeout(()=>t.classList.remove('show'),4000)}
+
+
+let plans=[], selectedPlan=null;
+async function init(){
+  await checkAuth();
+  const{data}=await sb.from('investment_plans').select('*').eq('is_active',true).order('min_amount');
+  plans=data||[];
+  const c=document.getElementById('plans-container');
+  if(!plans.length){c.innerHTML='<div class="empty"><div class="empty-ico">📭</div><div class="empty-txt">Aucun plan disponible</div></div>';return;}
+  c.innerHTML=plans.map(p=>`
+    <div class="plan-card" id="pc-${p.id}" onclick="selectPlan('${p.id}')">
+      <div class="pc-top">
+        <div class="pc-name">${p.name}</div>
+        <div class="pc-ret">${p.daily_return}%<small>/jour</small></div>
+      </div>
+      <div class="pc-details">
+        <span class="pc-tag t-blue">Min ${fmt(p.min_amount)} FCFA</span>
+        <span class="pc-tag t-ora">${p.duration_days} jours</span>
+        <span class="pc-tag ${p.risk_level==='Faible'?'t-green':p.risk_level==='Moyen'?'t-ora':'t-red'}">${p.risk_level}</span>
+        ${p.total_return?`<span class="pc-tag t-blue">Retour ${p.total_return}%</span>`:''}
+      </div>
+    </div>`).join('');
+}
+function selectPlan(id){
+  selectedPlan=plans.find(p=>p.id===id);
+  document.querySelectorAll('.plan-card').forEach(e=>e.classList.remove('sel'));
+  document.getElementById('pc-'+id)?.classList.add('sel');
+  const f=document.getElementById('invest-form');
+  f.style.display='block';
+  document.getElementById('form-plan-name').textContent='Investir – '+selectedPlan.name;
+  document.getElementById('plan-info').style.display='block';
+  document.getElementById('pi-dur').textContent=selectedPlan.duration_days;
+  document.getElementById('pi-ret').textContent=selectedPlan.daily_return;
+  document.getElementById('pi-risk').textContent=selectedPlan.risk_level;
+  document.getElementById('invest-amount').placeholder=`Min ${fmt(selectedPlan.min_amount)} FCFA`;
+  f.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+async function submitInvest(){
+  if(!selectedPlan){toast('Sélectionnez un plan','error');return;}
+  const amount=parseFloat(document.getElementById('invest-amount').value);
+  if(!amount||amount<selectedPlan.min_amount){toast(`Minimum : ${fmt(selectedPlan.min_amount)} FCFA`,'error');return;}
+  const btn=document.getElementById('invest-btn');
+  btn.disabled=true;document.getElementById('invest-lbl').innerHTML='<span class="spin"></span>';
+  try{
+    const ends=new Date();ends.setDate(ends.getDate()+selectedPlan.duration_days);
+    const{error}=await sb.from('investments').insert({user_id:user.id,plan_id:selectedPlan.id,amount,daily_return:selectedPlan.daily_return,duration_days:selectedPlan.duration_days,ends_at:ends.toISOString(),status:'active'});
+    if(error)throw error;
+    await sb.from('profiles').update({total_invested:(profile?.total_invested||0)+amount,balance:Math.max(0,(profile?.balance||0)-amount)}).eq('id',user.id);
+    toast('Investissement lancé ! 🚀','success');
+    setTimeout(()=>location.href='actif.html',1500);
+  }catch(e){toast(e.message||'Erreur','error');}
+  btn.disabled=false;document.getElementById('invest-lbl').textContent='Lancer l\'investissement 🚀';
+}
+init();
+
+</script>
+</body>
+</html>
