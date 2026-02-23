@@ -1,220 +1,541 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SYLLA – Recharge</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SYLLA — Recharge du compte</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{min-height:100%;font-family:'Nunito',sans-serif;background:#F0F4FF;color:#1A1F3C;overflow-x:hidden}
 :root{
-  --bg:#F0F4FF;--white:#FFFFFF;
-  --blue:#1B3FA0;--blue-m:#2952C8;--blue-l:#EEF2FF;--blue-mid:#4A6FD4;
-  --red:#D42B2B;--red-l:#FFF0F0;
-  --orange:#F47B20;--orange-l:#FFF4EB;--orange-d:#C85F00;
-  --ink:#1A1F3C;--ink2:#3A4168;--ink3:#7B82A8;--line:#DDE3F5;
-  --sh:0 2px 14px rgba(27,63,160,.10);--sh-lg:0 8px 36px rgba(27,63,160,.16);--r:18px;
+  --green:#00D166;--green-l:#4ADE80;--green-d:#009948;
+  --teal:#00C9C0;--teal-l:#00EDDE;
+  --orange:#FF7A35;--gold:#F5C842;--red:#FF3B4E;--amber:#FFB830;
+  --purple:#A064FF;
+  --bg:#060E0A;
+  --text:#F0FFF5;--text2:#6BA885;--text3:#2E5A40;
+  --nav-h:70px;
 }
-body{background:var(--bg)}
-.shell{max-width:430px;margin:0 auto;min-height:100vh;padding-bottom:96px}
-/* TOP NAV */
-.topnav{display:flex;align-items:center;gap:14px;padding:22px 20px 0}
-.back-btn{width:40px;height:40px;border-radius:12px;background:var(--white);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--sh);color:var(--ink);flex-shrink:0;transition:transform .2s}
-.back-btn:hover{transform:scale(1.06)}
-.page-title{font-size:18px;font-weight:900;color:var(--ink)}
-/* PAGE HEADER */
-.page-header{margin:20px 20px 0;border-radius:22px;padding:24px 22px;position:relative;overflow:hidden}
-.ph-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;opacity:.7;margin-bottom:6px}
-.ph-title{font-size:26px;font-weight:900;color:#fff;margin-bottom:4px}
-.ph-sub{font-size:13px;color:rgba(255,255,255,.75);font-weight:500}
-.ph-shine{position:absolute;top:-40%;right:-15%;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.1);pointer-events:none}
-/* CARD */
-.card{background:var(--white);border-radius:var(--r);padding:20px;box-shadow:var(--sh);margin:16px 20px 0;border:1.5px solid var(--line)}
-.card-title{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:14px}
-/* FORM */
-.f-grp{margin-bottom:14px}
-.f-lbl{display:block;font-size:11px;font-weight:800;color:var(--ink3);margin-bottom:7px;text-transform:uppercase;letter-spacing:.9px}
-.f-inp{width:100%;padding:13px 15px;background:var(--bg);border:2px solid var(--line);border-radius:14px;color:var(--ink);font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;outline:none;transition:border-color .2s}
-.f-inp:focus{border-color:var(--blue-m);box-shadow:0 0 0 3px rgba(41,82,200,.1)}
-.f-sel{appearance:none;cursor:pointer}
-/* BTN */
-.btn{display:block;width:100%;padding:15px;border:none;border-radius:16px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .24s;text-align:center;text-decoration:none}
-.btn:hover{transform:translateY(-2px)}
-.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.btn-blue{background:linear-gradient(135deg,var(--blue-m),var(--blue));color:#fff;box-shadow:0 6px 20px rgba(41,82,200,.3)}
-.btn-ora{background:linear-gradient(135deg,#FFB347,var(--orange));color:#fff;box-shadow:0 6px 20px rgba(244,123,32,.3)}
-.btn-red{background:linear-gradient(135deg,#FF6B6B,var(--red));color:#fff;box-shadow:0 6px 20px rgba(212,43,43,.25)}
-.btn-wh{background:var(--white);color:var(--blue-m);border:2px solid var(--blue-l);}
-/* ROW */
-.info-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)}
-.info-row:last-child{border-bottom:none}
-.ir-lbl{font-size:13px;color:var(--ink3);font-weight:600}
-.ir-val{font-size:13px;font-weight:800;color:var(--ink)}
-/* STATUS PILL */
-.status{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:100px;font-size:11px;font-weight:800}
-.s-pending{background:#FFF8E1;color:#F57F17}
-.s-ok{background:#E8F5E9;color:#2E7D32}
-.s-err{background:var(--red-l);color:var(--red)}
-/* BOTTOM NAV */
-.bot-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--white);border-top:1.5px solid var(--line);display:flex;justify-content:space-around;align-items:center;padding:10px 0 20px;z-index:90;box-shadow:0 -4px 20px rgba(27,63,160,.08)}
-.bn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 14px;border-radius:12px;cursor:pointer;border:none;background:transparent;color:var(--ink3);font-family:'Nunito',sans-serif;transition:background .2s}
-.bn.active{color:var(--blue-m)}
-.bn:hover{background:var(--blue-l)}
-.bn-lbl{font-size:9.5px;font-weight:700;letter-spacing:.3px}
-.bn-dot{width:4px;height:4px;border-radius:50%;background:var(--orange);display:none}
-.bn.active .bn-dot{display:block}
-/* TOAST */
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);z-index:500;padding:12px 22px;border-radius:100px;font-size:13px;font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:8px;box-shadow:0 8px 32px rgba(0,0,0,.2);transition:transform .38s cubic-bezier(.34,1.56,.64,1),opacity .38s;opacity:0;max-width:calc(100vw - 40px)}
-.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-.toast.success{background:linear-gradient(135deg,#2E7D32,#43A047);color:#fff}
-.toast.error{background:linear-gradient(135deg,var(--red),#FF4444);color:#fff}
-.toast.info{background:linear-gradient(135deg,var(--blue),var(--blue-m));color:#fff}
-/* EMPTY */
-.empty{text-align:center;padding:40px 20px;color:var(--ink3)}
-.empty-ico{font-size:48px;margin-bottom:12px}
-.empty-txt{font-size:14px;font-weight:600}
-/* PLAN CARD */
-.plan-card{border-radius:16px;padding:18px;border:2px solid var(--line);background:var(--bg);margin-bottom:10px;cursor:pointer;transition:all .2s}
-.plan-card:hover,.plan-card.sel{border-color:var(--blue-m);background:var(--blue-l)}
-.pc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
-.pc-name{font-size:16px;font-weight:900;color:var(--ink)}
-.pc-ret{font-size:24px;font-weight:900;color:var(--blue-m)}
-.pc-ret small{font-size:11px;color:var(--ink3);font-weight:600}
-.pc-details{display:flex;gap:10px;flex-wrap:wrap}
-.pc-tag{font-size:10px;font-weight:800;padding:3px 10px;border-radius:100px}
-.t-blue{background:var(--blue-l);color:var(--blue)}
-.t-ora{background:var(--orange-l);color:var(--orange-d)}
-.t-red{background:var(--red-l);color:var(--red)}
-.t-green{background:#E8F5E9;color:#2E7D32}
-/* INVEST ACTIVE CARD */
-.inv-active{border-radius:16px;padding:18px;background:var(--white);border:1.5px solid var(--line);box-shadow:var(--sh);margin-bottom:12px}
-.ia-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.ia-name{font-size:16px;font-weight:900;color:var(--ink)}
-.progress-bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-bottom:6px}
-.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--blue-m),var(--orange))}
-/* AVATAR */
-.big-av{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--red));display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900;color:#fff;margin:0 auto 16px;box-shadow:0 8px 24px rgba(244,123,32,.4)}
-/* REF BOX */
-.ref-box{background:linear-gradient(135deg,var(--blue-l),#E0E8FF);border-radius:16px;padding:24px;text-align:center;border:2px dashed rgba(41,82,200,.25);margin-bottom:16px}
-.ref-code{font-size:28px;font-weight:900;color:var(--ink);letter-spacing:4px;margin:8px 0}
-.spin{width:15px;height:15px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
-@keyframes sp{to{transform:rotate(360deg)}}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;padding-bottom:calc(var(--nav-h)+24px);}
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 55% at 20% 10%,rgba(0,209,102,.12) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 85% 80%,rgba(0,201,192,.08) 0%,transparent 55%),linear-gradient(160deg,#060E0A 0%,#0A1A10 55%,#081209 100%);}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,209,102,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,209,102,.04) 1px,transparent 1px);background-size:50px 50px;}
+
+.loading-screen{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .5s,visibility .5s;}
+.loading-screen.hide{opacity:0;visibility:hidden;pointer-events:none;}
+.load-logo{font-family:'Bebas Neue',cursive;font-size:52px;letter-spacing:8px;background:linear-gradient(135deg,var(--green),var(--teal-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:pulse 1.5s ease-in-out infinite;}
+.load-bar{width:120px;height:2px;background:rgba(0,209,102,.15);border-radius:2px;overflow:hidden;}
+.load-fill{height:100%;background:linear-gradient(90deg,var(--green-d),var(--green));border-radius:2px;animation:lf 1.5s ease-in-out infinite;}
+@keyframes lf{0%{width:0%;margin-left:0}50%{width:100%;margin-left:0}100%{width:0%;margin-left:100%}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-.fade{animation:fadeUp .4s ease both}
+@keyframes bounceIn{0%{transform:scale(0);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+
+.page{position:relative;z-index:2;padding:0 16px 20px;}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;position:sticky;top:0;z-index:50;background:rgba(6,14,10,.94);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,209,102,.1);margin:0 -16px 20px;}
+.back-btn{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--green);text-decoration:none;padding:8px 14px;border:1px solid rgba(0,209,102,.3);border-radius:20px;}
+.page-title{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:4px;background:linear-gradient(135deg,var(--green),var(--teal-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.bal-pill{font-family:'Bebas Neue',cursive;font-size:14px;letter-spacing:2px;color:var(--green);background:rgba(0,209,102,.08);border:1px solid rgba(0,209,102,.2);border-radius:20px;padding:7px 12px;}
+
+/* HERO */
+.hero-card{background:linear-gradient(135deg,rgba(0,209,102,.1),rgba(0,201,192,.05));border:1.5px solid rgba(0,209,102,.2);border-radius:22px;padding:22px 20px;margin-bottom:20px;text-align:center;animation:fadeUp .4s ease both;position:relative;overflow:hidden;}
+.hero-card::before{content:'💳';position:absolute;right:-10px;top:-10px;font-size:90px;opacity:.06;}
+.hc-label{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(0,209,102,.55);margin-bottom:6px;}
+.hc-title{font-family:'Bebas Neue',cursive;font-size:36px;letter-spacing:3px;background:linear-gradient(135deg,#fff,var(--green-l),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hc-desc{font-size:13px;font-weight:300;color:var(--text2);margin-top:6px;line-height:1.6;}
+.hc-badges{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.hb{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px;border-radius:8px;border:1px solid;}
+
+/* STEPS */
+.steps-bar{display:flex;gap:0;background:rgba(0,0,0,.25);border-radius:14px;padding:4px;margin-bottom:20px;border:1px solid rgba(255,255,255,.05);animation:fadeUp .4s .05s ease both;}
+.step-tab{flex:1;padding:10px 4px;border-radius:10px;text-align:center;transition:all .25s;}
+.step-tab.active{background:rgba(0,209,102,.12);border:1px solid rgba(0,209,102,.25);}
+.step-num{font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:1px;}
+.step-tab.active .step-num{color:var(--green);}
+.step-tab:not(.active) .step-num{color:var(--text3);}
+.step-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-top:2px;}
+.step-tab.active .step-lbl{color:var(--green);}
+
+/* PANELS */
+.step-panel{display:none;animation:fadeUp .3s ease both;}
+.step-panel.active{display:block;}
+
+/* AMOUNT */
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(0,209,102,.1);border-radius:20px;padding:18px;margin-bottom:14px;}
+.field-lbl{display:block;font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,209,102,.65);margin-bottom:8px;}
+.amount-wrap{position:relative;margin-bottom:10px;}
+.amount-inp{width:100%;background:rgba(0,209,102,.04);border:1.5px solid rgba(0,209,102,.18);border-radius:14px;padding:16px 80px 16px 18px;font-family:'Bebas Neue',cursive;font-size:34px;letter-spacing:2px;color:var(--green);outline:none;transition:all .25s;}
+.amount-inp::placeholder{color:rgba(0,209,102,.18);font-size:26px;}
+.amount-inp:focus{border-color:var(--green);background:rgba(0,209,102,.08);box-shadow:0 0 0 4px rgba(0,209,102,.07);}
+.cur-tag{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;color:rgba(0,209,102,.35);}
+.min-hint{font-size:11px;font-weight:300;color:var(--text3);margin-bottom:12px;}
+.quick-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;}
+.qb{padding:9px 13px;border-radius:10px;border:1px solid rgba(0,209,102,.18);background:rgba(0,209,102,.04);color:var(--green);font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;cursor:pointer;transition:all .2s;}
+.qb:hover{background:rgba(0,209,102,.12);border-color:var(--green);}
+
+.next-btn{width:100%;padding:15px;border:none;border-radius:14px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,var(--green-d),var(--green));box-shadow:0 8px 28px rgba(0,209,102,.3);cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
+.next-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transition:left .5s;}
+.next-btn:hover::before{left:100%;}
+.next-btn:hover{transform:translateY(-2px);}
+.next-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+
+/* METHOD */
+.cat-title{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin:14px 0 10px;display:flex;align-items:center;gap:8px;}
+.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;}
+.method-opt{background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 10px;cursor:pointer;text-align:center;transition:all .25s;position:relative;}
+.method-opt:hover{border-color:rgba(0,209,102,.3);background:rgba(0,209,102,.04);transform:translateY(-2px);}
+.method-opt.selected{border-color:var(--green);background:rgba(0,209,102,.08);box-shadow:0 4px 20px rgba(0,209,102,.12);}
+.method-opt.selected::before{content:'✓';position:absolute;top:7px;right:10px;font-size:11px;color:var(--green);font-weight:900;}
+.mo-ico{font-size:28px;margin-bottom:6px;}
+.mo-name{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;color:var(--text);}
+.mo-tag{display:inline-block;margin-top:5px;font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:5px;}
+.tag-i{background:rgba(0,209,102,.1);color:var(--green);}
+.tag-c{background:rgba(160,100,255,.1);color:var(--purple);}
+
+.row-btns{display:grid;grid-template-columns:1fr 1.6fr;gap:10px;margin-top:4px;}
+.back-step{padding:14px;border-radius:14px;border:1.5px solid rgba(255,255,255,.1);background:transparent;color:var(--text3);cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+
+/* PAYMENT INSTRUCTIONS */
+.payment-instr{background:rgba(0,0,0,.3);border:1px solid rgba(0,209,102,.15);border-radius:18px;overflow:hidden;margin-bottom:16px;}
+.pi-header{background:linear-gradient(135deg,rgba(0,209,102,.12),rgba(0,201,192,.06));padding:16px 18px;border-bottom:1px solid rgba(0,209,102,.1);}
+.pi-method-name{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:2px;color:var(--green);}
+.pi-step{display:flex;align-items:flex-start;gap:12px;padding:13px 18px;border-bottom:1px solid rgba(255,255,255,.04);}
+.pi-step:last-child{border-bottom:none;}
+.pi-num{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--green-d),var(--green));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:13px;color:#fff;flex-shrink:0;margin-top:1px;}
+.pi-text{font-size:13px;font-weight:300;color:var(--text2);line-height:1.55;}
+.pi-text strong{color:var(--text);font-weight:600;}
+.pi-copy-row{display:flex;align-items:center;gap:8px;background:rgba(0,209,102,.06);border-radius:10px;padding:10px 14px;margin-top:6px;border:1px solid rgba(0,209,102,.15);}
+.pi-copy-val{font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:2px;color:var(--green);flex:1;}
+.pi-copy-btn{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);background:transparent;border:1px solid rgba(0,209,102,.3);border-radius:8px;padding:6px 12px;cursor:pointer;}
+
+/* CONFIRM FORM */
+.confirm-card{background:rgba(0,0,0,.3);border:1px solid rgba(0,209,102,.12);border-radius:20px;overflow:hidden;margin-bottom:16px;}
+.conf-row{display:flex;justify-content:space-between;align-items:center;padding:13px 18px;border-bottom:1px solid rgba(255,255,255,.04);}
+.conf-row:last-child{border-bottom:none;}
+.conf-lbl{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
+.conf-val{font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:1px;}
+
+.ref-inp{width:100%;background:rgba(0,209,102,.04);border:1.5px solid rgba(0,209,102,.14);border-radius:13px;padding:14px 16px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:300;color:var(--text);outline:none;transition:all .25s;margin-bottom:6px;}
+.ref-inp::placeholder{color:rgba(107,168,133,.3);font-size:13px;}
+.ref-inp:focus{border-color:var(--green);background:rgba(0,209,102,.07);box-shadow:0 0 0 4px rgba(0,209,102,.07);}
+
+.pending-banner{display:flex;align-items:center;gap:12px;background:rgba(255,184,48,.07);border:1px solid rgba(255,184,48,.2);border-radius:14px;padding:14px;margin-bottom:16px;}
+.pb-txt h4{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;color:var(--amber);}
+.pb-txt p{font-size:12px;font-weight:300;color:rgba(255,200,100,.65);margin-top:3px;line-height:1.5;}
+
+.submit-btn{width:100%;padding:16px;border:none;border-radius:14px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,var(--green-d),var(--green));box-shadow:0 8px 30px rgba(0,209,102,.32);cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
+.submit-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transition:left .5s;}
+.submit-btn:hover::before{left:100%;}
+.submit-btn:hover{transform:translateY(-2px);}
+.submit-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none;}
+.ld{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px;}
+
+.err-box{display:none;background:rgba(255,59,78,.08);border:1px solid rgba(255,59,78,.25);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:#FF6B7A;}
+
+/* HISTORY */
+.sec-title{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin:4px 0 12px;display:flex;align-items:center;gap:10px;}
+.sec-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(0,209,102,.2),transparent);}
+.hist-list{display:flex;flex-direction:column;gap:8px;}
+.hi{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:13px 14px;}
+.hi-ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.hi-info{flex:1;min-width:0;}
+.hi-name{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.hi-date{font-size:10px;font-weight:300;color:var(--text3);margin-top:2px;}
+.hi-right{text-align:right;flex-shrink:0;}
+.hi-amt{font-family:'Bebas Neue',cursive;font-size:19px;letter-spacing:1px;color:var(--green);}
+.hi-st{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.st-ok{color:var(--green-l);}
+.st-pend{color:var(--amber);}
+
+/* SUCCESS */
+.suc-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.94);backdrop-filter:blur(20px);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s;padding:28px;text-align:center;}
+.suc-overlay.show{opacity:1;pointer-events:all;}
+.suc-ico{font-size:80px;margin-bottom:20px;animation:bounceIn .6s ease both .1s;}
+.suc-title{font-family:'Bebas Neue',cursive;font-size:40px;letter-spacing:4px;background:linear-gradient(135deg,var(--green-l),var(--teal-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px;}
+.suc-msg{font-size:13px;font-weight:300;color:var(--text2);line-height:1.7;max-width:320px;margin-bottom:24px;}
+.suc-btn{padding:15px 40px;border-radius:14px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--green-d),var(--green));font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#fff;box-shadow:0 8px 24px rgba(0,209,102,.3);}
+
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);background:rgba(0,209,102,.9);backdrop-filter:blur(12px);color:#fff;padding:10px 22px;border-radius:100px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;z-index:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.err{background:rgba(255,59,78,.9);}
+
+.bot-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;height:var(--nav-h);background:rgba(6,14,10,.96);backdrop-filter:blur(24px);border-top:1px solid rgba(0,209,102,.1);display:grid;grid-template-columns:repeat(4,1fr);box-shadow:0 -8px 32px rgba(0,0,0,.5);}
+.nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;text-decoration:none;padding:8px 4px;position:relative;}
+.nav-item::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,var(--green),var(--teal));transform:scaleX(0);transition:transform .3s;}
+.nav-item.active::before{transform:scaleX(1);}
+.nav-item.active .nav-ico,.nav-item.active .nav-lbl{color:var(--green);}
+.nav-ico{font-size:20px;color:var(--text3);}
+.nav-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
 </style>
 </head>
 <body>
-<div class="shell">
 
-<div class="topnav">
-  <button class="back-btn" onclick="history.back()">
-    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-  </button>
-  <span class="page-title">Recharge</span>
+<div class="loading-screen" id="loader">
+  <div class="load-logo">💳 RECHARGE</div>
+  <div class="load-bar"><div class="load-fill"></div></div>
 </div>
-<div class="page-header" style="background:linear-gradient(135deg,var(--orange),var(--orange-d))">
-  <div class="ph-shine"></div>
-  <div class="ph-label" style="color:rgba(255,255,255,.65)">DÉPÔT DE FONDS</div>
-  <div class="ph-title">Recharger mon compte</div>
-  <div class="ph-sub">Solde actuel : <strong id="current-balance">-- FCFA</strong></div>
-</div>
-<div style="padding:16px 20px 0">
-  <div class="card">
-    <div class="card-title">Informations du dépôt</div>
-    <div class="f-grp">
-      <label class="f-lbl">Montant (FCFA)</label>
-      <input class="f-inp" type="number" id="dep-amount" placeholder="Ex : 50 000"/>
-    </div>
-    <div class="f-grp">
-      <label class="f-lbl">Méthode de paiement</label>
-      <select class="f-inp f-sel" id="dep-method">
-        <option value="orange_money">Orange Money</option>
-        <option value="mtn_momo">MTN MoMo</option>
-        <option value="wave">Wave</option>
-        <option value="bank">Virement Bancaire</option>
-        <option value="crypto">Crypto-monnaie</option>
-      </select>
-    </div>
-    <div class="f-grp">
-      <label class="f-lbl">Référence de transaction</label>
-      <input class="f-inp" type="text" id="dep-ref" placeholder="Numéro de transaction"/>
-    </div>
-    <div class="f-grp">
-      <label class="f-lbl">Note (optionnel)</label>
-      <input class="f-inp" type="text" id="dep-note" placeholder="Informations supplémentaires"/>
-    </div>
-    <button class="btn btn-ora" id="dep-btn" onclick="submitDep()" style="margin-top:6px"><span id="dep-lbl">Soumettre la recharge 💳</span></button>
-  </div>
-  <div class="card" style="background:var(--orange-l);border-color:rgba(244,123,32,.25)">
-    <div style="font-size:13px;color:var(--ink2);font-weight:600;line-height:1.7">
-      ℹ️ <strong>Instructions :</strong><br>
-      1. Effectuez votre virement au numéro indiqué par l'administrateur<br>
-      2. Notez le numéro de transaction<br>
-      3. Remplissez ce formulaire et soumettez<br>
-      4. Votre compte sera crédité dans les <strong>24 heures</strong>
-    </div>
-  </div>
+<div class="bg-mesh"></div><div class="bg-grid"></div>
+<div class="toast" id="toast"></div>
+
+<!-- SUCCESS -->
+<div class="suc-overlay" id="suc-overlay">
+  <div class="suc-ico">🎉</div>
+  <div class="suc-title">Demande envoyée !</div>
+  <div class="suc-msg" id="suc-msg">Votre demande de recharge a été enregistrée. Votre solde sera crédité après vérification du paiement.</div>
+  <button class="suc-btn" onclick="window.location.href='dashboard.html'">Retour au Dashboard →</button>
 </div>
 
+<div class="page">
+
+  <div class="topbar">
+    <a href="dashboard.html" class="back-btn">← Accueil</a>
+    <div class="page-title">💳 RECHARGE</div>
+    <div class="bal-pill">💰 <span id="bal-display">…</span> F</div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero-card">
+    <div class="hc-label">Créditer votre compte SYLLA</div>
+    <div class="hc-title">RECHARGER MON COMPTE</div>
+    <div class="hc-desc">Déposez des fonds pour commencer à investir. Votre solde est crédité en moins de <strong>2 heures</strong> après confirmation du paiement.</div>
+    <div class="hc-badges">
+      <div class="hb" style="border-color:rgba(0,209,102,.3);color:var(--green);background:rgba(0,209,102,.08)">📱 Mobile Money</div>
+      <div class="hb" style="border-color:rgba(255,184,48,.3);color:var(--amber);background:rgba(255,184,48,.08)">💳 Carte bancaire</div>
+      <div class="hb" style="border-color:rgba(160,100,255,.3);color:var(--purple);background:rgba(160,100,255,.08)">₿ Crypto</div>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps-bar">
+    <div class="step-tab active" id="tab-1"><div class="step-num">1</div><div class="step-lbl">Montant</div></div>
+    <div class="step-tab" id="tab-2"><div class="step-num">2</div><div class="step-lbl">Méthode</div></div>
+    <div class="step-tab" id="tab-3"><div class="step-num">3</div><div class="step-lbl">Paiement</div></div>
+  </div>
+
+  <!-- ══ STEP 1 — AMOUNT ══ -->
+  <div class="step-panel active" id="panel-1">
+    <div class="card">
+      <label class="field-lbl">Montant à recharger</label>
+      <div class="amount-wrap">
+        <input class="amount-inp" type="number" id="amount-inp" placeholder="5 000" min="1000" oninput="validateAmt()">
+        <span class="cur-tag">FCFA</span>
+      </div>
+      <div class="min-hint">⚡ Minimum <strong style="color:var(--green)">1 000 FCFA</strong> · Aucun frais de dépôt</div>
+      <div class="quick-row">
+        <button class="qb" onclick="setAmt(2000)">2 000</button>
+        <button class="qb" onclick="setAmt(5000)">5 000</button>
+        <button class="qb" onclick="setAmt(10000)">10 000</button>
+        <button class="qb" onclick="setAmt(25000)">25 000</button>
+        <button class="qb" onclick="setAmt(50000)">50 000</button>
+      </div>
+    </div>
+    <button class="next-btn" id="btn-next1" onclick="goStep(2)" disabled>Choisir la méthode →</button>
+  </div>
+
+  <!-- ══ STEP 2 — METHOD ══ -->
+  <div class="step-panel" id="panel-2">
+
+    <div class="cat-title"><span>📱</span> Mobile Money</div>
+    <div class="method-grid">
+      <div class="method-opt selected" onclick="selectM('wave',this,'🌊','Wave Money','CI · Sénégal · Mali')">
+        <div class="mo-ico">🌊</div><div class="mo-name">Wave</div><div class="mo-tag tag-i">Instantané</div>
+      </div>
+      <div class="method-opt" onclick="selectM('orange',this,'🟠','Orange Money','CI · SN · BF · ML')">
+        <div class="mo-ico">🟠</div><div class="mo-name">Orange Money</div><div class="mo-tag tag-i">Instantané</div>
+      </div>
+      <div class="method-opt" onclick="selectM('mtn',this,'💛','MTN MoMo','CI · Ghana · Bénin')">
+        <div class="mo-ico">💛</div><div class="mo-name">MTN MoMo</div><div class="mo-tag tag-i">Instantané</div>
+      </div>
+      <div class="method-opt" onclick="selectM('moov',this,'🔵','Moov Money','CI · BJ · TG · ML')">
+        <div class="mo-ico">🔵</div><div class="mo-name">Moov Money</div><div class="mo-tag tag-i">Instantané</div>
+      </div>
+    </div>
+
+    <div class="cat-title" style="margin-top:14px"><span>💳</span> Carte Bancaire</div>
+    <div class="method-grid">
+      <div class="method-opt" onclick="selectM('visa',this,'💳','Visa / Mastercard','Toutes banques')">
+        <div class="mo-ico">💳</div><div class="mo-name">Visa / Mastercard</div><div class="mo-tag tag-i">Rapide</div>
+      </div>
+      <div class="method-opt" onclick="selectM('bank',this,'🏦','Virement Bancaire','UBA · Ecobank · CBI')">
+        <div class="mo-ico">🏦</div><div class="mo-name">Virement Banque</div><div class="mo-tag tag-i">1-2h</div>
+      </div>
+    </div>
+
+    <div class="cat-title" style="margin-top:14px"><span>₿</span> Crypto-monnaie</div>
+    <div class="method-grid">
+      <div class="method-opt" onclick="selectM('usdt',this,'₮','USDT TRC-20','Tether · Tron')">
+        <div class="mo-ico">₮</div><div class="mo-name">USDT TRC-20</div><div class="mo-tag tag-c">Crypto</div>
+      </div>
+      <div class="method-opt" onclick="selectM('btc',this,'₿','Bitcoin (BTC)','Bitcoin Network')">
+        <div class="mo-ico">₿</div><div class="mo-name">Bitcoin</div><div class="mo-tag tag-c">Crypto</div>
+      </div>
+    </div>
+
+    <div class="row-btns" style="margin-top:18px">
+      <button class="back-step" onclick="goStep(1)">← Retour</button>
+      <button class="next-btn" style="margin:0" onclick="goStep(3)">Voir instructions →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 3 — PAYMENT INSTRUCTIONS ══ -->
+  <div class="step-panel" id="panel-3">
+
+    <!-- Dynamic payment instructions -->
+    <div class="payment-instr" id="payment-instr"></div>
+
+    <!-- Confirm form -->
+    <div class="card">
+      <label class="field-lbl">Numéro / Référence du paiement effectué</label>
+      <input class="ref-inp" type="text" id="payment-ref" placeholder="Ex: TXN123456 ou numéro d'envoi">
+      <div style="font-size:11px;font-weight:300;color:var(--text3);margin-bottom:16px">Entrez la référence de transaction reçue après votre paiement</div>
+    </div>
+
+    <div class="confirm-card">
+      <div class="conf-row"><div class="conf-lbl">Montant rechargé</div><div class="conf-val" style="color:var(--green)" id="c-amount">—</div></div>
+      <div class="conf-row"><div class="conf-lbl">Méthode</div><div class="conf-val" style="color:var(--teal)" id="c-method">—</div></div>
+      <div class="conf-row"><div class="conf-lbl">Frais de dépôt</div><div class="conf-val" style="color:var(--green-l)">GRATUIT 🎉</div></div>
+      <div class="conf-row"><div class="conf-lbl">Délai de crédit</div><div class="conf-val" style="color:var(--amber);font-size:18px">MOINS DE 2H</div></div>
+    </div>
+
+    <div class="pending-banner">
+      <span style="font-size:24px">⏳</span>
+      <div class="pb-txt">
+        <h4>Traitement manuel rapide</h4>
+        <p>Notre équipe vérifie votre paiement et crédite votre compte dans les 2 heures. Vous serez notifié.</p>
+      </div>
+    </div>
+
+    <div class="err-box" id="err-box"></div>
+
+    <div class="row-btns">
+      <button class="back-step" onclick="goStep(2)">← Retour</button>
+      <button class="submit-btn" style="margin:0" id="submit-btn" onclick="submitRecharge()">✅ Confirmer le dépôt</button>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="sec-title" style="margin-top:20px">Historique des recharges</div>
+  <div class="hist-list" id="hist-list">
+    <div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">Chargement…</div>
+  </div>
+
 </div>
+
 <nav class="bot-nav">
-  <button class="bn" onclick="location.href='dashboard.html'">
-    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-    <span class="bn-lbl">Accueil</span><div class="bn-dot"></div>
-  </button>
-  <button class="bn" onclick="location.href='plan.html'">
-    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-    <span class="bn-lbl">Investir</span><div class="bn-dot"></div>
-  </button>
-  <button class="bn" onclick="location.href='actif.html'">
-    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8z"/><path d="M16 12h.01"/></svg>
-    <span class="bn-lbl">Portefeuille</span><div class="bn-dot"></div>
-  </button>
-  <button class="bn" onclick="location.href='profil.html'">
-    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    <span class="bn-lbl">Profil</span><div class="bn-dot"></div>
-  </button>
+  <a href="dashboard.html" class="nav-item active"><span class="nav-ico">🏠</span><span class="nav-lbl">Accueil</span></a>
+  <a href="plan.html" class="nav-item"><span class="nav-ico">🚀</span><span class="nav-lbl">Plans</span></a>
+  <a href="retrait.html" class="nav-item"><span class="nav-ico">💸</span><span class="nav-lbl">Retrait</span></a>
+  <a href="profil.html" class="nav-item"><span class="nav-ico">👤</span><span class="nav-lbl">Profil</span></a>
 </nav>
-<div id="toast" class="toast"><span id="t-msg"></span></div>
-<script>
 
+<script>
 const{createClient}=supabase;
 const sb=createClient('https://fqiotqrraobmsrcyewsi.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc');
-let user=null,profile=null;
-async function checkAuth(){
-  const{data:{session}}=await sb.auth.getSession();
-  if(!session){window.location.href='index.html';return null;}
-  user=session.user;
-  const{data}=await sb.from('profiles').select('*').eq('id',user.id).single();
-  profile=data;
-  return data;
-}
-function fmt(n){return(n||0).toLocaleString('fr-FR')}
-let tTimer;
-function toast(msg,type='success'){clearTimeout(tTimer);const t=document.getElementById('toast');document.getElementById('t-msg').textContent=msg;t.className=`toast ${type} show`;tTimer=setTimeout(()=>t.classList.remove('show'),4000)}
 
+/* ═══ PAYMENT CONFIGS ═══ */
+const PAYMENT_INFO={
+  wave:{
+    number:'+225 07 00 00 00 00',
+    name:'SYLLA PLATEFORME',
+    steps:[
+      {t:'Ouvrez votre application <strong>Wave</strong>',d:''},
+      {t:'Cliquez sur <strong>Envoyer de l\'argent</strong>',d:''},
+      {t:'Entrez le numéro Wave SYLLA',d:'',copy:'+225 07 00 00 00 00'},
+      {t:'Entrez le montant : <strong id="wave-amt">—</strong>',d:''},
+      {t:'Validez et notez la <strong>référence de transaction</strong>',d:'Vous en aurez besoin à l\'étape suivante'},
+    ]
+  },
+  orange:{
+    number:'+225 07 77 77 77 77',
+    name:'SYLLA PLATEFORME',
+    steps:[
+      {t:'Ouvrez <strong>Orange Money</strong> ou composez <strong>#144#</strong>',d:''},
+      {t:'Sélectionnez <strong>Transfert d\'argent</strong>',d:''},
+      {t:'Entrez le numéro bénéficiaire',d:'',copy:'+225 07 77 77 77 77'},
+      {t:'Entrez le montant et confirmez avec votre code PIN',d:''},
+      {t:'Notez la <strong>référence de transaction</strong> reçue par SMS',d:''},
+    ]
+  },
+  mtn:{
+    number:'+225 05 55 55 55 55',
+    name:'SYLLA PLATEFORME',
+    steps:[
+      {t:'Ouvrez <strong>MTN MoMo</strong> ou composez <strong>*133#</strong>',d:''},
+      {t:'Sélectionnez <strong>Send Money</strong>',d:''},
+      {t:'Entrez le numéro MTN SYLLA',d:'',copy:'+225 05 55 55 55 55'},
+      {t:'Confirmez avec votre PIN et notez la référence',d:''},
+    ]
+  },
+  moov:{
+    number:'+225 01 11 11 11 11',
+    name:'SYLLA PLATEFORME',
+    steps:[
+      {t:'Ouvrez <strong>Moov Money</strong> ou composez <strong>#155#</strong>',d:''},
+      {t:'Sélectionnez <strong>Transfert</strong>',d:''},
+      {t:'Numéro Moov SYLLA',d:'',copy:'+225 01 11 11 11 11'},
+      {t:'Entrez le montant, confirmez et notez la référence',d:''},
+    ]
+  },
+  visa:{
+    number:'Via lien de paiement sécurisé',
+    steps:[
+      {t:'Cliquez sur le bouton <strong>Payer par carte</strong> ci-dessous',d:'Vous serez redirigé vers notre passerelle sécurisée'},
+      {t:'Entrez vos informations de carte Visa/Mastercard',d:'Connexion SSL 256-bit sécurisée'},
+      {t:'Validez le paiement et copiez la <strong>référence de confirmation</strong>',d:''},
+    ]
+  },
+  bank:{
+    number:'CI00 SYLLA 0001 0001',
+    name:'SYLLA INVESTMENTS SA',
+    steps:[
+      {t:'Effectuez un virement vers notre compte',d:'UBA / Ecobank / CBI acceptés',copy:'CI00 SYLLA 0001 0001'},
+      {t:'Nom du bénéficiaire : <strong>SYLLA INVESTMENTS SA</strong>',d:''},
+      {t:'Motif du virement : <strong>RECHARGE + votre email</strong>',d:''},
+      {t:'Envoyez-nous la preuve de virement',d:'Le crédit est effectué sous 1-2 heures'},
+    ]
+  },
+  usdt:{
+    number:'TRC20_SYLLA_WALLET_ADDRESS',
+    steps:[
+      {t:'Ouvrez votre wallet crypto (Trust Wallet, Binance, etc.)',d:''},
+      {t:'Sélectionnez <strong>USDT sur le réseau TRC-20</strong>',d:'⚠️ Vérifiez que le réseau est bien TRC-20, pas ERC-20'},
+      {t:'Envoyez vers l\'adresse SYLLA TRC-20',d:'',copy:'TRC20_SYLLA_WALLET_ADDRESS'},
+      {t:'Attendez 1-3 confirmations et copiez le <strong>hash de transaction</strong>',d:''},
+    ]
+  },
+  btc:{
+    number:'bc1qSYLLA_BTC_ADDRESS_HERE',
+    steps:[
+      {t:'Ouvrez votre wallet Bitcoin',d:''},
+      {t:'Envoyez Bitcoin vers l\'adresse SYLLA',d:'',copy:'bc1qSYLLA_BTC_ADDRESS_HERE'},
+      {t:'Attendez 1+ confirmation réseau',d:'Le crédit est effectué après confirmation'},
+      {t:'Copiez le <strong>hash de transaction</strong> (TXID)',d:''},
+    ]
+  },
+};
+
+let cu=null,userBalance=0,selM={id:'wave',ico:'🌊',name:'Wave Money'};
+let toastT=null;
 
 async function init(){
-  const data=await checkAuth();
-  if(data)document.getElementById('current-balance').textContent=fmt(data.balance||0)+' FCFA';
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='index.html';return;}
+  cu=session.user;
+  await loadBalance();
+  await loadHistory();
+  document.getElementById('loader').classList.add('hide');
 }
-async function submitDep(){
-  const amount=parseFloat(document.getElementById('dep-amount').value);
-  if(!amount||amount<=0){toast('Montant invalide','error');return;}
-  const btn=document.getElementById('dep-btn');
-  btn.disabled=true;document.getElementById('dep-lbl').innerHTML='<span class="spin"></span>';
-  try{
-    const{error}=await sb.from('transactions').insert({user_id:user.id,type:'deposit',amount,method:document.getElementById('dep-method').value,reference:document.getElementById('dep-ref').value.trim(),note:document.getElementById('dep-note').value.trim(),status:'pending'});
-    if(error)throw error;
-    toast('Demande soumise ! Validation sous 24h ✅','success');
-    setTimeout(()=>location.href='historique.html',1800);
-  }catch(e){toast(e.message||'Erreur','error');}
-  btn.disabled=false;document.getElementById('dep-lbl').textContent='Soumettre la recharge 💳';
-}
-init();
 
+async function loadBalance(){
+  let total=1000;
+  try{
+    const{data}=await sb.from('transactions').select('amount,type').eq('user_id',cu.id);
+    if(data?.length){total=0;data.forEach(t=>{
+      const a=Number(t.amount);
+      if(['bonus_bienvenue','depot','gain','referral','coffre_retrait'].includes(t.type))total+=a;
+      if(['investissement','coffre_depot'].includes(t.type))total-=a;
+      if(t.type==='retrait'&&t.status!=='pending'&&t.status!=='rejected')total-=a;
+    });}
+  }catch(e){}
+  userBalance=Math.max(0,total);
+  document.getElementById('bal-display').textContent=fmt(userBalance);
+}
+
+async function loadHistory(){
+  const list=document.getElementById('hist-list');
+  try{
+    const{data}=await sb.from('transactions').select('*').eq('user_id',cu.id).eq('type','depot').order('created_at',{ascending:false}).limit(10);
+    if(!data?.length){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">💳 Aucune recharge effectuée</div>';return;}
+    list.innerHTML=data.map(t=>{
+      const d=new Date(t.created_at);
+      const ds=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+      const stCls=t.status==='pending'?'st-pend':'st-ok';
+      const stTxt=t.status==='pending'?'⏳ En vérification':'✓ Crédité';
+      return `<div class="hi"><div class="hi-ico" style="background:rgba(0,209,102,.08)">💳</div><div class="hi-info"><div class="hi-name">${t.label||'Recharge'}</div><div class="hi-date">${ds}</div></div><div class="hi-right"><div class="hi-amt">+${fmt(t.amount)} F</div><div class="hi-st ${stCls}">${stTxt}</div></div></div>`;
+    }).join('');
+  }catch(e){list.innerHTML='<div style="text-align:center;padding:16px;color:var(--text3)">Historique indisponible</div>';}
+}
+
+function setAmt(v){document.getElementById('amount-inp').value=v;validateAmt();}
+function validateAmt(){
+  const v=Number(document.getElementById('amount-inp').value)||0;
+  document.getElementById('btn-next1').disabled=v<1000;
+}
+
+function selectM(id,el,ico,name,sub){
+  selM={id,ico,name,sub};
+  document.querySelectorAll('.method-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function buildPaymentInstr(amount){
+  const info=PAYMENT_INFO[selM.id]||PAYMENT_INFO.wave;
+  const stepsHtml=info.steps.map((s,i)=>{
+    let html=`<div class="pi-step"><div class="pi-num">${i+1}</div><div class="pi-text"><span>${s.t.replace('—',fmt(amount)+' FCFA')}</span>`;
+    if(s.d)html+=`<br><span style="font-size:11px;color:var(--text3)">${s.d}</span>`;
+    if(s.copy)html+=`<div class="pi-copy-row"><div class="pi-copy-val">${s.copy}</div><button class="pi-copy-btn" onclick="copyText('${s.copy}')">📋 Copier</button></div>`;
+    html+=`</div></div>`;
+    return html;
+  }).join('');
+  return `<div class="pi-header"><div class="pi-method-name">${selM.ico} ${selM.name}</div></div>${stepsHtml}`;
+}
+
+function copyText(txt){navigator.clipboard.writeText(txt).then(()=>showToast('✓ Copié !'));}
+
+function goStep(n){
+  if(n===3){
+    const amount=Number(document.getElementById('amount-inp').value)||0;
+    if(amount<1000){showToast('Minimum 1 000 FCFA',true);return;}
+    document.getElementById('payment-instr').innerHTML=buildPaymentInstr(amount);
+    document.getElementById('c-amount').textContent=fmt(amount)+' FCFA';
+    document.getElementById('c-method').textContent=selM.ico+' '+selM.name;
+    document.getElementById('err-box').style.display='none';
+    document.getElementById('submit-btn').disabled=false;
+    document.getElementById('submit-btn').innerHTML='✅ Confirmer le dépôt';
+  }
+  document.querySelectorAll('.step-panel').forEach((p,i)=>p.classList.toggle('active',i===n-1));
+  document.querySelectorAll('.step-tab').forEach((t,i)=>t.classList.toggle('active',i===n-1));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+async function submitRecharge(){
+  const amount=Number(document.getElementById('amount-inp').value)||0;
+  const ref=document.getElementById('payment-ref').value.trim();
+  const btn=document.getElementById('submit-btn');
+  const errBox=document.getElementById('err-box');
+  errBox.style.display='none';
+  if(amount<1000){errBox.style.display='block';errBox.textContent='Montant minimum 1 000 FCFA.';return;}
+  if(!ref){errBox.style.display='block';errBox.textContent='Entrez la référence de votre paiement.';return;}
+  btn.disabled=true;btn.innerHTML='<span class="ld"></span>Envoi en cours…';
+  try{
+    await sb.from('transactions').insert({
+      user_id:cu.id,type:'depot',
+      label:`Recharge (${selM.name}) — Réf: ${ref}`,
+      amount:amount,status:'pending',
+      created_at:new Date().toISOString()
+    });
+    document.getElementById('suc-msg').textContent=`Votre demande de ${fmt(amount)} FCFA via ${selM.name} a été enregistrée (Réf: ${ref}). Votre compte sera crédité sous 2 heures après vérification.`;
+    document.getElementById('suc-overlay').classList.add('show');
+    await loadHistory();
+  }catch(err){
+    btn.disabled=false;btn.innerHTML='✅ Confirmer le dépôt';
+    errBox.style.display='block';
+    errBox.textContent='❌ Erreur : '+(err.message||'Réessayez.');
+  }
+}
+
+function fmt(n){return Number(n).toLocaleString('fr-FR');}
+function showToast(msg,err=false){
+  const t=document.getElementById('toast');t.textContent=msg;
+  err?t.classList.add('err'):t.classList.remove('err');
+  t.classList.add('show');clearTimeout(toastT);
+  toastT=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+init();
 </script>
 </body>
 </html>
