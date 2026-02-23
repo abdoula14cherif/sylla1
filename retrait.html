@@ -11,266 +11,190 @@
   --green:#00D166;--green-l:#4ADE80;--green-d:#009948;
   --teal:#00C9C0;--teal-l:#00EDDE;
   --orange:#FF7A35;--gold:#F5C842;--red:#FF3B4E;
-  --amber:#FFB830;
+  --amber:#FFB830;--purple:#A064FF;
   --bg:#060E0A;--bg2:#0A1A10;
   --text:#F0FFF5;--text2:#6BA885;--text3:#2E5A40;
   --nav-h:70px;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;padding-bottom:calc(var(--nav-h)+20px);}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;padding-bottom:calc(var(--nav-h)+24px);}
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 55% at 80% 5%,rgba(0,209,102,.10) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 5% 85%,rgba(0,201,192,.07) 0%,transparent 55%),linear-gradient(160deg,#060E0A 0%,#0A1A10 55%,#081209 100%);}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,209,102,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,209,102,.04) 1px,transparent 1px);background-size:50px 50px;}
 
-.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(ellipse 60% 55% at 80% 5%, rgba(0,209,102,.10) 0%,transparent 60%),
-    radial-gradient(ellipse 50% 60% at 5% 85%, rgba(0,201,192,.07) 0%,transparent 55%),
-    linear-gradient(160deg,#060E0A 0%,#0A1A10 55%,#081209 100%);}
-.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:linear-gradient(rgba(0,209,102,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,209,102,.04) 1px,transparent 1px);
-  background-size:50px 50px;}
-
-/* LOADING */
 .loading-screen{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .5s,visibility .5s;}
 .loading-screen.hide{opacity:0;visibility:hidden;pointer-events:none;}
 .load-logo{font-family:'Bebas Neue',cursive;font-size:52px;letter-spacing:8px;background:linear-gradient(135deg,var(--green),var(--teal-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:pulse 1.5s ease-in-out infinite;}
 .load-bar{width:120px;height:2px;background:rgba(0,209,102,.15);border-radius:2px;overflow:hidden;}
 .load-fill{height:100%;background:linear-gradient(90deg,var(--green-d),var(--green));border-radius:2px;animation:lf 1.5s ease-in-out infinite;}
-@keyframes lf{0%{width:0%;margin-left:0;}50%{width:100%;margin-left:0;}100%{width:0%;margin-left:100%;}}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-@keyframes spin{to{transform:rotate(360deg);}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+@keyframes lf{0%{width:0%;margin-left:0}50%{width:100%;margin-left:0}100%{width:0%;margin-left:100%}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounceIn{0%{transform:scale(0);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
 
 .page{position:relative;z-index:2;padding:0 16px 20px;}
 
-/* TOPBAR */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;position:sticky;top:0;z-index:50;background:rgba(6,14,10,.94);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,209,102,.1);margin:0 -16px 20px;}
 .back-btn{display:flex;align-items:center;gap:8px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--green);text-decoration:none;padding:8px 14px;border:1px solid rgba(0,209,102,.3);border-radius:20px;transition:all .2s;}
 .back-btn:hover{background:rgba(0,209,102,.08);}
 .page-title{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:4px;background:linear-gradient(135deg,var(--green),var(--teal-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.clock-pill{display:flex;align-items:center;gap:6px;background:rgba(0,209,102,.08);border:1px solid rgba(0,209,102,.2);border-radius:20px;padding:7px 14px;font-family:'Bebas Neue',cursive;font-size:14px;letter-spacing:2px;color:var(--green);}
+.clock-pill{font-family:'Bebas Neue',cursive;font-size:13px;letter-spacing:2px;color:var(--green);background:rgba(0,209,102,.08);border:1px solid rgba(0,209,102,.2);border-radius:20px;padding:7px 12px;}
 
-/* ══ WINDOW STATUS BANNER ══ */
-.window-banner{
-  border-radius:20px;padding:18px 20px;margin-bottom:20px;
-  position:relative;overflow:hidden;
-  animation:fadeUp .5s ease both;
-}
-.wb-open{
-  background:linear-gradient(135deg,rgba(0,209,102,.12),rgba(0,201,192,.06));
-  border:1.5px solid rgba(0,209,102,.3);
-}
-.wb-closed{
-  background:linear-gradient(135deg,rgba(255,59,78,.1),rgba(255,122,53,.06));
-  border:1.5px solid rgba(255,59,78,.25);
-}
-.wb-top{display:flex;align-items:center;gap:14px;}
-.wb-ico{font-size:36px;flex-shrink:0;}
-.wb-info h2{font-family:'Bebas Neue',cursive;font-size:24px;letter-spacing:3px;}
-.wb-info p{font-size:13px;font-weight:300;margin-top:3px;line-height:1.5;}
-.wb-open .wb-info h2{color:var(--green);}
-.wb-open .wb-info p{color:var(--text2);}
-.wb-closed .wb-info h2{color:var(--red);}
-.wb-closed .wb-info p{color:rgba(255,130,100,.7);}
+/* BANNER */
+.window-banner{border-radius:20px;padding:16px 18px;margin-bottom:16px;animation:fadeUp .4s ease both;}
+.wb-open{background:linear-gradient(135deg,rgba(0,209,102,.1),rgba(0,201,192,.05));border:1.5px solid rgba(0,209,102,.28);}
+.wb-closed{background:linear-gradient(135deg,rgba(255,59,78,.08),rgba(255,122,53,.04));border:1.5px solid rgba(255,59,78,.22);}
+.wb-row{display:flex;align-items:center;gap:12px;}
+.wb-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.wb-open .wb-dot{background:var(--green);box-shadow:0 0 12px var(--green);animation:pulse 1.5s ease-in-out infinite;}
+.wb-closed .wb-dot{background:var(--red);box-shadow:0 0 10px var(--red);}
+.wb-title{font-family:'Bebas Neue',cursive;font-size:19px;letter-spacing:2px;}
+.wb-open .wb-title{color:var(--green);}
+.wb-closed .wb-title{color:var(--red);}
+.wb-desc{font-size:12px;font-weight:300;margin-top:3px;line-height:1.5;}
+.wb-open .wb-desc{color:var(--text2);}
+.wb-closed .wb-desc{color:rgba(255,130,100,.7);}
 
-/* Progress bar for window */
-.window-prog{margin-top:14px;}
-.wp-bar{height:6px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;margin-bottom:6px;}
-.wp-fill{height:100%;border-radius:4px;transition:width .5s ease;}
-.wb-open .wp-fill{background:linear-gradient(90deg,var(--green-d),var(--green),var(--teal));}
-.wb-closed .wp-fill{background:linear-gradient(90deg,rgba(255,59,78,.4),rgba(255,59,78,.2));}
-.wp-labels{display:flex;justify-content:space-between;}
-.wp-lbl{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
+/* BALANCE */
+.balance-card{background:linear-gradient(135deg,rgba(0,209,102,.09),rgba(0,201,192,.04));border:1.5px solid rgba(0,209,102,.18);border-radius:20px;padding:18px 20px;margin-bottom:20px;animation:fadeUp .4s .05s ease both;}
+.bc-lbl{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(0,209,102,.55);margin-bottom:5px;}
+.bc-amount{font-family:'Bebas Neue',cursive;font-size:48px;letter-spacing:3px;line-height:1;background:linear-gradient(135deg,#fff,var(--green-l),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.bc-cur{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:600;color:var(--green);margin-left:4px;}
+.bc-stats{display:flex;gap:0;margin-top:14px;background:rgba(0,0,0,.2);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.04);}
+.bcs{flex:1;padding:10px 6px;text-align:center;border-right:1px solid rgba(255,255,255,.05);}
+.bcs:last-child{border-right:none;}
+.bcs-v{font-family:'Bebas Neue',cursive;font-size:17px;letter-spacing:1px;}
+.bcs-l{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-top:3px;}
 
-/* Countdown to next window */
-.next-window{
-  display:flex;align-items:center;gap:10px;
-  background:rgba(255,184,48,.06);border:1px solid rgba(255,184,48,.18);
-  border-radius:12px;padding:11px 16px;margin-bottom:20px;
-  animation:fadeUp .5s .05s ease both;
-}
-.nw-lbl{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--amber);flex:1;}
-.nw-timer{font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:3px;color:var(--gold);}
+/* STEPS */
+.steps-bar{display:flex;gap:0;background:rgba(0,0,0,.25);border-radius:14px;padding:4px;margin-bottom:20px;border:1px solid rgba(255,255,255,.05);animation:fadeUp .4s .1s ease both;}
+.step-tab{flex:1;padding:10px 4px;border-radius:10px;text-align:center;cursor:pointer;transition:all .25s;}
+.step-tab.active{background:rgba(0,209,102,.12);border:1px solid rgba(0,209,102,.25);}
+.step-num{font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:1px;}
+.step-tab.active .step-num{color:var(--green);}
+.step-tab:not(.active) .step-num{color:var(--text3);}
+.step-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-top:2px;}
+.step-tab.active .step-lbl{color:var(--green);}
 
-/* ══ BALANCE CARD ══ */
-.balance-card{
-  background:linear-gradient(135deg,rgba(0,209,102,.1),rgba(0,201,192,.05));
-  border:1.5px solid rgba(0,209,102,.2);
-  border-radius:20px;padding:18px 20px;margin-bottom:20px;
-  animation:fadeUp .5s .1s ease both;
-}
-.bc-label{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(0,209,102,.6);margin-bottom:6px;}
-.bc-amount{font-family:'Bebas Neue',cursive;font-size:46px;letter-spacing:3px;line-height:1;background:linear-gradient(135deg,#fff,var(--green-l),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 4px 16px rgba(0,209,102,.25));}
-.bc-currency{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:500;color:var(--green);margin-left:4px;vertical-align:bottom;}
-.bc-sub{display:flex;gap:0;margin-top:14px;background:rgba(0,0,0,.2);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.05);}
-.bcs-item{flex:1;padding:10px 8px;text-align:center;border-right:1px solid rgba(255,255,255,.05);}
-.bcs-item:last-child{border-right:none;}
-.bcs-val{font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:1px;}
-.bcs-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-top:3px;}
+/* PANELS */
+.step-panel{display:none;animation:fadeUp .3s ease both;}
+.step-panel.active{display:block;}
 
-/* ══ FORM ══ */
-.form-card{
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(0,209,102,.1);
-  border-radius:22px;padding:20px;
-  margin-bottom:18px;
-  animation:fadeUp .5s .15s ease both;
-}
-.fc-title{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
-.fc-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(0,209,102,.2),transparent);}
-
-.field-lbl{display:block;font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,209,102,.7);margin-bottom:8px;}
-
-/* Amount input */
-.amount-wrap{position:relative;margin-bottom:14px;}
-.amount-inp{
-  width:100%;
-  background:rgba(0,209,102,.04);
-  border:1.5px solid rgba(0,209,102,.18);
-  border-radius:14px;
-  padding:16px 80px 16px 18px;
-  font-family:'Bebas Neue',cursive;font-size:32px;letter-spacing:2px;
-  color:var(--green);outline:none;transition:all .25s;
-}
-.amount-inp::placeholder{color:rgba(0,209,102,.2);font-size:26px;}
-.amount-inp:focus{border-color:var(--green);background:rgba(0,209,102,.08);box-shadow:0 0 0 4px rgba(0,209,102,.08);}
-.amount-inp:disabled{opacity:.4;cursor:not-allowed;}
-.cur-tag{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;color:rgba(0,209,102,.4);}
-.min-hint{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
-
-/* Quick amounts */
+/* AMOUNT */
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(0,209,102,.1);border-radius:20px;padding:18px;margin-bottom:14px;}
+.field-lbl{display:block;font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,209,102,.65);margin-bottom:8px;}
+.amount-wrap{position:relative;margin-bottom:10px;}
+.amount-inp{width:100%;background:rgba(0,209,102,.04);border:1.5px solid rgba(0,209,102,.18);border-radius:14px;padding:16px 80px 16px 18px;font-family:'Bebas Neue',cursive;font-size:34px;letter-spacing:2px;color:var(--green);outline:none;transition:all .25s;}
+.amount-inp::placeholder{color:rgba(0,209,102,.18);font-size:26px;}
+.amount-inp:focus{border-color:var(--green);background:rgba(0,209,102,.08);box-shadow:0 0 0 4px rgba(0,209,102,.07);}
+.cur-tag{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;color:rgba(0,209,102,.35);}
+.min-hint{font-size:11px;font-weight:300;color:var(--text3);margin-bottom:12px;}
 .quick-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
-.qb{padding:9px 14px;border-radius:10px;border:1px solid rgba(0,209,102,.2);background:rgba(0,209,102,.05);color:var(--green);font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;cursor:pointer;transition:all .2s;}
+.qb{padding:9px 13px;border-radius:10px;border:1px solid rgba(0,209,102,.18);background:rgba(0,209,102,.04);color:var(--green);font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;cursor:pointer;transition:all .2s;}
 .qb:hover{background:rgba(0,209,102,.12);border-color:var(--green);}
-.qb:disabled{opacity:.3;cursor:not-allowed;}
-.qb.max{background:rgba(245,200,66,.08);border-color:rgba(245,200,66,.25);color:var(--gold);}
-.qb.max:hover{background:rgba(245,200,66,.15);}
+.qb.max-btn{background:rgba(245,200,66,.07);border-color:rgba(245,200,66,.22);color:var(--gold);}
+.qb.max-btn:hover{background:rgba(245,200,66,.14);}
 
-/* Method selector */
-.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
-.method-opt{
-  background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.08);
-  border-radius:14px;padding:14px 12px;cursor:pointer;
-  text-align:center;transition:all .25s;position:relative;
-}
-.method-opt:hover{border-color:rgba(0,209,102,.3);background:rgba(0,209,102,.04);}
-.method-opt.selected{border-color:var(--green);background:rgba(0,209,102,.08);box-shadow:0 0 16px rgba(0,209,102,.08);}
-.method-opt.selected::before{content:'✓';position:absolute;top:6px;right:10px;font-size:11px;color:var(--green);font-weight:700;}
-.mo-ico{font-size:26px;margin-bottom:6px;}
-.mo-name{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;color:var(--text);}
-.mo-sub{font-size:10px;font-weight:300;color:var(--text3);margin-top:2px;}
+/* FEE */
+.fee-card{background:linear-gradient(135deg,rgba(255,122,53,.07),rgba(0,0,0,.2));border:1px solid rgba(255,122,53,.18);border-radius:16px;padding:14px 16px;margin-bottom:16px;}
+.fee-title{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,122,53,.7);margin-bottom:10px;}
+.fee-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.fee-row:last-child{border-bottom:none;margin-top:4px;padding-top:10px;}
+.fee-lbl{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text3);}
+.fee-val{font-family:'Bebas Neue',cursive;font-size:19px;letter-spacing:1px;}
 
-/* Phone field */
-.phone-wrap{margin-bottom:16px;}
-.phone-inp{
-  width:100%;
-  background:rgba(0,209,102,.04);
-  border:1.5px solid rgba(0,209,102,.15);
-  border-radius:12px;padding:13px 16px;
-  font-family:'Outfit',sans-serif;font-size:15px;font-weight:300;
-  color:var(--text);outline:none;transition:all .25s;
-  letter-spacing:.5px;
-}
-.phone-inp::placeholder{color:rgba(107,168,133,.3);font-size:13px;}
-.phone-inp:focus{border-color:var(--green);background:rgba(0,209,102,.07);box-shadow:0 0 0 4px rgba(0,209,102,.08);}
-.phone-inp:disabled{opacity:.4;}
+.next-btn{width:100%;padding:15px;border:none;border-radius:14px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,var(--green-d),var(--green));box-shadow:0 8px 28px rgba(0,209,102,.3);cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
+.next-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transition:left .5s;}
+.next-btn:hover::before{left:100%;}
+.next-btn:hover{transform:translateY(-2px);}
+.next-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
 
-/* Fee info */
-.fee-box{
-  display:flex;align-items:center;justify-content:space-between;
-  background:rgba(0,0,0,.2);border-radius:12px;border:1px solid rgba(255,255,255,.05);
-  padding:12px 16px;margin-bottom:16px;
-}
-.fb-row{text-align:center;}
-.fb-val{font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:1px;}
-.fb-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-top:3px;}
-.fb-div{width:1px;height:32px;background:rgba(255,255,255,.07);}
+/* METHOD */
+.cat-title{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin:14px 0 10px;display:flex;align-items:center;gap:8px;}
+.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;}
+.method-opt{background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 10px;cursor:pointer;text-align:center;transition:all .25s;position:relative;}
+.method-opt:hover{border-color:rgba(0,209,102,.3);background:rgba(0,209,102,.04);transform:translateY(-2px);}
+.method-opt.selected{border-color:var(--green);background:rgba(0,209,102,.08);box-shadow:0 4px 20px rgba(0,209,102,.12);}
+.method-opt.selected::before{content:'✓';position:absolute;top:7px;right:10px;font-size:11px;color:var(--green);font-weight:900;}
+.mo-ico{font-size:28px;margin-bottom:6px;}
+.mo-name{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:.5px;color:var(--text);}
+.mo-tag{display:inline-block;margin-top:5px;font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:5px;}
+.tag-m{background:rgba(0,209,102,.1);color:var(--green);}
+.tag-b{background:rgba(255,184,48,.1);color:var(--amber);}
+.tag-c{background:rgba(160,100,255,.1);color:var(--purple);}
 
-/* SUBMIT BTN */
-.submit-btn{
-  width:100%;padding:16px;border:none;border-radius:14px;
-  font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:4px;text-transform:uppercase;
-  color:#fff;position:relative;overflow:hidden;transition:all .3s;
-  background:linear-gradient(135deg,var(--green-d),var(--green));
-  box-shadow:0 8px 30px rgba(0,209,102,.35);
-  cursor:pointer;
-}
+.input-field{width:100%;background:rgba(0,209,102,.04);border:1.5px solid rgba(0,209,102,.14);border-radius:13px;padding:14px 16px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:300;color:var(--text);outline:none;transition:all .25s;margin-bottom:6px;}
+.input-field::placeholder{color:rgba(107,168,133,.3);font-size:13px;}
+.input-field:focus{border-color:var(--green);background:rgba(0,209,102,.07);box-shadow:0 0 0 4px rgba(0,209,102,.07);}
+.inp-hint{font-size:11px;font-weight:300;color:var(--text3);margin-bottom:16px;}
+
+.row-btns{display:grid;grid-template-columns:1fr 1.6fr;gap:10px;}
+.back-step{padding:14px;border-radius:14px;border:1.5px solid rgba(255,255,255,.1);background:transparent;color:var(--text3);cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:all .2s;}
+.back-step:hover{background:rgba(255,255,255,.05);}
+
+/* CONFIRM */
+.confirm-card{background:rgba(0,0,0,.3);border:1px solid rgba(0,209,102,.12);border-radius:20px;overflow:hidden;margin-bottom:16px;}
+.cc-head{padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:12px;}
+.cc-head-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;background:rgba(0,209,102,.08);flex-shrink:0;}
+.cc-head-name{font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:2px;color:var(--green);}
+.cc-head-sub{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-top:2px;}
+.conf-row{display:flex;justify-content:space-between;align-items:center;padding:13px 18px;border-bottom:1px solid rgba(255,255,255,.04);}
+.conf-row:last-child{border-bottom:none;}
+.conf-lbl{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
+.conf-val{font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:1px;}
+
+.proc-badge{display:flex;align-items:center;gap:12px;background:rgba(255,184,48,.07);border:1px solid rgba(255,184,48,.2);border-radius:14px;padding:14px;margin-bottom:16px;}
+.proc-ico{font-size:24px;flex-shrink:0;}
+.proc-title{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;color:var(--amber);}
+.proc-sub{font-size:12px;font-weight:300;color:rgba(255,200,100,.65);margin-top:3px;line-height:1.5;}
+
+.err-box{display:none;background:rgba(255,59,78,.08);border:1px solid rgba(255,59,78,.25);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:#FF6B7A;}
+
+.submit-btn{width:100%;padding:16px;border:none;border-radius:14px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,var(--green-d),var(--green));box-shadow:0 8px 30px rgba(0,209,102,.32);cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
 .submit-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transition:left .5s;}
 .submit-btn:hover::before{left:100%;}
-.submit-btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(0,209,102,.45);}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(0,209,102,.42);}
 .submit-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none;}
-
 .ld{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px;}
 
-/* RULES BOX */
-.rules-box{
-  background:rgba(255,184,48,.06);border:1px solid rgba(255,184,48,.18);
-  border-radius:16px;padding:16px;margin-bottom:18px;
-  animation:fadeUp .5s .2s ease both;
-}
-.rules-title{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.rules-list{display:flex;flex-direction:column;gap:8px;}
-.rule-item{display:flex;align-items:flex-start;gap:10px;font-size:12px;font-weight:300;color:rgba(255,200,100,.75);line-height:1.5;}
-.rule-ico{font-size:14px;flex-shrink:0;margin-top:1px;}
+/* RULES */
+.rules-card{background:rgba(255,184,48,.05);border:1px solid rgba(255,184,48,.15);border-radius:18px;padding:16px;margin-bottom:20px;animation:fadeUp .4s .2s ease both;}
+.rules-title{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:12px;}
+.rule{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.03);font-size:12px;font-weight:300;color:rgba(255,200,100,.7);line-height:1.55;}
+.rule:last-child{border-bottom:none;}
+.ri{font-size:14px;flex-shrink:0;margin-top:1px;}
 
 /* HISTORY */
-.sec-title{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin:4px 0 12px;display:flex;align-items:center;gap:10px;}
+.sec-title{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin:4px 0 12px;display:flex;align-items:center;gap:10px;}
 .sec-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(0,209,102,.2),transparent);}
-
-.history-list{display:flex;flex-direction:column;gap:8px;animation:fadeUp .5s .25s ease both;}
-.hist-item{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:13px 15px;transition:all .2s;}
-.hi-ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.hist-list{display:flex;flex-direction:column;gap:8px;animation:fadeUp .4s .25s ease both;}
+.hi{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:13px 14px;}
+.hi-ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
 .hi-info{flex:1;min-width:0;}
-.hi-type{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.hi-date{font-size:11px;font-weight:300;color:var(--text3);margin-top:2px;}
+.hi-name{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.hi-date{font-size:10px;font-weight:300;color:var(--text3);margin-top:2px;}
 .hi-right{text-align:right;flex-shrink:0;}
-.hi-amount{font-family:'Bebas Neue',cursive;font-size:19px;letter-spacing:1px;}
-.hi-status{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;}
-.st-ok{color:rgba(74,222,128,.7);}
-.st-pend{color:rgba(255,184,48,.7);}
-.st-rej{color:rgba(255,59,78,.7);}
+.hi-amt{font-family:'Bebas Neue',cursive;font-size:19px;letter-spacing:1px;color:var(--orange);}
+.hi-st{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.st-ok{color:var(--green-l);}
+.st-pend{color:var(--amber);}
+.st-rej{color:var(--red);}
 
-/* ALERTS */
-.al{display:none;align-items:center;gap:10px;padding:12px 15px;border-radius:12px;font-size:13px;margin-bottom:16px;animation:sld .3s ease;}
-.al.show{display:flex;}
-.al-ok{background:rgba(0,209,102,.1);border:1px solid rgba(0,209,102,.3);color:var(--green-l);}
-.al-err{background:rgba(255,59,78,.08);border:1px solid rgba(255,59,78,.25);color:#FF6B7A;}
-@keyframes sld{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+/* SUCCESS OVERLAY */
+.suc-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.94);backdrop-filter:blur(20px);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s;padding:28px;text-align:center;}
+.suc-overlay.show{opacity:1;pointer-events:all;}
+.suc-ico{font-size:80px;margin-bottom:20px;animation:bounceIn .6s ease both .1s;}
+.suc-title{font-family:'Bebas Neue',cursive;font-size:42px;letter-spacing:4px;background:linear-gradient(135deg,var(--green-l),var(--teal-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px;}
+.suc-msg{font-size:13px;font-weight:300;color:var(--text2);line-height:1.7;max-width:320px;margin-bottom:8px;}
+.suc-ref{font-family:'Bebas Neue',cursive;font-size:15px;letter-spacing:3px;color:var(--gold);margin-bottom:24px;}
+.suc-badge{display:flex;align-items:center;gap:10px;background:rgba(255,184,48,.08);border:1px solid rgba(255,184,48,.22);border-radius:14px;padding:14px 18px;margin-bottom:24px;width:100%;max-width:320px;}
+.suc-badge-txt{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;color:var(--amber);line-height:1.5;text-align:left;}
+.suc-btn{padding:15px 40px;border-radius:14px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--green-d),var(--green));font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#fff;box-shadow:0 8px 24px rgba(0,209,102,.3);}
 
-/* ══ CONFIRM MODAL ══ */
-.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.88);backdrop-filter:blur(16px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s;}
-.modal-overlay.show{opacity:1;pointer-events:all;}
-.modal{width:100%;max-width:480px;background:linear-gradient(160deg,#091A0E 0%,#050E08 100%);border:1.5px solid rgba(0,209,102,.2);border-radius:28px 28px 0 0;padding:10px 20px 36px;transform:translateY(100%);transition:transform .4s cubic-bezier(.34,1.4,.64,1);}
-.modal-overlay.show .modal{transform:translateY(0);}
-.modal-handle{width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);margin:14px auto 20px;}
-.modal-title{font-family:'Bebas Neue',cursive;font-size:28px;letter-spacing:3px;color:var(--green);margin-bottom:4px;}
-.modal-sub{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:20px;}
-.modal-recap{background:rgba(0,0,0,.4);border-radius:16px;border:1px solid rgba(255,255,255,.06);overflow:hidden;margin-bottom:18px;}
-.recap-row{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid rgba(255,255,255,.04);}
-.recap-row:last-child{border-bottom:none;}
-.recap-lbl{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
-.recap-val{font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:1px;}
-.modal-note{display:flex;align-items:flex-start;gap:10px;background:rgba(0,209,102,.07);border:1px solid rgba(0,209,102,.18);border-radius:12px;padding:12px 14px;margin-bottom:18px;font-size:12px;font-weight:300;color:rgba(150,255,200,.8);line-height:1.5;}
-.modal-err{display:none;background:rgba(255,59,78,.1);border:1px solid rgba(255,59,78,.3);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:#FF6B7A;}
-.modal-btns{display:grid;grid-template-columns:1fr 1.6fr;gap:10px;}
-.btn-cancel{padding:14px;border-radius:14px;border:1.5px solid rgba(255,255,255,.1);background:transparent;color:var(--text3);cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:all .2s;}
-.btn-cancel:hover{background:rgba(255,255,255,.05);}
-.btn-confirm-m{padding:14px;border-radius:14px;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,var(--green-d),var(--green));box-shadow:0 8px 24px rgba(0,209,102,.3);transition:all .3s;}
-.btn-confirm-m:hover{transform:translateY(-2px);}
-.btn-confirm-m:disabled{opacity:.6;cursor:not-allowed;transform:none;}
-
-.modal-success{display:none;text-align:center;padding:20px 0;}
-.modal-success.show{display:block;}
-.ms-ico{font-size:60px;margin-bottom:14px;}
-.ms-title{font-family:'Bebas Neue',cursive;font-size:36px;letter-spacing:3px;color:var(--green);}
-.ms-msg{font-size:14px;font-weight:300;color:var(--text2);margin-top:8px;line-height:1.6;max-width:300px;margin-inline:auto;}
-.ms-btn{margin-top:22px;padding:13px 32px;border-radius:14px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--green-d),var(--green));font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#fff;box-shadow:0 8px 24px rgba(0,209,102,.3);}
-
-/* TOAST */
-.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);background:rgba(0,209,102,.9);backdrop-filter:blur(12px);color:#fff;padding:10px 22px;border-radius:100px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;z-index:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);background:rgba(255,59,78,.92);backdrop-filter:blur(12px);color:#fff;padding:10px 22px;border-radius:100px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;z-index:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.toast.err{background:rgba(255,59,78,.92);}
 
-/* BOT NAV */
-.bot-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;height:var(--nav-h);background:rgba(6,14,10,.95);backdrop-filter:blur(24px);border-top:1px solid rgba(0,209,102,.1);display:grid;grid-template-columns:repeat(4,1fr);box-shadow:0 -8px 32px rgba(0,0,0,.5);}
+.bot-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;height:var(--nav-h);background:rgba(6,14,10,.96);backdrop-filter:blur(24px);border-top:1px solid rgba(0,209,102,.1);display:grid;grid-template-columns:repeat(4,1fr);box-shadow:0 -8px 32px rgba(0,0,0,.5);}
 .nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;text-decoration:none;transition:all .2s;padding:8px 4px;position:relative;}
 .nav-item::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,var(--green),var(--teal));transform:scaleX(0);transition:transform .3s;}
 .nav-item.active::before{transform:scaleX(1);}
@@ -290,155 +214,184 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 <div class="bg-grid"></div>
 <div class="toast" id="toast"></div>
 
-<!-- CONFIRM MODAL -->
-<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div id="modal-main">
-      <div class="modal-title">💸 Confirmer le retrait</div>
-      <div class="modal-sub" id="modal-sub-txt">Vérifiez les détails ci-dessous</div>
-      <div class="modal-recap">
-        <div class="recap-row"><div class="recap-lbl">Montant demandé</div><div class="recap-val" id="m-amount" style="color:var(--green)">—</div></div>
-        <div class="recap-row"><div class="recap-lbl">Méthode</div><div class="recap-val" id="m-method" style="color:var(--teal)">—</div></div>
-        <div class="recap-row"><div class="recap-lbl">Numéro / Compte</div><div class="recap-val" id="m-phone" style="color:var(--text)">—</div></div>
-        <div class="recap-row"><div class="recap-lbl">Délai de traitement</div><div class="recap-val" id="m-delay" style="color:var(--amber)">—</div></div>
-        <div class="recap-row"><div class="recap-lbl">Solde restant après</div><div class="recap-val" id="m-after" style="color:var(--text2)">—</div></div>
-      </div>
-      <div class="modal-note">✅ <span>Votre demande sera traitée <strong>aujourd'hui</strong> entre 8h et 18h. Un SMS de confirmation vous sera envoyé dès le traitement.</span></div>
-      <div class="modal-err" id="modal-err"></div>
-      <div class="modal-btns">
-        <button class="btn-cancel" onclick="closeModal()">Annuler</button>
-        <button class="btn-confirm-m" id="btn-confirm" onclick="confirmWithdraw()">✅ Confirmer</button>
-      </div>
-    </div>
-    <div class="modal-success" id="modal-success">
-      <div class="ms-ico">🎉</div>
-      <div class="ms-title">Demande Envoyée !</div>
-      <div class="ms-msg" id="ms-msg">Votre retrait est en cours de traitement. Vous recevrez votre argent très prochainement.</div>
-      <button class="ms-btn" onclick="window.location.href='dashboard.html'">Retour au Dashboard →</button>
-    </div>
+<!-- SUCCESS OVERLAY -->
+<div class="suc-overlay" id="suc-overlay">
+  <div class="suc-ico">🎉</div>
+  <div class="suc-title">Demande Envoyée !</div>
+  <div class="suc-msg" id="suc-msg">Votre demande a été enregistrée.</div>
+  <div class="suc-ref" id="suc-ref">REF: —</div>
+  <div class="suc-badge">
+    <span style="font-size:22px">⏱</span>
+    <div class="suc-badge-txt">Traitement sous <strong>24 heures</strong>.<br>Vous serez notifié dès le paiement effectué.</div>
   </div>
+  <button class="suc-btn" onclick="window.location.href='dashboard.html'">Retour au Dashboard →</button>
 </div>
 
-<!-- PAGE -->
 <div class="page">
 
   <!-- TOPBAR -->
   <div class="topbar">
     <a href="dashboard.html" class="back-btn">← Accueil</a>
     <div class="page-title">💸 RETRAIT</div>
-    <div class="clock-pill" id="live-clock">00:00</div>
+    <div class="clock-pill" id="live-clock">00:00:00</div>
   </div>
 
-  <!-- WINDOW STATUS BANNER -->
+  <!-- BANNER -->
   <div id="window-banner"></div>
-
-  <!-- NEXT WINDOW COUNTDOWN -->
-  <div class="next-window" id="next-window" style="display:none">
-    <div class="nw-lbl">🕐 Fenêtre s'ouvre dans</div>
-    <div class="nw-timer" id="next-timer">—</div>
-  </div>
 
   <!-- BALANCE -->
   <div class="balance-card">
-    <div class="bc-label">💰 Solde disponible pour retrait</div>
-    <div>
-      <span class="bc-amount" id="bal-display">0</span>
-      <span class="bc-currency">FCFA</span>
-    </div>
-    <div class="bc-sub">
-      <div class="bcs-item"><div class="bcs-val" style="color:var(--green)" id="stat-total-withdrawn">0</div><div class="bcs-lbl">Total retiré</div></div>
-      <div class="bcs-item"><div class="bcs-val" style="color:var(--amber)" id="stat-pending">0</div><div class="bcs-lbl">En attente (F)</div></div>
-      <div class="bcs-item"><div class="bcs-val" style="color:var(--teal)" id="stat-count">0</div><div class="bcs-lbl">Retraits effectués</div></div>
+    <div class="bc-lbl">💰 Solde disponible pour retrait</div>
+    <div><span class="bc-amount" id="bal-display">0</span><span class="bc-cur">FCFA</span></div>
+    <div class="bc-stats">
+      <div class="bcs"><div class="bcs-v" style="color:var(--orange)" id="s-wd">0</div><div class="bcs-l">Total retiré</div></div>
+      <div class="bcs"><div class="bcs-v" style="color:var(--amber)" id="s-pend">0</div><div class="bcs-l">En attente</div></div>
+      <div class="bcs"><div class="bcs-v" style="color:var(--teal)" id="s-cnt">0</div><div class="bcs-l">Nb retraits</div></div>
     </div>
   </div>
 
-  <!-- ALERTS -->
-  <div class="al al-ok" id="al-ok"><span>✓</span> Demande de retrait envoyée avec succès !</div>
-  <div class="al al-err" id="al-err"><span>✕</span><span id="err-msg">Erreur.</span></div>
+  <!-- STEPS BAR -->
+  <div class="steps-bar">
+    <div class="step-tab active" id="tab-1"><div class="step-num">1</div><div class="step-lbl">Montant</div></div>
+    <div class="step-tab" id="tab-2"><div class="step-num">2</div><div class="step-lbl">Méthode</div></div>
+    <div class="step-tab" id="tab-3"><div class="step-num">3</div><div class="step-lbl">Confirmer</div></div>
+  </div>
 
-  <!-- FORM CARD -->
-  <div class="form-card" id="form-card">
-    <div class="fc-title">Nouvelle demande de retrait</div>
-
-    <label class="field-lbl">Montant à retirer</label>
-    <div class="amount-wrap">
-      <input class="amount-inp" type="number" id="amount" placeholder="2 000" min="2000" oninput="updateFee()" id="amount-inp">
-      <span class="cur-tag">FCFA</span>
+  <!-- ══ STEP 1 ══ -->
+  <div class="step-panel active" id="panel-1">
+    <div class="card">
+      <label class="field-lbl">Montant à retirer</label>
+      <div class="amount-wrap">
+        <input class="amount-inp" type="number" id="amount-inp" placeholder="2 000" min="2000" oninput="calcFee()">
+        <span class="cur-tag">FCFA</span>
+      </div>
+      <div class="min-hint">⚡ Minimum <strong style="color:var(--green)">2 000 FCFA</strong> · Frais <strong style="color:var(--orange)">10%</strong> prélevés</div>
+      <div class="quick-row">
+        <button class="qb" onclick="setAmt(2000)">2 000</button>
+        <button class="qb" onclick="setAmt(5000)">5 000</button>
+        <button class="qb" onclick="setAmt(10000)">10 000</button>
+        <button class="qb" onclick="setAmt(25000)">25 000</button>
+        <button class="qb max-btn" onclick="setMax()">MAX 💰</button>
+      </div>
     </div>
-    <div class="min-hint">⚡ Minimum : <strong style="color:var(--green);margin-left:4px">2 000 FCFA</strong></div>
 
-    <div class="quick-row">
-      <button class="qb" onclick="setAmt(2000)">2 000</button>
-      <button class="qb" onclick="setAmt(5000)">5 000</button>
-      <button class="qb" onclick="setAmt(10000)">10 000</button>
-      <button class="qb" onclick="setAmt(25000)">25 000</button>
-      <button class="qb max" onclick="setMax()">MAX 💰</button>
+    <div class="fee-card" id="fee-card" style="display:none">
+      <div class="fee-title">📊 Détail du retrait</div>
+      <div class="fee-row"><div class="fee-lbl">Montant demandé</div><div class="fee-val" style="color:var(--green)" id="f-brut">—</div></div>
+      <div class="fee-row"><div class="fee-lbl">Frais de service (10%)</div><div class="fee-val" style="color:var(--orange)" id="f-frais">—</div></div>
+      <div class="fee-row"><div class="fee-lbl" style="color:var(--gold)">Vous recevez</div><div class="fee-val" style="color:var(--gold);font-size:24px" id="f-net">—</div></div>
+      <div class="fee-row"><div class="fee-lbl">Solde restant après</div><div class="fee-val" style="color:var(--text2);font-size:17px" id="f-after">—</div></div>
     </div>
 
-    <label class="field-lbl" style="margin-top:4px;">Méthode de retrait</label>
+    <button class="next-btn" id="btn-next1" onclick="goStep(2)" disabled>Choisir la méthode →</button>
+  </div>
+
+  <!-- ══ STEP 2 ══ -->
+  <div class="step-panel" id="panel-2">
+
+    <div class="cat-title"><span>📱</span> Mobile Money</div>
     <div class="method-grid">
-      <div class="method-opt selected" onclick="selectMethod('wave',this)">
-        <div class="mo-ico">🌊</div>
-        <div class="mo-name">Wave</div>
-        <div class="mo-sub">Instantané · Gratuit</div>
+      <div class="method-opt selected" onclick="selectM('wave',this,'🌊','Wave','CI · SN · Mali')">
+        <div class="mo-ico">🌊</div><div class="mo-name">Wave</div><div class="mo-tag tag-m">Sous 24h</div>
       </div>
-      <div class="method-opt" onclick="selectMethod('orange',this)">
-        <div class="mo-ico">🟠</div>
-        <div class="mo-name">Orange Money</div>
-        <div class="mo-sub">Instantané · Gratuit</div>
+      <div class="method-opt" onclick="selectM('orange',this,'🟠','Orange Money','CI · SN · ML · BF')">
+        <div class="mo-ico">🟠</div><div class="mo-name">Orange Money</div><div class="mo-tag tag-m">Sous 24h</div>
       </div>
-      <div class="method-opt" onclick="selectMethod('mtn',this)">
-        <div class="mo-ico">💛</div>
-        <div class="mo-name">MTN MoMo</div>
-        <div class="mo-sub">Instantané · Gratuit</div>
+      <div class="method-opt" onclick="selectM('mtn',this,'💛','MTN MoMo','CI · Ghana · Bénin')">
+        <div class="mo-ico">💛</div><div class="mo-name">MTN MoMo</div><div class="mo-tag tag-m">Sous 24h</div>
       </div>
-      <div class="method-opt" onclick="selectMethod('moov',this)">
-        <div class="mo-ico">🔵</div>
-        <div class="mo-name">Moov Money</div>
-        <div class="mo-sub">Instantané · Gratuit</div>
+      <div class="method-opt" onclick="selectM('moov',this,'🔵','Moov Money','CI · BJ · TG · ML')">
+        <div class="mo-ico">🔵</div><div class="mo-name">Moov Money</div><div class="mo-tag tag-m">Sous 24h</div>
       </div>
     </div>
 
-    <div class="phone-wrap">
-      <label class="field-lbl">Numéro de réception</label>
-      <input class="phone-inp" type="tel" id="phone-inp" placeholder="Ex: +225 07 00 00 00 00">
+    <div class="cat-title" style="margin-top:16px"><span>💳</span> Carte Bancaire</div>
+    <div class="method-grid">
+      <div class="method-opt" onclick="selectM('visa',this,'💳','Visa / Mastercard','Toutes banques')">
+        <div class="mo-ico">💳</div><div class="mo-name">Visa / Mastercard</div><div class="mo-tag tag-b">Sous 24h</div>
+      </div>
+      <div class="method-opt" onclick="selectM('bank',this,'🏦','Virement Bancaire','UBA · Ecobank · CBI')">
+        <div class="mo-ico">🏦</div><div class="mo-name">Virement Banque</div><div class="mo-tag tag-b">Sous 24h</div>
+      </div>
     </div>
 
-    <div class="fee-box" id="fee-box" style="display:none">
-      <div class="fb-row"><div class="fb-val" style="color:var(--green)" id="fee-amount">0</div><div class="fb-lbl">Montant net</div></div>
-      <div class="fb-div"></div>
-      <div class="fb-row"><div class="fb-val" style="color:var(--text2)" id="fee-frais">0</div><div class="fb-lbl">Frais (0%)</div></div>
-      <div class="fb-div"></div>
-      <div class="fb-row"><div class="fb-val" style="color:var(--gold)" id="fee-after">0</div><div class="fb-lbl">Solde après</div></div>
+    <div class="cat-title" style="margin-top:16px"><span>₿</span> Crypto-monnaie</div>
+    <div class="method-grid">
+      <div class="method-opt" onclick="selectM('usdt',this,'₮','USDT TRC-20','Tether · Tron Network')">
+        <div class="mo-ico">₮</div><div class="mo-name">USDT TRC-20</div><div class="mo-tag tag-c">Sous 24h</div>
+      </div>
+      <div class="method-opt" onclick="selectM('btc',this,'₿','Bitcoin (BTC)','Bitcoin Network')">
+        <div class="mo-ico">₿</div><div class="mo-name">Bitcoin</div><div class="mo-tag tag-c">Sous 24h</div>
+      </div>
     </div>
 
-    <button class="submit-btn" id="submit-btn" onclick="openModal()">
-      💸 Demander le retrait
-    </button>
+    <div style="margin-top:18px">
+      <label class="field-lbl" id="acct-lbl">Numéro de téléphone</label>
+      <input class="input-field" type="text" id="acct-inp" placeholder="+225 07 00 00 00 00">
+      <div class="inp-hint" id="acct-hint">Entrez le numéro enregistré sur Wave</div>
+    </div>
+
+    <div class="row-btns">
+      <button class="back-step" onclick="goStep(1)">← Retour</button>
+      <button class="next-btn" style="margin:0" onclick="goStep(3)">Vérifier →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 3 ══ -->
+  <div class="step-panel" id="panel-3">
+
+    <div class="confirm-card">
+      <div class="cc-head">
+        <div class="cc-head-ico" id="c-ico">🌊</div>
+        <div>
+          <div class="cc-head-name" id="c-name">Wave</div>
+          <div class="cc-head-sub" id="c-sub">Mobile Money</div>
+        </div>
+      </div>
+      <div class="conf-row"><div class="conf-lbl">Montant brut</div><div class="conf-val" style="color:var(--green)" id="c-brut">—</div></div>
+      <div class="conf-row"><div class="conf-lbl">Frais (10%)</div><div class="conf-val" style="color:var(--orange)" id="c-frais">—</div></div>
+      <div class="conf-row" style="background:rgba(245,200,66,.04)">
+        <div class="conf-lbl" style="color:var(--gold)">Vous recevez</div>
+        <div class="conf-val" style="color:var(--gold);font-size:26px" id="c-net">—</div>
+      </div>
+      <div class="conf-row"><div class="conf-lbl">Compte destinataire</div><div class="conf-val" style="color:var(--text);font-size:14px;font-family:'Outfit',sans-serif;font-weight:600;word-break:break-all" id="c-acct">—</div></div>
+      <div class="conf-row"><div class="conf-lbl">Délai de traitement</div><div class="conf-val" style="color:var(--amber);font-size:18px">SOUS 24 HEURES</div></div>
+    </div>
+
+    <div class="proc-badge">
+      <div class="proc-ico">⏱</div>
+      <div>
+        <div class="proc-title">Traitement garanti sous 24h</div>
+        <div class="proc-sub">Votre retrait sera traité entre 8h et 18h. Une notification vous sera envoyée dès que le paiement est effectué.</div>
+      </div>
+    </div>
+
+    <div class="err-box" id="err-box"></div>
+
+    <div class="row-btns">
+      <button class="back-step" onclick="goStep(2)">← Retour</button>
+      <button class="submit-btn" style="margin:0" id="submit-btn" onclick="submitWithdraw()">💸 Envoyer la demande</button>
+    </div>
   </div>
 
   <!-- RULES -->
-  <div class="rules-box">
+  <div class="rules-card" style="margin-top:20px">
     <div class="rules-title">📋 Règles de retrait</div>
-    <div class="rules-list">
-      <div class="rule-item"><span class="rule-ico">🕐</span><span>Les retraits sont traités uniquement de <strong>8h00 à 18h00</strong> du lundi au vendredi.</span></div>
-      <div class="rule-item"><span class="rule-ico">💰</span><span>Montant minimum de retrait : <strong>2 000 FCFA</strong>. Pas de maximum.</span></div>
-      <div class="rule-item"><span class="rule-ico">⚡</span><span>Traitement <strong>immédiat</strong> durant la fenêtre horaire. En dehors : traitement le jour ouvrable suivant à 8h.</span></div>
-      <div class="rule-item"><span class="rule-ico">📱</span><span>Vérifiez bien votre numéro de téléphone. SYLLA n'est pas responsable des erreurs de numéro.</span></div>
-      <div class="rule-item"><span class="rule-ico">🔒</span><span>Le bonus de bienvenue (1 000 FCFA) est retirable uniquement après avoir investi dans un plan.</span></div>
-    </div>
+    <div class="rule"><span class="ri">💰</span><span>Minimum <strong>2 000 FCFA</strong>. Des frais de service de <strong>10%</strong> sont prélevés sur chaque retrait.</span></div>
+    <div class="rule"><span class="ri">⏱</span><span>Traitement garanti sous <strong>24 heures</strong> après validation de la demande.</span></div>
+    <div class="rule"><span class="ri">📱</span><span><strong>Mobile Money</strong> : Wave, Orange Money, MTN MoMo, Moov Money. Vérifiez votre numéro.</span></div>
+    <div class="rule"><span class="ri">💳</span><span><strong>Carte bancaire</strong> : Visa, Mastercard ou virement bancaire (UBA, Ecobank, CBI). Vérifiez votre RIB.</span></div>
+    <div class="rule"><span class="ri">₿</span><span><strong>Crypto</strong> : USDT TRC-20 et Bitcoin. Vérifiez soigneusement votre adresse, les transactions crypto sont irréversibles.</span></div>
+    <div class="rule"><span class="ri">🔒</span><span>Le bonus de bienvenue est retirable après avoir réalisé un premier investissement.</span></div>
   </div>
 
-  <!-- HISTORY -->
   <div class="sec-title">Historique des retraits</div>
-  <div class="history-list" id="history-list">
-    <div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">Chargement…</div>
+  <div class="hist-list" id="hist-list">
+    <div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">Chargement…</div>
   </div>
 
 </div>
 
-<!-- BOT NAV -->
 <nav class="bot-nav">
   <a href="dashboard.html" class="nav-item"><span class="nav-ico">🏠</span><span class="nav-lbl">Accueil</span></a>
   <a href="plan.html" class="nav-item"><span class="nav-ico">🚀</span><span class="nav-lbl">Plans</span></a>
@@ -448,313 +401,178 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 
 <script>
 const{createClient}=supabase;
-const sb=createClient(
-  'https://fqiotqrraobmsrcyewsi.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc'
-);
+const sb=createClient('https://fqiotqrraobmsrcyewsi.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc');
 
-/* ── STATE ── */
-let currentUser=null, userBalance=0, selectedMethod='wave', toastTimer=null;
-const OPEN_HOUR=8, CLOSE_HOUR=18, MIN_AMOUNT=2000;
+const MIN=2000,FEE=0.10;
+let cu=null,userBalance=0,selM={id:'wave',ico:'🌊',name:'Wave',sub:'CI · SN · Mali'};
+let toastT=null;
 
-/* ── INIT ── */
 async function init(){
   const{data:{session}}=await sb.auth.getSession();
   if(!session){window.location.href='index.html';return;}
-  currentUser=session.user;
+  cu=session.user;
   await loadBalance();
   await loadHistory();
   startClock();
-  renderWindowBanner();
+  renderBanner();
   document.getElementById('loader').classList.add('hide');
-
-  // Pre-fill phone from profile
   try{
-    const{data}=await sb.from('profiles').select('phone').eq('id',currentUser.id).single();
-    if(data?.phone) document.getElementById('phone-inp').value=data.phone;
+    const{data}=await sb.from('profiles').select('phone').eq('id',cu.id).single();
+    if(data?.phone)document.getElementById('acct-inp').value=data.phone;
   }catch(e){}
 }
 
-/* ── WINDOW CHECK ── */
-function isWindowOpen(){
-  const now=new Date();
-  const h=now.getHours();
-  const d=now.getDay(); // 0=Sun, 6=Sat
-  const isWeekday=d>=1&&d<=5;
-  return isWeekday && h>=OPEN_HOUR && h<CLOSE_HOUR;
-}
-
-function renderWindowBanner(){
-  const open=isWindowOpen();
-  const now=new Date();
-  const h=now.getHours(), m=now.getMinutes();
-  const totalMins=h*60+m;
-  const openMins=OPEN_HOUR*60, closeMins=CLOSE_HOUR*60;
-  const windowLen=closeMins-openMins;
-  let pct=0;
-
-  if(open){
-    pct=Math.round(((totalMins-openMins)/windowLen)*100);
-    document.getElementById('next-window').style.display='none';
-  }else{
-    document.getElementById('next-window').style.display='flex';
-  }
-
-  const banner=document.getElementById('window-banner');
-  if(open){
-    banner.innerHTML=`
-      <div class="window-banner wb-open">
-        <div class="wb-top">
-          <div class="wb-ico">🟢</div>
-          <div class="wb-info">
-            <h2>Fenêtre ouverte</h2>
-            <p>Retraits actifs jusqu'à <strong>18h00</strong> aujourd'hui. Votre demande sera traitée immédiatement.</p>
-          </div>
-        </div>
-        <div class="window-prog">
-          <div class="wp-bar"><div class="wp-fill" style="width:${pct}%"></div></div>
-          <div class="wp-labels"><div class="wp-lbl">08h00</div><div class="wp-lbl">Maintenant (${pct}%)</div><div class="wp-lbl">18h00</div></div>
-        </div>
-      </div>`;
-  }else{
-    let msg='';
-    const d=now.getDay();
-    if(d===0||d===6) msg='Retraits disponibles lundi à 8h00.';
-    else if(h<OPEN_HOUR) msg=`La fenêtre s'ouvre aujourd'hui à 08h00.`;
-    else msg='La fenêtre reprend demain à 08h00.';
-    banner.innerHTML=`
-      <div class="window-banner wb-closed">
-        <div class="wb-top">
-          <div class="wb-ico">🔴</div>
-          <div class="wb-info">
-            <h2>Fenêtre fermée</h2>
-            <p>${msg} Les demandes soumises maintenant seront traitées à la prochaine ouverture.</p>
-          </div>
-        </div>
-      </div>`;
-  }
-
-  // Lock/unlock form based on window
-  const btn=document.getElementById('submit-btn');
-  const amtInp=document.getElementById('amount');
-  if(open){
-    btn.style.opacity='1';
-    btn.style.cursor='pointer';
-  }
-}
-
-/* ── CLOCK ── */
 function startClock(){
-  function tick(){
-    const n=new Date();
-    const h=String(n.getHours()).padStart(2,'0');
-    const m=String(n.getMinutes()).padStart(2,'0');
-    const s=String(n.getSeconds()).padStart(2,'0');
-    document.getElementById('live-clock').textContent=h+':'+m+':'+s;
-
-    // Update countdown to next window
-    const isOpen=isWindowOpen();
-    const nwEl=document.getElementById('next-timer');
-    if(!isOpen&&nwEl){
-      const now=new Date();
-      const nextOpen=new Date(now);
-      const d=now.getDay();
-      const ho=now.getHours();
-
-      if(d===0){nextOpen.setDate(nextOpen.getDate()+1);nextOpen.setHours(OPEN_HOUR,0,0,0);}
-      else if(d===6){nextOpen.setDate(nextOpen.getDate()+2);nextOpen.setHours(OPEN_HOUR,0,0,0);}
-      else if(ho<OPEN_HOUR){nextOpen.setHours(OPEN_HOUR,0,0,0);}
-      else{
-        nextOpen.setDate(nextOpen.getDate()+1);
-        if(nextOpen.getDay()===6)nextOpen.setDate(nextOpen.getDate()+2);
-        else if(nextOpen.getDay()===0)nextOpen.setDate(nextOpen.getDate()+1);
-        nextOpen.setHours(OPEN_HOUR,0,0,0);
-      }
-
-      const diff=nextOpen-now;
-      const rh=Math.floor(diff/(1000*60*60));
-      const rm=Math.floor((diff%(1000*60*60))/(1000*60));
-      const rs=Math.floor((diff%(1000*60))/1000);
-      nwEl.textContent=`${pad(rh)}:${pad(rm)}:${pad(rs)}`;
-    }
-  }
-  tick();setInterval(tick,1000);
+  function t(){const n=new Date();document.getElementById('live-clock').textContent=pad(n.getHours())+':'+pad(n.getMinutes())+':'+pad(n.getSeconds());}
+  t();setInterval(t,1000);
 }
 
-/* ── LOAD BALANCE ── */
+function renderBanner(){
+  const n=new Date(),h=n.getHours(),d=n.getDay();
+  const open=d>=1&&d<=5&&h>=8&&h<18;
+  let html;
+  if(open){
+    html=`<div class="window-banner wb-open"><div class="wb-row"><div class="wb-dot"></div><div><div class="wb-title">FENÊTRE OUVERTE — Retraits actifs</div><div class="wb-desc">Traitement sous 24h · Fermeture à 18h00</div></div></div></div>`;
+  }else{
+    const msg=d===0||d===6?'Rouvrira lundi à 08h00':h>=18?'Rouvrira demain à 08h00':'Ouverture à 08h00 aujourd\'hui';
+    html=`<div class="window-banner wb-closed"><div class="wb-row"><div class="wb-dot"></div><div><div class="wb-title">HORS FENÊTRE HORAIRE</div><div class="wb-desc">${msg}. Votre demande sera enregistrée et traitée à l'ouverture.</div></div></div></div>`;
+  }
+  document.getElementById('window-banner').innerHTML=html;
+}
+
 async function loadBalance(){
-  let total=1000,withdrawn=0,pending=0,count=0;
+  let total=1000,wd=0,pend=0,cnt=0;
   try{
-    const{data}=await sb.from('transactions').select('*').eq('user_id',currentUser.id);
-    if(data&&data.length){
-      total=0;
-      data.forEach(t=>{
-        if(['bonus_bienvenue','depot','gain','referral'].includes(t.type))total+=Number(t.amount);
-        if(t.type==='retrait'){
-          if(t.status==='pending')pending+=Number(t.amount);
-          else{total-=Number(t.amount);withdrawn+=Number(t.amount);count++;}
-        }
-        if(t.type==='investissement')total-=Number(t.amount);
-        if(t.type==='coffre_depot')total-=Number(t.amount);
-        if(t.type==='coffre_retrait')total+=Number(t.amount);
-      });
-    }
+    const{data}=await sb.from('transactions').select('*').eq('user_id',cu.id);
+    if(data?.length){total=0;data.forEach(t=>{
+      const a=Number(t.amount);
+      if(['bonus_bienvenue','depot','gain','referral','coffre_retrait'].includes(t.type))total+=a;
+      if(['investissement','coffre_depot'].includes(t.type))total-=a;
+      if(t.type==='retrait'){
+        if(t.status==='pending')pend+=a;
+        else if(t.status!=='rejected'){total-=a;wd+=a;cnt++;}
+      }
+    });}
   }catch(e){}
   userBalance=Math.max(0,total);
   document.getElementById('bal-display').textContent=fmt(userBalance);
-  document.getElementById('stat-total-withdrawn').textContent=fmt(withdrawn);
-  document.getElementById('stat-pending').textContent=fmt(pending);
-  document.getElementById('stat-count').textContent=count;
+  document.getElementById('s-wd').textContent=fmt(wd);
+  document.getElementById('s-pend').textContent=fmt(pend);
+  document.getElementById('s-cnt').textContent=cnt;
 }
 
-/* ── LOAD HISTORY ── */
 async function loadHistory(){
-  const list=document.getElementById('history-list');
+  const list=document.getElementById('hist-list');
   try{
-    const{data}=await sb.from('transactions').select('*').eq('user_id',currentUser.id).eq('type','retrait').order('created_at',{ascending:false}).limit(15);
-    if(!data||!data.length){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">💸 Aucun retrait effectué</div>';return;}
+    const{data}=await sb.from('transactions').select('*').eq('user_id',cu.id).eq('type','retrait').order('created_at',{ascending:false}).limit(20);
+    if(!data?.length){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">💸 Aucun retrait effectué pour l\'instant</div>';return;}
+    const ico={wave:'🌊',orange:'🟠',mtn:'💛',moov:'🔵',visa:'💳',bank:'🏦',usdt:'₮',btc:'₿'};
     list.innerHTML=data.map(t=>{
       const stCls=t.status==='pending'?'st-pend':t.status==='rejected'?'st-rej':'st-ok';
-      const stTxt=t.status==='pending'?'En attente':t.status==='rejected'?'Rejeté':'Traité ✓';
+      const stTxt=t.status==='pending'?'⏱ En attente':t.status==='rejected'?'✕ Rejeté':'✓ Traité';
       const d=new Date(t.created_at);
-      const ds=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
-      const method=t.label?.match(/(Wave|Orange|MTN|Moov)/i)?.[0]||'Mobile';
-      const methodIcos={'Wave':'🌊','Orange':'🟠','MTN':'💛','Moov':'🔵','Mobile':'📱'};
-      return `<div class="hist-item">
-        <div class="hi-ico" style="background:rgba(0,209,102,.08)">${methodIcos[method]||'💸'}</div>
-        <div class="hi-info"><div class="hi-type">${t.label||'Retrait'}</div><div class="hi-date">${ds}</div></div>
-        <div class="hi-right"><div class="hi-amount" style="color:var(--orange)">-${fmt(t.amount)} F</div><div class="hi-status ${stCls}">${stTxt}</div></div>
-      </div>`;
+      const ds=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+      const m=t.label?.match(/\((\w+)\)/)?.[1]||'wave';
+      return `<div class="hi"><div class="hi-ico" style="background:rgba(0,209,102,.06)">${ico[m]||'💸'}</div><div class="hi-info"><div class="hi-name">${t.label||'Retrait'}</div><div class="hi-date">${ds}</div></div><div class="hi-right"><div class="hi-amt">-${fmt(t.amount)} F</div><div class="hi-st ${stCls}">${stTxt}</div></div></div>`;
     }).join('');
   }catch(e){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3)">Historique indisponible</div>';}
 }
 
-/* ── AMOUNT HELPERS ── */
-function setAmt(v){document.getElementById('amount').value=v;updateFee();}
-function setMax(){document.getElementById('amount').value=Math.floor(userBalance);updateFee();}
-
-function updateFee(){
-  const v=Number(document.getElementById('amount').value)||0;
-  const box=document.getElementById('fee-box');
-  if(v<=0){box.style.display='none';return;}
-  box.style.display='flex';
-  document.getElementById('fee-amount').textContent=fmt(v)+' F';
-  document.getElementById('fee-frais').textContent='0 F';
-  document.getElementById('fee-after').textContent=fmt(Math.max(0,userBalance-v))+' F';
+function setAmt(v){document.getElementById('amount-inp').value=v;calcFee();}
+function setMax(){document.getElementById('amount-inp').value=Math.floor(userBalance);calcFee();}
+function calcFee(){
+  const v=Number(document.getElementById('amount-inp').value)||0;
+  const btn=document.getElementById('btn-next1');
+  if(v<MIN||v>userBalance){document.getElementById('fee-card').style.display='none';btn.disabled=true;return;}
+  const frais=Math.round(v*FEE),net=v-frais,after=userBalance-v;
+  document.getElementById('fee-card').style.display='block';
+  document.getElementById('f-brut').textContent=fmt(v)+' FCFA';
+  document.getElementById('f-frais').textContent='-'+fmt(frais)+' FCFA';
+  document.getElementById('f-net').textContent=fmt(net)+' FCFA';
+  document.getElementById('f-after').textContent=fmt(Math.max(0,after))+' FCFA';
+  btn.disabled=false;
 }
 
-/* ── METHOD ── */
-const methodLabels={wave:'🌊 Wave',orange:'🟠 Orange Money',mtn:'💛 MTN MoMo',moov:'🔵 Moov Money'};
-function selectMethod(m,el){
-  selectedMethod=m;
+const HINTS={wave:'Numéro enregistré sur Wave (ex: +225 07 XX XX XX)',orange:'Numéro Orange Money',mtn:'Numéro MTN MoMo',moov:'Numéro Moov Money',visa:'Numéro de carte Visa/Mastercard (16 chiffres)',bank:'IBAN ou numéro de compte bancaire',usdt:'Adresse portefeuille USDT TRC-20',btc:'Adresse portefeuille Bitcoin'};
+const LBLS={wave:'📱 Numéro de téléphone',orange:'📱 Numéro de téléphone',mtn:'📱 Numéro de téléphone',moov:'📱 Numéro de téléphone',visa:'💳 Numéro de carte',bank:'🏦 Numéro de compte / IBAN',usdt:'₮ Adresse USDT (TRC-20)',btc:'₿ Adresse Bitcoin'};
+
+function selectM(id,el,ico,name,sub){
+  selM={id,ico,name,sub};
   document.querySelectorAll('.method-opt').forEach(o=>o.classList.remove('selected'));
   el.classList.add('selected');
+  document.getElementById('acct-lbl').textContent=LBLS[id]||'Compte';
+  document.getElementById('acct-hint').textContent=HINTS[id]||'';
+  document.getElementById('acct-inp').placeholder=['usdt','btc'].includes(id)?'Adresse crypto...':['visa'].includes(id)?'1234 5678 9012 3456':['bank'].includes(id)?'CI00 XXXX XXXX XXXX':'+225 00 00 00 00 00';
 }
 
-/* ── OPEN MODAL ── */
-function openModal(){
-  const amount=Number(document.getElementById('amount').value)||0;
-  const phone=document.getElementById('phone-inp').value.trim();
-
-  // Validations
-  if(amount<MIN_AMOUNT){showToast('Minimum '+fmt(MIN_AMOUNT)+' FCFA requis',true);return;}
-  if(amount>userBalance){showToast('Solde insuffisant',true);return;}
-  if(!phone){showToast('Entrez un numéro de réception',true);return;}
-  if(phone.replace(/\s/g,'').length<8){showToast('Numéro invalide',true);return;}
-
-  const after=userBalance-amount;
-  const isOpen=isWindowOpen();
-  const delay=isOpen?'Traitement immédiat':'Prochaine ouverture (8h)';
-
-  document.getElementById('m-amount').textContent=fmt(amount)+' FCFA';
-  document.getElementById('m-method').textContent=methodLabels[selectedMethod]||selectedMethod;
-  document.getElementById('m-phone').textContent=phone;
-  document.getElementById('m-delay').textContent=delay;
-  document.getElementById('m-after').textContent=fmt(after)+' FCFA';
-  document.getElementById('modal-sub-txt').textContent=`${methodLabels[selectedMethod]} · ${fmt(amount)} FCFA`;
-  document.getElementById('modal-err').style.display='none';
-  document.getElementById('modal-main').style.display='block';
-  document.getElementById('modal-success').classList.remove('show');
-  document.getElementById('btn-confirm').disabled=false;
-  document.getElementById('btn-confirm').innerHTML='✅ Confirmer';
-  document.getElementById('modal-overlay').classList.add('show');
-  document.body.style.overflow='hidden';
-}
-
-function closeModal(e){
-  if(e&&e.target!==document.getElementById('modal-overlay'))return;
-  document.getElementById('modal-overlay').classList.remove('show');
-  document.body.style.overflow='';
-}
-
-/* ── CONFIRM WITHDRAW ── */
-async function confirmWithdraw(){
-  const amount=Number(document.getElementById('amount').value)||0;
-  const phone=document.getElementById('phone-inp').value.trim();
-  const btn=document.getElementById('btn-confirm');
-  const errEl=document.getElementById('modal-err');
-  errEl.style.display='none';
-
-  if(amount<MIN_AMOUNT||amount>userBalance){
-    errEl.style.display='block';errEl.textContent='Montant invalide.';return;
+function goStep(n){
+  if(n===2){
+    const v=Number(document.getElementById('amount-inp').value)||0;
+    if(v<MIN){showToast('Minimum '+fmt(MIN)+' FCFA requis');return;}
+    if(v>userBalance){showToast('Solde insuffisant');return;}
   }
+  if(n===3){
+    const acct=document.getElementById('acct-inp').value.trim();
+    if(!acct||acct.length<5){showToast('Entrez un compte de réception valide');return;}
+    const v=Number(document.getElementById('amount-inp').value);
+    const frais=Math.round(v*FEE),net=v-frais;
+    document.getElementById('c-ico').textContent=selM.ico;
+    document.getElementById('c-name').textContent=selM.name;
+    document.getElementById('c-sub').textContent=selM.sub;
+    document.getElementById('c-brut').textContent=fmt(v)+' FCFA';
+    document.getElementById('c-frais').textContent='-'+fmt(frais)+' FCFA';
+    document.getElementById('c-net').textContent=fmt(net)+' FCFA';
+    document.getElementById('c-acct').textContent=acct;
+    document.getElementById('err-box').style.display='none';
+    document.getElementById('submit-btn').disabled=false;
+    document.getElementById('submit-btn').innerHTML='💸 Envoyer la demande';
+  }
+  document.querySelectorAll('.step-panel').forEach((p,i)=>p.classList.toggle('active',i===n-1));
+  document.querySelectorAll('.step-tab').forEach((t,i)=>t.classList.toggle('active',i===n-1));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 
-  btn.disabled=true;btn.innerHTML='<span class="ld"></span>Traitement…';
-
+async function submitWithdraw(){
+  const amount=Number(document.getElementById('amount-inp').value)||0;
+  const acct=document.getElementById('acct-inp').value.trim();
+  const frais=Math.round(amount*FEE),net=amount-frais;
+  const btn=document.getElementById('submit-btn');
+  const errBox=document.getElementById('err-box');
+  errBox.style.display='none';
+  if(amount<MIN||amount>userBalance||!acct){errBox.style.display='block';errBox.textContent='Données invalides.';return;}
+  btn.disabled=true;btn.innerHTML='<span class="ld"></span>Envoi en cours…';
   try{
-    const isOpen=isWindowOpen();
-    const status=isOpen?'pending':'pending';
-    const now=new Date().toISOString();
-    const methodName=methodLabels[selectedMethod]||selectedMethod;
-
+    const ref='SYLLA-'+Date.now().toString(36).toUpperCase();
     const{error}=await sb.from('transactions').insert({
-      user_id:currentUser.id,
-      type:'retrait',
-      label:`Retrait ${methodName} → ${phone}`,
-      amount:amount,
-      status:status,
-      created_at:now
+      user_id:cu.id,type:'retrait',
+      label:`Retrait (${selM.id}) → ${acct}`,
+      amount:amount,status:'pending',
+      created_at:new Date().toISOString()
     });
     if(error)throw error;
-
-    // Show success
-    document.getElementById('modal-main').style.display='none';
-    document.getElementById('modal-success').classList.add('show');
-    const isOpen2=isWindowOpen();
-    document.getElementById('ms-msg').textContent=isOpen2
-      ?`${fmt(amount)} FCFA en cours de transfert vers ${phone} via ${methodName}. Vous recevrez un SMS de confirmation.`
-      :`Demande enregistrée. Traitement à l'ouverture suivante (8h00). Montant : ${fmt(amount)} FCFA → ${phone}.`;
-
-    // Update UI
+    document.getElementById('suc-msg').textContent=`${fmt(net)} FCFA vers ${acct} via ${selM.name}. Frais prélevés : ${fmt(frais)} FCFA.`;
+    document.getElementById('suc-ref').textContent='REF: '+ref;
+    document.getElementById('suc-overlay').classList.add('show');
     userBalance-=amount;
     document.getElementById('bal-display').textContent=fmt(userBalance);
-    document.getElementById('amount').value='';
-    document.getElementById('fee-box').style.display='none';
-
-    await loadHistory();
-    await loadBalance();
-
+    document.getElementById('amount-inp').value='';
+    document.getElementById('fee-card').style.display='none';
+    await loadHistory();await loadBalance();
   }catch(err){
-    btn.disabled=false;btn.innerHTML='✅ Confirmer';
-    errEl.style.display='block';
-    errEl.textContent='❌ Erreur : '+(err.message||'Réessayez.');
+    btn.disabled=false;btn.innerHTML='💸 Envoyer la demande';
+    errBox.style.display='block';
+    errBox.textContent='❌ Erreur : '+(err.message||'Réessayez.');
   }
 }
 
-/* ── HELPERS ── */
 function fmt(n){return Number(n).toLocaleString('fr-FR');}
-function pad(n){return String(Math.max(0,n)).padStart(2,'0');}
-
-let toastT=null;
-function showToast(msg,err=false){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  err?t.classList.add('err'):t.classList.remove('err');
-  t.classList.add('show');
-  clearTimeout(toastT);
-  toastT=setTimeout(()=>t.classList.remove('show'),3200);
+function pad(n){return String(n).padStart(2,'0');}
+let toastT2=null;
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent='⚠️ '+msg;
+  t.classList.add('show');clearTimeout(toastT2);
+  toastT2=setTimeout(()=>t.classList.remove('show'),3200);
 }
-
 init();
 </script>
 </body>
