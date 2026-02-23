@@ -401,45 +401,37 @@ function isValidEmail(raw){
 }
 
 /* ── REFERRAL BONUS LOGIC ── */
-async function applyReferralBonus(newUserId, refCode){
-  if(!refCode)return;
-  try{
-    // Find who owns this referral code
-    // Ref code format: SYLLA-XXXXXX where XXXXXX is first 6 chars of uid without dashes
-    const{data:profiles}=await sb.from('profiles').select('id,full_name').not('id','is',null);
-    if(!profiles)return;
-    let referrerId=null;
-    let referrerName='';
-    for(const p of profiles){
-      const expectedCode='SYLLA-'+p.id.replace(/-/g,'').substring(0,6).toUpperCase();
-      if(expectedCode===refCode.toUpperCase()){
-        referrerId=p.id;referrerName=p.full_name||'Investisseur';break;
-      }
-    }
-    if(!referrerId)return;
-    const now=new Date().toISOString();
-    // Bonus to the new user (filleul)
-    await sb.from('transactions').insert({
-      user_id:newUserId,type:'bonus_bienvenue',
-      label:'🎁 Bonus parrainage — Bienvenue chez SYLLA !',
-      amount:1000,status:'credited',created_at:now
-    });
-    // Bonus to the referrer (parrain) — 500 FCFA pour avoir parrainé
-    await sb.from('transactions').insert({
-      user_id:referrerId,type:'referral',
-      label:`👥 Parrainage — Nouveau filleul inscrit`,
-      amount:500,status:'credited',created_at:now
-    });
-    // Save referral relationship
-    await sb.from('referrals').insert({
-      referrer_id:referrerId,
-      referred_id:newUserId,
-      parrain_code:refCode,
-      niveau:1,
-      bonus_parrain:500,
-      created_at:now
-    }).then(()=>{}).catch(()=>{}); // Don't block if table doesn't exist yet
-  }catch(e){console.warn('Referral bonus error:',e);}
+async function applyReferralBonus(newUserId, refCode, nom, tel, email){
+  // Appel de la function Postgres côté serveur (SECURITY DEFINER = bypass RLS)
+  // Elle gère tout : création profil, bonus filleul, bonus parrain, table referrals
+  const { data, error } = await sb.rpc('traiter_parrainage', {
+    p_nouveau_user_id : newUserId,
+    p_parrain_code    : (refCode || '').toUpperCase(),
+    p_full_name       : nom   || '',
+    p_phone           : tel   || '',
+    p_email           : email || ''
+  });
+
+  if(error){
+    console.error('[PARRAINAGE] Erreur RPC:', error.message);
+    // Fallback : créer le profil + bonus bienvenue manuellement
+    try{
+      const myCode = 'SYLLA-' + newUserId.replace(/-/g,'').substring(0,6).toUpperCase();
+      await sb.from('profiles').upsert({
+        id: newUserId, full_name: nom, phone: tel||null,
+        email: email, referral_code: myCode,
+        created_at: new Date().toISOString()
+      });
+      await sb.from('transactions').insert({
+        user_id: newUserId, type: 'bonus_bienvenue',
+        label: '🎁 Bonus de bienvenue SYLLA',
+        amount: 1000, status: 'credited', created_at: new Date().toISOString()
+      });
+    }catch(fe){ console.error('[PARRAINAGE] Fallback aussi échoué:', fe); }
+    return;
+  }
+
+  console.log('[PARRAINAGE] Résultat serveur:', data);
 }
 
 /* ── REDIRECT ── */
@@ -500,23 +492,10 @@ document.getElementById('f-signup').addEventListener('submit',async e=>{
     }
 
     if(data?.user){
-      const uid=data.user.id;
-      const myCode='SYLLA-'+uid.replace(/-/g,'').substring(0,6).toUpperCase();
-      // Create profile
-      await sb.from('profiles').upsert({
-        id:uid,full_name:nom,phone:tel||null,email:email,
-        referral_code:myCode,created_at:new Date().toISOString()
-      });
-      // Welcome bonus (only if NO referral code used, otherwise applyReferralBonus handles it)
-      if(!refCode){
-        await sb.from('transactions').insert({
-          user_id:uid,type:'bonus_bienvenue',
-          label:'🎁 Bonus de bienvenue SYLLA',
-          amount:1000,status:'credited',created_at:new Date().toISOString()
-        });
-      } else {
-        await applyReferralBonus(uid,refCode);
-      }
+      const uid = data.user.id;
+      // Tout est géré par la function Postgres côté serveur :
+      // création profil + bonus filleul + bonus parrain + table referrals
+      await applyReferralBonus(uid, refCode, nom, tel, email);
     }
 
     if(data?.session){
