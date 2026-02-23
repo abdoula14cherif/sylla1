@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SYLLA — Long Terme</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --green:#00D166;--green-l:#4ADE80;--green-d:#009948;
+  --teal:#00C9C0;--teal-l:#00EDDE;
+  --amber:#FFB830;--gold:#F5C842;
+  --blue:#3B82F6;--blue-l:#60A5FA;
+  --bg:#060E0A;--bg2:#0A1A10;--bg3:#0D2016;
+  --text:#F0FFF5;--text2:#6BA885;--text3:#2E5A40;
+  --nav-h:70px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;padding-bottom:calc(var(--nav-h)+16px);}
+
+/* BG */
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 55% at 80% 5%, rgba(0,209,102,.10) 0%,transparent 60%),
+    radial-gradient(ellipse 55% 60% at 8% 85%, rgba(0,201,192,.07) 0%,transparent 55%),
+    radial-gradient(ellipse 70% 70% at 50% 50%, rgba(0,153,72,.04) 0%,transparent 80%),
+    linear-gradient(160deg,#060E0A 0%,#0A1A10 50%,#081209 100%);}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,209,102,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,209,102,.04) 1px,transparent 1px);
+  background-size:50px 50px;}
+
+/* LOADING */
+.loading-screen{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .5s,visibility .5s;}
+.loading-screen.hide{opacity:0;visibility:hidden;pointer-events:none;}
+.load-logo{font-family:'Bebas Neue',cursive;font-size:44px;letter-spacing:8px;background:linear-gradient(135deg,var(--green),var(--teal-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:pulse 1.5s ease-in-out infinite;}
+.load-bar{width:120px;height:2px;background:rgba(0,209,102,.15);border-radius:2px;overflow:hidden;}
+.load-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--teal));border-radius:2px;animation:loadFill 1.5s ease-in-out infinite;}
+@keyframes loadFill{0%{width:0%;margin-left:0;}50%{width:100%;margin-left:0;}100%{width:0%;margin-left:100%;}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+.page{position:relative;z-index:2;padding:0 14px 20px;}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 12px;position:sticky;top:0;z-index:50;background:rgba(6,14,10,.93);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,209,102,.1);margin:0 -14px 20px;}
+.back-btn{display:flex;align-items:center;gap:8px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--green);text-decoration:none;padding:8px 14px;border:1px solid rgba(0,209,102,.3);border-radius:20px;transition:all .2s;}
+.back-btn:hover{background:rgba(0,209,102,.08);}
+.page-title{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:4px;background:linear-gradient(135deg,var(--green),var(--teal-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.balance-pill{display:flex;align-items:center;gap:6px;background:rgba(0,209,102,.08);border:1px solid rgba(0,209,102,.2);border-radius:20px;padding:7px 14px;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--green);}
+
+/* HERO */
+.hero-sec{text-align:center;padding:4px 0 24px;}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(0,209,102,.1);border:1px solid rgba(0,209,102,.3);border-radius:100px;padding:7px 18px;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--green);margin-bottom:14px;}
+.tag-ico{font-size:14px;}
+.hero-sec h1{font-family:'Bebas Neue',cursive;font-size:clamp(36px,10vw,64px);letter-spacing:4px;background:linear-gradient(135deg,#fff 0%,var(--green-l) 50%,var(--teal) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:.95;}
+.hero-sec p{font-size:13px;font-weight:300;color:var(--text2);margin-top:10px;max-width:290px;margin-inline:auto;line-height:1.6;}
+
+/* WEEKLY BANNER */
+.weekly-banner{
+  display:flex;align-items:center;gap:12px;
+  background:linear-gradient(135deg,rgba(245,200,66,.1),rgba(0,209,102,.06));
+  border:1px solid rgba(245,200,66,.25);border-radius:16px;
+  padding:14px 18px;margin-bottom:22px;
+}
+.wb-ico{font-size:28px;flex-shrink:0;}
+.wb-text h3{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;color:var(--gold);}
+.wb-text p{font-size:12px;font-weight:300;color:var(--text2);margin-top:3px;line-height:1.5;}
+
+/* PLANS */
+.plans-list{display:flex;flex-direction:column;gap:20px;}
+
+.plan-card{border-radius:24px;overflow:hidden;border:1.5px solid var(--pb);background:var(--bg2);transition:transform .25s,box-shadow .25s;animation:fadeUp .5s ease both;}
+.plan-card:nth-child(1){animation-delay:.05s;}
+.plan-card:nth-child(2){animation-delay:.12s;}
+.plan-card:nth-child(3){animation-delay:.19s;}
+.plan-card:hover{transform:translateY(-3px);box-shadow:0 20px 50px var(--ps);}
+
+/* Image */
+.plane-img-wrap{position:relative;height:195px;overflow:hidden;}
+.plane-img-wrap::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,14,10,0) 15%,rgba(6,14,10,.6) 65%,var(--bg2) 100%);}
+.plane-img{width:100%;height:100%;object-fit:cover;object-position:center 40%;transition:transform .5s;}
+.plan-card:hover .plane-img{transform:scale(1.05);}
+
+.img-badges{position:absolute;top:14px;left:14px;z-index:2;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.b-plan{font-family:'Bebas Neue',cursive;font-size:13px;letter-spacing:3px;padding:5px 14px;border-radius:100px;color:#fff;}
+.b-tier{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border-radius:100px;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.85);}
+.b-endurance{position:absolute;top:14px;right:14px;z-index:2;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);border:1px solid rgba(0,209,102,.3);border-radius:8px;padding:5px 10px;font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);}
+
+/* Plan body */
+.plan-body{padding:0 18px 20px;}
+.plan-name{font-family:'Bebas Neue',cursive;font-size:28px;letter-spacing:3px;line-height:1;margin-bottom:4px;margin-top:12px;}
+.plan-sub{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:14px;}
+
+/* Stats grid */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.04);border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.05);margin-bottom:14px;}
+.sg-item{background:rgba(0,0,0,.25);padding:12px 8px;text-align:center;}
+.sg-val{font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:1px;line-height:1;}
+.sg-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-top:3px;}
+
+/* Year projection */
+.year-proj{
+  background:linear-gradient(135deg,rgba(0,209,102,.08),rgba(0,201,192,.04));
+  border:1px solid rgba(0,209,102,.2);border-radius:14px;
+  padding:14px 16px;margin-bottom:14px;
+}
+.yp-label{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(0,209,102,.7);margin-bottom:8px;}
+.yp-row{display:flex;justify-content:space-between;align-items:center;}
+.yp-item{text-align:center;}
+.yp-val{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:1px;}
+.yp-sub{font-size:10px;font-weight:300;color:var(--text3);margin-top:2px;}
+.yp-div{width:1px;height:36px;background:rgba(255,255,255,.08);}
+
+/* Weekly badge */
+.weekly-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.25);
+  border-radius:100px;padding:8px 16px;margin-bottom:14px;
+  font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);
+}
+
+/* Progress bar for active */
+.progress-section{margin-bottom:14px;}
+.prog-header{display:flex;justify-content:space-between;margin-bottom:6px;}
+.prog-lbl{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
+.prog-pct{font-family:'Bebas Neue',cursive;font-size:16px;letter-spacing:1px;color:var(--green);}
+.prog-bar{height:6px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--green-d),var(--green),var(--teal));transition:width .8s ease;}
+
+/* Accumulated earnings */
+.earnings-box{
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(0,0,0,.25);border-radius:14px;border:1px solid rgba(255,255,255,.06);
+  padding:12px 16px;margin-bottom:14px;
+}
+.eb-item{text-align:center;}
+.eb-val{font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:1px;}
+.eb-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-top:3px;}
+.eb-div{width:1px;height:32px;background:rgba(255,255,255,.07);}
+
+/* Buttons */
+.invest-btn{width:100%;padding:15px;border:none;border-radius:14px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;position:relative;overflow:hidden;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.invest-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transition:left .5s;}
+.invest-btn:hover::before{left:100%;}
+.invest-btn:hover{transform:translateY(-2px);}
+.invest-btn:active{transform:scale(.98);}
+
+.withdraw-weekly-btn{width:100%;padding:14px;border:1.5px solid rgba(74,222,128,.35);background:rgba(74,222,128,.07);border-radius:14px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--green-l);cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;}
+.withdraw-weekly-btn:hover{background:rgba(74,222,128,.14);}
+.withdraw-weekly-btn:disabled{opacity:.4;cursor:not-allowed;}
+.locked-chip{text-align:center;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.88);backdrop-filter:blur(16px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s;}
+.modal-overlay.show{opacity:1;pointer-events:all;}
+.modal{width:100%;max-width:480px;background:linear-gradient(160deg,#091A0E 0%,#050E08 100%);border:1.5px solid rgba(0,209,102,.2);border-radius:28px 28px 0 0;padding:10px 20px 36px;transform:translateY(100%);transition:transform .4s cubic-bezier(.34,1.4,.64,1);}
+.modal-overlay.show .modal{transform:translateY(0);}
+.modal-handle{width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);margin:14px auto 20px;}
+.modal-plane-img{width:100%;height:120px;border-radius:16px;overflow:hidden;margin-bottom:16px;border:1px solid rgba(255,255,255,.07);}
+.modal-plane-img img{width:100%;height:100%;object-fit:cover;object-position:center 35%;}
+.modal-plan-name{font-family:'Bebas Neue',cursive;font-size:30px;letter-spacing:4px;margin-bottom:4px;}
+.modal-sub{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:18px;}
+.modal-recap{background:rgba(0,0,0,.35);border-radius:16px;border:1px solid rgba(255,255,255,.06);overflow:hidden;margin-bottom:18px;}
+.recap-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.04);}
+.recap-row:last-child{border-bottom:none;}
+.recap-lbl{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
+.recap-val{font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:1px;}
+.modal-warn{display:flex;align-items:center;gap:10px;background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.2);border-radius:12px;padding:12px 14px;margin-bottom:18px;font-size:12px;font-weight:300;color:rgba(245,200,66,.9);line-height:1.5;}
+.modal-err{display:none;background:rgba(255,59,78,.1);border:1px solid rgba(255,59,78,.3);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:#FF6B7A;}
+.modal-btns{display:grid;grid-template-columns:1fr 1.6fr;gap:10px;}
+.btn-cancel{padding:14px;border-radius:14px;border:1.5px solid rgba(255,255,255,.1);background:transparent;color:var(--text3);cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:all .2s;}
+.btn-cancel:hover{background:rgba(255,255,255,.05);}
+.btn-confirm-m{padding:14px;border-radius:14px;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#fff;position:relative;overflow:hidden;transition:all .3s;background:linear-gradient(135deg,var(--green-d),var(--green));box-shadow:0 8px 24px rgba(0,209,102,.3);}
+.btn-confirm-m:hover{transform:translateY(-2px);}
+.btn-confirm-m:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+.modal-success{display:none;text-align:center;padding:20px 0;}
+.modal-success.show{display:block;}
+.ms-ico{font-size:56px;margin-bottom:14px;}
+.ms-title{font-family:'Bebas Neue',cursive;font-size:34px;letter-spacing:3px;color:var(--green);}
+.ms-msg{font-size:14px;font-weight:300;color:var(--text2);margin-top:8px;line-height:1.5;}
+.ms-btn{margin-top:20px;padding:13px 32px;border-radius:14px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--green-d),var(--green));font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#fff;box-shadow:0 8px 24px rgba(0,209,102,.3);}
+.ld{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
+
+/* BOTTOM NAV */
+.bot-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;height:var(--nav-h);background:rgba(6,14,10,.94);backdrop-filter:blur(24px);border-top:1px solid rgba(0,209,102,.1);display:grid;grid-template-columns:repeat(4,1fr);box-shadow:0 -8px 32px rgba(0,0,0,.5);}
+.nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;text-decoration:none;transition:all .2s;padding:8px 4px;position:relative;}
+.nav-item::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,var(--green),var(--teal));transform:scaleX(0);transition:transform .3s;}
+.nav-item.active::before{transform:scaleX(1);}
+.nav-item.active .nav-ico,.nav-item.active .nav-lbl{color:var(--green);}
+.nav-ico{font-size:20px;color:#2E5A40;transition:color .2s;}
+.nav-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#2E5A40;transition:color .2s;}
+
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:rgba(0,209,102,.3);border-radius:4px;}
+</style>
+</head>
+<body>
+
+<div class="loading-screen" id="loader">
+  <div class="load-logo">LONG TERME</div>
+  <div class="load-bar"><div class="load-fill"></div></div>
+</div>
+
+<div class="bg-mesh"></div><div class="bg-grid"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div id="modal-main">
+      <div class="modal-plane-img"><img id="modal-img" src="" alt=""></div>
+      <div class="modal-plan-name" id="modal-plan-name"></div>
+      <div class="modal-sub" id="modal-plane-type"></div>
+      <div class="modal-recap">
+        <div class="recap-row"><div class="recap-lbl">Mise initiale</div><div class="recap-val" id="m-cost" style="color:var(--amber)">—</div></div>
+        <div class="recap-row"><div class="recap-lbl">Gain par jour</div><div class="recap-val" id="m-daily" style="color:var(--green)">—</div></div>
+        <div class="recap-row"><div class="recap-lbl">Retrait chaque</div><div class="recap-val" id="m-freq" style="color:var(--gold)">1 SEMAINE</div></div>
+        <div class="recap-row"><div class="recap-lbl">Gain / semaine</div><div class="recap-val" id="m-weekly" style="color:var(--green-l)">—</div></div>
+        <div class="recap-row"><div class="recap-lbl">Durée totale</div><div class="recap-val" id="m-dur" style="color:var(--text2)">365 JOURS</div></div>
+        <div class="recap-row"><div class="recap-lbl">Projection annuelle</div><div class="recap-val" id="m-yearly" style="color:var(--gold)">—</div></div>
+        <div class="recap-row"><div class="recap-lbl">Votre solde</div><div class="recap-val" id="m-balance" style="color:var(--text)">—</div></div>
+      </div>
+      <div class="modal-warn">🌿 <span>Engagement sur <strong>365 jours</strong>. Retrait possible chaque semaine. Les gains s'accumulent et sont crédités automatiquement.</span></div>
+      <div class="modal-err" id="modal-err"></div>
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="closeModal()">Annuler</button>
+        <button class="btn-confirm-m" id="btn-confirm" onclick="confirmInvest()">🌿 Investir à long terme</button>
+      </div>
+    </div>
+    <div class="modal-success" id="modal-success">
+      <div class="ms-ico">🛫</div>
+      <div class="ms-title" id="ms-title">Plan Activé !</div>
+      <div class="ms-msg" id="ms-msg">Félicitations ! Votre investissement long terme est en route. Premier retrait disponible dans 7 jours.</div>
+      <button class="ms-btn" onclick="window.location.href='dashboard.html'">Voir le Dashboard →</button>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="topbar">
+    <a href="dashboard.html" class="back-btn">← Retour</a>
+    <div class="page-title">LONG TERME</div>
+    <div class="balance-pill">💰 <span id="bal-display">…</span> F</div>
+  </div>
+
+  <div class="hero-sec">
+    <div class="hero-tag"><span class="tag-ico">🌿</span>Gains durables · Retrait hebdo</div>
+    <h1>INVESTIR<br>DANS LE TEMPS</h1>
+    <p>Des avions mythiques qui traversent les années. Construisez votre richesse jour après jour pendant 365 jours.</p>
+  </div>
+
+  <div class="weekly-banner">
+    <div class="wb-ico">📅</div>
+    <div class="wb-text">
+      <h3>Retrait chaque semaine</h3>
+      <p>Sur tous les plans long terme, vous pouvez retirer vos gains chaque semaine (7 jours). Votre capital travaille sans interruption pendant 1 an.</p>
+    </div>
+  </div>
+
+  <div class="plans-list" id="plans-container"></div>
+</div>
+
+<nav class="bot-nav">
+  <a href="dashboard.html" class="nav-item"><span class="nav-ico">🏠</span><span class="nav-lbl">Accueil</span></a>
+  <a href="plan.html" class="nav-item"><span class="nav-ico">🚀</span><span class="nav-lbl">Plans</span></a>
+  <a href="retrait.html" class="nav-item"><span class="nav-ico">💸</span><span class="nav-lbl">Retrait</span></a>
+  <a href="profil.html" class="nav-item"><span class="nav-ico">👤</span><span class="nav-lbl">Profil</span></a>
+</nav>
+
+<script>
+const{createClient}=supabase;
+const sb=createClient('https://fqiotqrraobmsrcyewsi.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc');
+
+const PLANS_LT = [
+  {
+    id:'lt1', name:'ENDURANCE CLASSIC',
+    plane:'Boeing 737-800',
+    planeDesc:'Le roi de la durabilité · Fiable depuis 50 ans',
+    img:'https://images.unsplash.com/photo-1569629743817-70d8db6c323b?w=900&q=85',
+    cost:2000, daily:100,
+    color:'#38BDF8', shadow:'rgba(56,189,248,.2)', border:'rgba(56,189,248,.3)',
+    gradFrom:'#0EA5E9', gradTo:'#38BDF8',
+    badgeBg:'linear-gradient(135deg,#075985,#0EA5E9)',
+    tier:'CLASSIQUE', endurance:'50+ ANS DE VOL',
+  },
+  {
+    id:'lt2', name:'MARATHON AIRBUS',
+    plane:'Airbus A320neo',
+    planeDesc:'Motorisation nouvelle génération · 99.9% de fiabilité',
+    img:'https://images.unsplash.com/photo-1551135049-8a33b5883817?w=900&q=85',
+    cost:8000, daily:400,
+    color:'#00C9C0', shadow:'rgba(0,201,192,.2)', border:'rgba(0,201,192,.3)',
+    gradFrom:'#008E89', gradTo:'#00C9C0',
+    badgeBg:'linear-gradient(135deg,#005E5A,#008E89)',
+    tier:'PRO', endurance:'ULTRA FIABLE',
+  },
+  {
+    id:'lt3', name:'TITAN LONG RANGE',
+    plane:'Boeing 777X',
+    planeDesc:'Le long-courrier de nouvelle génération · Record mondial',
+    img:'https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?w=900&q=85',
+    cost:15000, daily:800,
+    color:'#F5C842', shadow:'rgba(245,200,66,.2)', border:'rgba(245,200,66,.35)',
+    gradFrom:'#B8960C', gradTo:'#F5C842',
+    badgeBg:'linear-gradient(135deg,#7A6208,#B8960C)',
+    tier:'TITAN 🏆', endurance:'RECORD AUTONOMIE',
+  },
+];
+
+let currentUser=null,userBalance=0,activeInvestments=[],selectedPlan=null;
+
+async function init(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='index.html';return;}
+  currentUser=session.user;
+  await loadBalance();
+  await loadActiveInvestments();
+  await creditAccumulatedGains();
+  renderPlans();
+  document.getElementById('loader').classList.add('hide');
+}
+
+async function loadBalance(){
+  let total=1000;
+  try{
+    const{data}=await sb.from('transactions').select('amount,type').eq('user_id',currentUser.id);
+    if(data&&data.length){total=0;data.forEach(t=>{
+      if(['bonus_bienvenue','depot','gain','referral'].includes(t.type))total+=Number(t.amount);
+      if(t.type==='retrait')total-=Number(t.amount);
+      if(t.type==='investissement')total-=Number(t.amount);
+    });}
+  }catch(e){}
+  userBalance=Math.max(0,total);
+  document.getElementById('bal-display').textContent=fmt(userBalance);
+}
+
+async function loadActiveInvestments(){
+  try{
+    const{data}=await sb.from('investments').select('*').eq('user_id',currentUser.id).eq('status','active').like('plan_id','lt%');
+    activeInvestments=data||[];
+  }catch(e){activeInvestments=[];}
+}
+
+async function creditAccumulatedGains(){
+  const now=new Date();
+  for(const inv of activeInvestments){
+    try{
+      const lastCredit=inv.last_credit_date?new Date(inv.last_credit_date):new Date(inv.start_date);
+      const daysSince=Math.floor((now-lastCredit)/(1000*60*60*24));
+      const start=new Date(inv.start_date);
+      const totalDays=Math.floor((now-start)/(1000*60*60*24));
+      const daysLeft=365-totalDays;
+      if(daysSince>=1&&daysLeft>0){
+        const daysToCredit=Math.min(daysSince,daysLeft);
+        const gain=inv.daily_gain*daysToCredit;
+        await sb.from('transactions').insert({user_id:currentUser.id,type:'gain',label:`Gain quotidien — ${inv.plan_name} (${daysToCredit}j)`,amount:gain,status:'credited',created_at:now.toISOString()});
+        await sb.from('investments').update({last_credit_date:now.toISOString(),days_credited:(inv.days_credited||0)+daysToCredit}).eq('id',inv.id);
+        if(totalDays>=365)await sb.from('investments').update({status:'completed'}).eq('id',inv.id);
+      }
+    }catch(e){}
+  }
+}
+
+function renderPlans(){
+  const container=document.getElementById('plans-container');
+  const activeIds=activeInvestments.map(i=>i.plan_id);
+
+  container.innerHTML=PLANS_LT.map(p=>{
+    const yearlyGain=p.daily*365;
+    const weeklyGain=p.daily*7;
+    const active=activeInvestments.find(i=>i.plan_id===p.id);
+
+    let bodyHtml='';
+
+    if(active){
+      const start=new Date(active.start_date);
+      const now=new Date();
+      const totalDays=Math.floor((now-start)/(1000*60*60*24));
+      const progressPct=Math.min(Math.round((totalDays/365)*100),100);
+      const accumulated=(active.days_credited||0)*p.daily;
+      const lastCredit=active.last_credit_date?new Date(active.last_credit_date):start;
+      const daysSinceWithdraw=Math.floor((now-lastCredit)/(1000*60*60*24));
+      const canWithdraw=daysSinceWithdraw>=7;
+      const daysUntilNext=Math.max(0,7-daysSinceWithdraw);
+      const weeklyEarned=Math.floor(daysSinceWithdraw)*p.daily;
+
+      bodyHtml=`
+        <div class="plan-name" style="color:${p.color}">${p.name}</div>
+        <div class="plan-sub">✈️ ${p.plane} · ${p.planeDesc}</div>
+        ${statsHtml(p,yearlyGain,weeklyGain)}
+        <div class="progress-section">
+          <div class="prog-header">
+            <div class="prog-lbl">Progression (Jour ${totalDays}/365)</div>
+            <div class="prog-pct">${progressPct}%</div>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${progressPct}%"></div></div>
+        </div>
+        <div class="earnings-box">
+          <div class="eb-item"><div class="eb-val" style="color:var(--green)">${fmt(accumulated)}</div><div class="eb-lbl">Gains cumulés (F)</div></div>
+          <div class="eb-div"></div>
+          <div class="eb-item"><div class="eb-val" style="color:var(--gold)">${fmt(weeklyEarned)}</div><div class="eb-lbl">Disponible (F)</div></div>
+          <div class="eb-div"></div>
+          <div class="eb-item"><div class="eb-val" style="color:var(--text2)">${365-totalDays}</div><div class="eb-lbl">Jours restants</div></div>
+        </div>
+        <button class="withdraw-weekly-btn" ${canWithdraw?'':'disabled'} onclick="withdrawWeekly('${active.id}','${p.id}',${weeklyEarned},${p.daily})">
+          ${canWithdraw?'💸 Retirer '+fmt(weeklyEarned)+' FCFA':'⏳ Prochain retrait dans '+daysUntilNext+' jour(s)'}
+        </button>
+        ${!canWithdraw?`<div class="locked-chip">📅 Retrait hebdomadaire — ${daysUntilNext} jour(s) restant(s)</div>`:''}`;
+    }else{
+      bodyHtml=`
+        <div class="plan-name" style="color:${p.color}">${p.name}</div>
+        <div class="plan-sub">✈️ ${p.plane} · ${p.planeDesc}</div>
+        ${statsHtml(p,yearlyGain,weeklyGain)}
+        <button class="invest-btn" style="background:linear-gradient(135deg,${p.gradFrom},${p.gradTo});box-shadow:0 8px 28px ${p.shadow};" onclick="openModal('${p.id}')">
+          🌿 Investir ${fmt(p.cost)} FCFA
+        </button>`;
+    }
+
+    return `
+    <div class="plan-card" style="--pb:${p.border};--ps:${p.shadow};">
+      <div class="plane-img-wrap">
+        <img class="plane-img" src="${p.img}" alt="${p.plane}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80'">
+        <div class="img-badges">
+          <div class="b-plan" style="background:${p.badgeBg}">LONG TERME</div>
+          <div class="b-tier" style="color:${p.color}">${p.tier}</div>
+        </div>
+        <div class="b-endurance">🛡️ ${p.endurance}</div>
+      </div>
+      <div class="plan-body">${bodyHtml}</div>
+    </div>`;
+  }).join('');
+}
+
+function statsHtml(p,yearlyGain,weeklyGain){
+  return `
+    <div class="stats-grid">
+      <div class="sg-item"><div class="sg-val" style="color:${p.color}">${fmt(p.cost)}</div><div class="sg-lbl">Mise (F)</div></div>
+      <div class="sg-item"><div class="sg-val" style="color:var(--green)">${fmt(p.daily)}</div><div class="sg-lbl">/ Jour (F)</div></div>
+      <div class="sg-item"><div class="sg-val" style="color:var(--gold)">${fmt(weeklyGain)}</div><div class="sg-lbl">/ Semaine (F)</div></div>
+    </div>
+    <div class="weekly-chip">📅 Retrait chaque 7 jours · Pendant 1 AN</div>
+    <div class="year-proj">
+      <div class="yp-label">📊 Projection annuelle complète</div>
+      <div class="yp-row">
+        <div class="yp-item"><div class="yp-val" style="color:${p.color}">${fmt(p.cost)}</div><div class="yp-sub">Mise</div></div>
+        <div class="yp-div"></div>
+        <div class="yp-item"><div class="yp-val" style="color:var(--green-l)">${fmt(yearlyGain)}</div><div class="yp-sub">Gain total 1 an</div></div>
+        <div class="yp-div"></div>
+        <div class="yp-item"><div class="yp-val" style="color:var(--gold)">×${Math.round(yearlyGain/p.cost)}</div><div class="yp-sub">Multiplicateur</div></div>
+      </div>
+    </div>`;
+}
+
+async function withdrawWeekly(invId,planId,amount,dailyGain){
+  if(amount<=0){alert('Aucun gain disponible pour le moment.');return;}
+  if(!confirm('Retirer '+fmt(amount)+' FCFA de gains hebdomadaires ?'))return;
+  try{
+    await sb.from('transactions').insert({user_id:currentUser.id,type:'gain',label:`Retrait hebdomadaire — ${planId}`,amount:amount,status:'credited',created_at:new Date().toISOString()});
+    await sb.from('investments').update({last_credit_date:new Date().toISOString()}).eq('id',invId);
+    alert('✅ '+fmt(amount)+' FCFA retirés avec succès !');
+    await loadBalance();await loadActiveInvestments();renderPlans();
+  }catch(e){alert('Erreur: '+e.message);}
+}
+
+function openModal(planId){
+  selectedPlan=PLANS_LT.find(p=>p.id===planId);
+  if(!selectedPlan)return;
+  const p=selectedPlan;
+  const yearlyGain=p.daily*365;const weeklyGain=p.daily*7;
+  document.getElementById('modal-img').src=p.img;
+  document.getElementById('modal-plan-name').textContent=p.name;
+  document.getElementById('modal-plan-name').style.color=p.color;
+  document.getElementById('modal-plane-type').textContent='✈️ '+p.plane+' · '+p.planeDesc;
+  document.getElementById('m-cost').textContent=fmt(p.cost)+' FCFA';
+  document.getElementById('m-daily').textContent='+'+fmt(p.daily)+' FCFA / jour';
+  document.getElementById('m-weekly').textContent='+'+fmt(weeklyGain)+' FCFA / sem';
+  document.getElementById('m-yearly').textContent='+'+fmt(yearlyGain)+' FCFA';
+  document.getElementById('m-balance').textContent=fmt(userBalance)+' FCFA';
+  document.getElementById('modal-err').style.display='none';
+  document.getElementById('modal-main').style.display='block';
+  document.getElementById('modal-success').classList.remove('show');
+  document.getElementById('btn-confirm').disabled=false;
+  document.getElementById('btn-confirm').innerHTML='🌿 Investir à long terme';
+  document.getElementById('modal-overlay').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(e){
+  if(e&&e.target!==document.getElementById('modal-overlay'))return;
+  document.getElementById('modal-overlay').classList.remove('show');
+  document.body.style.overflow='';selectedPlan=null;
+}
+
+async function confirmInvest(){
+  if(!selectedPlan||!currentUser)return;
+  const p=selectedPlan;
+  const errEl=document.getElementById('modal-err');
+  errEl.style.display='none';
+  if(userBalance<p.cost){errEl.style.display='block';errEl.textContent='❌ Solde insuffisant. Vous avez '+fmt(userBalance)+' FCFA, il vous faut '+fmt(p.cost)+' FCFA.';return;}
+  const btn=document.getElementById('btn-confirm');
+  btn.disabled=true;btn.innerHTML='<span class="ld"></span>Activation…';
+  try{
+    const now=new Date().toISOString();
+    const{error:e1}=await sb.from('transactions').insert({user_id:currentUser.id,type:'investissement',label:'Investissement LT — '+p.name,amount:p.cost,status:'credited',created_at:now});
+    if(e1)throw e1;
+    const{error:e2}=await sb.from('investments').insert({user_id:currentUser.id,plan_id:p.id,plan_name:p.name,plane_name:p.plane,amount:p.cost,daily_gain:p.daily,duration_days:365,days_credited:0,status:'active',start_date:now,last_credit_date:now,created_at:now});
+    if(e2)throw e2;
+    document.getElementById('modal-main').style.display='none';
+    document.getElementById('modal-success').classList.add('show');
+    document.getElementById('ms-title').textContent=p.name+' Activé ! 🌿';
+    document.getElementById('ms-msg').textContent='Votre '+p.plane+' est en route pour 365 jours. +'+fmt(p.daily)+' FCFA / jour, retrait disponible chaque semaine.';
+    userBalance-=p.cost;
+    document.getElementById('bal-display').textContent=fmt(userBalance);
+    await loadActiveInvestments();renderPlans();
+  }catch(err){
+    btn.disabled=false;btn.innerHTML='🌿 Investir à long terme';
+    errEl.style.display='block';errEl.textContent='❌ Erreur : '+(err.message||'Réessayez.');
+  }
+}
+
+function fmt(n){return Number(n).toLocaleString('fr-FR');}
+init();
+</script>
+</body>
+</html>
