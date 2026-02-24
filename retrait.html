@@ -403,28 +403,28 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 const{createClient}=supabase;
 const sb=createClient('https://fqiotqrraobmsrcyewsi.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc');
 
-const MIN=2000,FEE=0.10;
-let cu=null,userBalance=0,selM={id:'wave',ico:'🌊',name:'Wave',sub:'CI · SN · Mali'};
+const FEE=0.10, MIN=1000;
+const METHODS=[
+  {id:'wave',  ico:'🌊',name:'Wave Money',    sub:'CI · Sénégal · Mali'},
+  {id:'orange',ico:'🟠',name:'Orange Money',  sub:'CI · SN · BF · ML'},
+  {id:'mtn',   ico:'💛',name:'MTN MoMo',      sub:'CI · Ghana · Bénin'},
+  {id:'moov',  ico:'🔵',name:'Moov Money',    sub:'CI · BJ · TG · ML'},
+  {id:'visa',  ico:'💳',name:'Visa/Mastercard',sub:'Toutes banques'},
+  {id:'bank',  ico:'🏦',name:'Virement Bancaire',sub:'UBA · Ecobank · CBI'},
+  {id:'usdt',  ico:'₮', name:'USDT TRC-20',   sub:'Tether · Tron'},
+  {id:'btc',   ico:'₿', name:'Bitcoin',        sub:'Bitcoin Network'},
+];
+
+let cu=null,userBalance=0,selM=METHODS[0];
 let toastT=null;
 
 async function init(){
   const{data:{session}}=await sb.auth.getSession();
   if(!session){window.location.href='index.html';return;}
   cu=session.user;
-  await loadBalance();
-  await loadHistory();
-  startClock();
   renderBanner();
+  await Promise.allSettled([loadBalance(),loadHistory()]);
   document.getElementById('loader').classList.add('hide');
-  try{
-    const{data}=await sb.from('profiles').select('phone').eq('id',cu.id).single();
-    if(data?.phone)document.getElementById('acct-inp').value=data.phone;
-  }catch(e){}
-}
-
-function startClock(){
-  function t(){const n=new Date();document.getElementById('live-clock').textContent=pad(n.getHours())+':'+pad(n.getMinutes())+':'+pad(n.getSeconds());}
-  t();setInterval(t,1000);
 }
 
 function renderBanner(){
@@ -441,20 +441,24 @@ function renderBanner(){
 }
 
 async function loadBalance(){
-  let total=1000,wd=0,pend=0,cnt=0;
   try{
-    const{data}=await sb.from('transactions').select('*').eq('user_id',cu.id);
-    if(data?.length){total=0;data.forEach(t=>{
-      const a=Number(t.amount);
-      if(['bonus_bienvenue','depot','gain','referral','coffre_retrait'].includes(t.type))total+=a;
-      if(['investissement','coffre_depot'].includes(t.type))total-=a;
-      if(t.type==='retrait'){
-        if(t.status==='pending')pend+=a;
-        else if(t.status!=='rejected'){total-=a;wd+=a;cnt++;}
-      }
-    });}
+    // Solde réel via function SQL sécurisée
+    const{data,error}=await sb.rpc('get_solde',{p_user_id:cu.id});
+    userBalance=error?0:Number(data)||0;
+  }catch(e){userBalance=0;}
+
+  // Stats retraits
+  let wd=0,pend=0,cnt=0;
+  try{
+    const{data}=await sb.from('retraits').select('montant_brut,statut').eq('user_id',cu.id);
+    if(data){
+      data.forEach(r=>{
+        if(r.statut==='en_attente')pend+=Number(r.montant_brut);
+        else if(r.statut==='valide'){wd+=Number(r.montant_brut);cnt++;}
+      });
+    }
   }catch(e){}
-  userBalance=Math.max(0,total);
+
   document.getElementById('bal-display').textContent=fmt(userBalance);
   document.getElementById('s-wd').textContent=fmt(wd);
   document.getElementById('s-pend').textContent=fmt(pend);
@@ -464,63 +468,77 @@ async function loadBalance(){
 async function loadHistory(){
   const list=document.getElementById('hist-list');
   try{
-    const{data}=await sb.from('transactions').select('*').eq('user_id',cu.id).eq('type','retrait').order('created_at',{ascending:false}).limit(20);
-    if(!data?.length){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">💸 Aucun retrait effectué pour l\'instant</div>';return;}
-    const ico={wave:'🌊',orange:'🟠',mtn:'💛',moov:'🔵',visa:'💳',bank:'🏦',usdt:'₮',btc:'₿'};
+    const{data}=await sb.from('retraits')
+      .select('*').eq('user_id',cu.id)
+      .order('created_at',{ascending:false}).limit(15);
+
+    if(!data?.length){
+      list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">💸 Aucun retrait effectué</div>';
+      return;
+    }
     list.innerHTML=data.map(t=>{
-      const stCls=t.status==='pending'?'st-pend':t.status==='rejected'?'st-rej':'st-ok';
-      const stTxt=t.status==='pending'?'⏱ En attente':t.status==='rejected'?'✕ Rejeté':'✓ Traité';
       const d=new Date(t.created_at);
       const ds=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-      const m=t.label?.match(/\((\w+)\)/)?.[1]||'wave';
-      return `<div class="hi"><div class="hi-ico" style="background:rgba(0,209,102,.06)">${ico[m]||'💸'}</div><div class="hi-info"><div class="hi-name">${t.label||'Retrait'}</div><div class="hi-date">${ds}</div></div><div class="hi-right"><div class="hi-amt">-${fmt(t.amount)} F</div><div class="hi-st ${stCls}">${stTxt}</div></div></div>`;
+      const stMap={'en_attente':'⏳ En attente','valide':'✓ Traité','rejete':'✕ Rejeté'};
+      const stCls=t.statut==='en_attente'?'st-pend':t.statut==='rejete'?'st-rej':'st-ok';
+      const fraisStr=t.frais>0?` (frais: -${fmt(t.frais)}F)`:'';
+      return `<div class="hi">
+        <div class="hi-ico">💸</div>
+        <div class="hi-info">
+          <div class="hi-name">${t.methode} → ${t.numero_compte}</div>
+          <div class="hi-date">${ds}${fraisStr}</div>
+          ${t.statut==='rejete'&&t.note_admin?`<div style="font-size:11px;color:var(--red);margin-top:3px">Motif: ${t.note_admin}</div>`:''}
+        </div>
+        <div class="hi-right">
+          <div class="hi-amt" style="color:var(--red)">-${fmt(t.montant_brut)} F</div>
+          <div class="hi-st ${stCls}">${stMap[t.statut]||t.statut}</div>
+        </div>
+      </div>`;
     }).join('');
-  }catch(e){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3)">Historique indisponible</div>';}
+  }catch(e){list.innerHTML='<div style="text-align:center;padding:16px;color:var(--text3)">Historique indisponible</div>';}
 }
 
-function setAmt(v){document.getElementById('amount-inp').value=v;calcFee();}
-function setMax(){document.getElementById('amount-inp').value=Math.floor(userBalance);calcFee();}
-function calcFee(){
+function setAmt(v){
+  document.getElementById('amount-inp').value=v;
+  validateStep1();
+}
+
+function validateStep1(){
   const v=Number(document.getElementById('amount-inp').value)||0;
-  const btn=document.getElementById('btn-next1');
-  if(v<MIN||v>userBalance){document.getElementById('fee-card').style.display='none';btn.disabled=true;return;}
-  const frais=Math.round(v*FEE),net=v-frais,after=userBalance-v;
-  document.getElementById('fee-card').style.display='block';
-  document.getElementById('f-brut').textContent=fmt(v)+' FCFA';
-  document.getElementById('f-frais').textContent='-'+fmt(frais)+' FCFA';
-  document.getElementById('f-net').textContent=fmt(net)+' FCFA';
-  document.getElementById('f-after').textContent=fmt(Math.max(0,after))+' FCFA';
-  btn.disabled=false;
+  const err=document.getElementById('s1-err');
+  if(v<MIN){err.style.display='block';err.textContent=`Minimum ${fmt(MIN)} FCFA`;document.getElementById('btn-next1').disabled=true;return;}
+  if(v>userBalance){err.style.display='block';err.textContent=`Solde insuffisant. Disponible : ${fmt(userBalance)} FCFA`;document.getElementById('btn-next1').disabled=true;return;}
+  err.style.display='none';
+  document.getElementById('btn-next1').disabled=false;
 }
 
-const HINTS={wave:'Numéro enregistré sur Wave (ex: +225 07 XX XX XX)',orange:'Numéro Orange Money',mtn:'Numéro MTN MoMo',moov:'Numéro Moov Money',visa:'Numéro de carte Visa/Mastercard (16 chiffres)',bank:'IBAN ou numéro de compte bancaire',usdt:'Adresse portefeuille USDT TRC-20',btc:'Adresse portefeuille Bitcoin'};
-const LBLS={wave:'📱 Numéro de téléphone',orange:'📱 Numéro de téléphone',mtn:'📱 Numéro de téléphone',moov:'📱 Numéro de téléphone',visa:'💳 Numéro de carte',bank:'🏦 Numéro de compte / IBAN',usdt:'₮ Adresse USDT (TRC-20)',btc:'₿ Adresse Bitcoin'};
-
-function selectM(id,el,ico,name,sub){
-  selM={id,ico,name,sub};
+function selectMethod(id,el){
+  selM=METHODS.find(m=>m.id===id)||METHODS[0];
   document.querySelectorAll('.method-opt').forEach(o=>o.classList.remove('selected'));
   el.classList.add('selected');
-  document.getElementById('acct-lbl').textContent=LBLS[id]||'Compte';
-  document.getElementById('acct-hint').textContent=HINTS[id]||'';
-  document.getElementById('acct-inp').placeholder=['usdt','btc'].includes(id)?'Adresse crypto...':['visa'].includes(id)?'1234 5678 9012 3456':['bank'].includes(id)?'CI00 XXXX XXXX XXXX':'+225 00 00 00 00 00';
 }
 
 function goStep(n){
+  const amount=Number(document.getElementById('amount-inp').value)||0;
+  const acct=document.getElementById('acct-inp')?.value.trim()||'';
+  const frais=Math.round(amount*FEE);
+  const net=amount-frais;
+
   if(n===2){
-    const v=Number(document.getElementById('amount-inp').value)||0;
-    if(v<MIN){showToast('Minimum '+fmt(MIN)+' FCFA requis');return;}
-    if(v>userBalance){showToast('Solde insuffisant');return;}
+    validateStep1();
+    if(document.getElementById('btn-next1').disabled)return;
   }
   if(n===3){
-    const acct=document.getElementById('acct-inp').value.trim();
-    if(!acct||acct.length<5){showToast('Entrez un compte de réception valide');return;}
-    const v=Number(document.getElementById('amount-inp').value);
-    const frais=Math.round(v*FEE),net=v-frais;
-    document.getElementById('c-ico').textContent=selM.ico;
+    if(!acct||acct.length<5){
+      const e=document.getElementById('s2-err');
+      if(e){e.style.display='block';e.textContent='Entrez un numéro de compte valide (min 5 caractères)';}
+      return;
+    }
+    // Résumé confirmation
     document.getElementById('c-name').textContent=selM.name;
-    document.getElementById('c-sub').textContent=selM.sub;
-    document.getElementById('c-brut').textContent=fmt(v)+' FCFA';
-    document.getElementById('c-frais').textContent='-'+fmt(frais)+' FCFA';
+    document.getElementById('c-sub').textContent=selM.sub||'';
+    document.getElementById('c-brut').textContent=fmt(amount)+' FCFA';
+    document.getElementById('c-frais').textContent='-'+fmt(frais)+' FCFA (10%)';
     document.getElementById('c-net').textContent=fmt(net)+' FCFA';
     document.getElementById('c-acct').textContent=acct;
     document.getElementById('err-box').style.display='none';
@@ -535,44 +553,60 @@ function goStep(n){
 async function submitWithdraw(){
   const amount=Number(document.getElementById('amount-inp').value)||0;
   const acct=document.getElementById('acct-inp').value.trim();
-  const frais=Math.round(amount*FEE),net=amount-frais;
   const btn=document.getElementById('submit-btn');
   const errBox=document.getElementById('err-box');
   errBox.style.display='none';
-  if(amount<MIN||amount>userBalance||!acct){errBox.style.display='block';errBox.textContent='Données invalides.';return;}
+
+  // ── Validations strictes côté client ──
+  if(amount<MIN){errBox.style.display='block';errBox.textContent=`Minimum ${fmt(MIN)} FCFA`;return;}
+  if(amount>userBalance){errBox.style.display='block';errBox.textContent=`Solde insuffisant. Disponible : ${fmt(userBalance)} FCFA`;return;}
+  if(!acct||acct.length<5){errBox.style.display='block';errBox.textContent='Numéro de compte invalide';return;}
+
   btn.disabled=true;btn.innerHTML='<span class="ld"></span>Envoi en cours…';
+
   try{
-    const ref='SYLLA-'+Date.now().toString(36).toUpperCase();
-    const{error}=await sb.from('transactions').insert({
-      user_id:cu.id,type:'retrait',
-      label:`Retrait (${selM.id}) → ${acct}`,
-      amount:amount,status:'pending',
-      created_at:new Date().toISOString()
+    // ── Function SQL sécurisée : vérifie solde + crée retrait + débit immédiat ──
+    const{data,error}=await sb.rpc('demander_retrait',{
+      p_user_id   : cu.id,
+      p_montant   : amount,
+      p_methode   : selM.id,
+      p_numero    : acct,
+      p_frais_pct : FEE
     });
-    if(error)throw error;
-    document.getElementById('suc-msg').textContent=`${fmt(net)} FCFA vers ${acct} via ${selM.name}. Frais prélevés : ${fmt(frais)} FCFA.`;
-    document.getElementById('suc-ref').textContent='REF: '+ref;
+
+    if(error||!data?.success){
+      throw new Error(data?.error||error?.message||'Erreur inconnue');
+    }
+
+    // ── Succès — solde déjà débité par la function ──
+    const frais=Math.round(amount*FEE);
+    document.getElementById('suc-msg').textContent=
+      `${fmt(data.montant_net)} FCFA vers ${acct} via ${selM.name}. Frais : ${fmt(data.frais)} FCFA. ` +
+      `Solde restant : ${fmt(data.solde_restant)} FCFA.`;
+    document.getElementById('suc-ref').textContent='REF: SYLLA-'+data.retrait_id.toString().substring(0,8).toUpperCase();
     document.getElementById('suc-overlay').classList.add('show');
-    userBalance-=amount;
-    document.getElementById('bal-display').textContent=fmt(userBalance);
-    document.getElementById('amount-inp').value='';
-    document.getElementById('fee-card').style.display='none';
-    await loadHistory();await loadBalance();
+
+    // Rafraîchir les données
+    await Promise.allSettled([loadBalance(),loadHistory()]);
+
   }catch(err){
     btn.disabled=false;btn.innerHTML='💸 Envoyer la demande';
     errBox.style.display='block';
-    errBox.textContent='❌ Erreur : '+(err.message||'Réessayez.');
+    errBox.textContent='❌ '+(err.message||'Erreur. Réessayez.');
   }
 }
 
 function fmt(n){return Number(n).toLocaleString('fr-FR');}
 function pad(n){return String(n).padStart(2,'0');}
 let toastT2=null;
-function showToast(msg){
-  const t=document.getElementById('toast');t.textContent='⚠️ '+msg;
+function showToast(msg,err=false){
+  const t=document.getElementById('toast')||{classList:{add:()=>{},remove:()=>{}},textContent:''};
+  t.textContent=msg;
+  err?t.classList.add('err'):t.classList.remove('err');
   t.classList.add('show');clearTimeout(toastT2);
-  toastT2=setTimeout(()=>t.classList.remove('show'),3200);
+  toastT2=setTimeout(()=>t.classList.remove('show'),3000);
 }
+
 init();
 </script>
 </body>
