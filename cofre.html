@@ -477,8 +477,9 @@ async function loadBalance(){
   try{
     const{data}=await sb.from('transactions').select('amount,type').eq('user_id',currentUser.id);
     if(data&&data.length){total=0;data.forEach(t=>{
-      if(['bonus_bienvenue','depot','gain','referral'].includes(t.type))total+=Number(t.amount);
-      if(t.type==='retrait')total-=Number(t.amount);
+      if(['bonus_bienvenue','depot','gain','referral','commission','coffre_retrait'].includes(t.type)&&t.status==='credited')total+=Number(t.amount);
+      if(['investissement','coffre_depot'].includes(t.type)&&t.status==='credited')total-=Number(t.amount);
+      if(t.type==='retrait'&&(t.status==='pending'||t.status==='credited'))total-=Number(t.amount);
       if(t.type==='investissement')total-=Number(t.amount);
       if(t.type==='coffre_depot')total-=Number(t.amount);
       if(t.type==='coffre_retrait')total+=Number(t.amount);
