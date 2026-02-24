@@ -2,660 +2,973 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>SYLLA — Administration</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
-  --gold:#F5C842;--orange:#FF7A35;--green:#00D166;--red:#FF3B4E;
-  --purple:#A064FF;--teal:#00C9C0;--amber:#FFB830;
-  --bg:#080600;--bg2:#120E00;--text:#FFFDF0;--text2:#8A7030;--text3:#3A2A08;
+  --gold:#F5C842;--or:#FF7A35;--g:#00D166;--r:#FF3B4E;
+  --pu:#A064FF;--te:#00C9C0;--am:#FFB830;--bl:#3B82F6;
+  --bg:#08070D;--tx:#F0EEFF;--tx2:#6A5A8A;--tx3:#281E40;
+  --ca:rgba(255,255,255,.03);--bd:rgba(160,100,255,.15);
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(245,200,66,.1) 0%,transparent 60%),
-  linear-gradient(160deg,#080600,#120E00);}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);height:100dvh;display:flex;flex-direction:column;overflow:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 80% 50% at 10% 0,rgba(160,100,255,.1),transparent 60%),
+             radial-gradient(ellipse 60% 40% at 90% 100%,rgba(245,200,66,.07),transparent 55%);}
 
-/* LOADING */
-.loading-screen{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .5s,visibility .5s;}
-.loading-screen.hide{opacity:0;visibility:hidden;pointer-events:none;}
-.load-logo{font-family:'Bebas Neue',cursive;font-size:40px;letter-spacing:6px;color:var(--red);}
-.load-bar{width:120px;height:2px;background:rgba(255,59,78,.15);border-radius:2px;overflow:hidden;}
-.load-fill{height:100%;background:var(--red);animation:lf 1.5s ease-in-out infinite;}
-@keyframes lf{0%{width:0%;margin-left:0}50%{width:100%;margin-left:0}100%{width:0%;margin-left:100%}}
+/* LOADER */
+#loader{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .5s,visibility .5s;}
+#loader.gone{opacity:0;visibility:hidden;pointer-events:none;}
+.ll{font-family:'Bebas Neue';font-size:44px;letter-spacing:8px;background:linear-gradient(135deg,var(--gold),var(--or));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.lb{width:130px;height:2px;background:rgba(245,200,66,.12);border-radius:2px;overflow:hidden;}
+.lbf{height:100%;background:linear-gradient(90deg,var(--gold),var(--or));animation:lba 1.6s ease-in-out infinite;}
+@keyframes lba{0%{width:0;margin-left:0}50%{width:100%;margin-left:0}100%{width:0;margin-left:100%}}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.ld{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.2);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.3}}
+.ld{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.15);border-top-color:currentColor;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:4px;}
 
 /* TOPBAR */
-.topbar{background:rgba(8,6,0,.97);border-bottom:1px solid rgba(245,200,66,.15);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.t-brand{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:5px;color:var(--red);}
-.t-badge{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:rgba(255,59,78,.12);border:1px solid rgba(255,59,78,.3);color:var(--red);}
-.t-admin{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text2);}
-.logout-btn{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:7px 14px;border-radius:20px;border:1px solid rgba(255,59,78,.3);background:transparent;color:var(--red);cursor:pointer;}
+#topbar{position:relative;z-index:50;flex-shrink:0;background:rgba(8,7,13,.97);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;padding:12px 16px;}
+.tb-brand{font-family:'Bebas Neue';font-size:20px;letter-spacing:5px;background:linear-gradient(135deg,var(--gold),var(--or));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tb-pill{font-family:'Rajdhani';font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:rgba(255,59,78,.1);border:1px solid rgba(255,59,78,.3);color:var(--r);}
+.tb-user{font-family:'Rajdhani';font-size:11px;font-weight:600;color:var(--tx2);margin-left:auto;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tb-out{font-family:'Rajdhani';font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px;border-radius:20px;border:1px solid rgba(255,59,78,.3);background:transparent;color:var(--r);cursor:pointer;}
 
-/* STATS */
-.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:16px 16px 0;}
-.stat-box{background:rgba(255,255,255,.03);border:1px solid rgba(245,200,66,.1);border-radius:16px;padding:14px 16px;text-align:center;animation:fadeUp .4s ease both;}
-.sb-val{font-family:'Bebas Neue',cursive;font-size:30px;letter-spacing:2px;}
-.sb-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-top:3px;}
+/* STAT ROW */
+#statbar{position:relative;z-index:49;flex-shrink:0;display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--bd);}
+.sc{padding:9px 4px;text-align:center;border-right:1px solid var(--bd);cursor:default;}
+.sc:last-child{border-right:none;}
+.scv{font-family:'Bebas Neue';font-size:24px;letter-spacing:1px;}
+.scl{font-family:'Rajdhani';font-size:7px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);margin-top:1px;}
 
 /* TABS */
-.tabs{display:flex;gap:0;padding:16px 16px 0;overflow-x:auto;scrollbar-width:none;}
-.tabs::-webkit-scrollbar{display:none;}
-.tab{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:10px 16px;border:1px solid rgba(245,200,66,.15);cursor:pointer;background:transparent;color:var(--text3);white-space:nowrap;transition:all .2s;border-radius:0;}
-.tab:first-child{border-radius:10px 0 0 10px;}
-.tab:last-child{border-radius:0 10px 10px 0;}
-.tab.active{background:rgba(245,200,66,.1);border-color:rgba(245,200,66,.35);color:var(--gold);}
-.tab .count{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--red);color:#fff;font-size:9px;margin-left:6px;vertical-align:middle;}
+#tabs{position:relative;z-index:49;flex-shrink:0;display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--bd);background:rgba(255,255,255,.01);}
+#tabs::-webkit-scrollbar{display:none;}
+.tb{flex-shrink:0;font-family:'Rajdhani';font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:11px 14px;border:none;background:transparent;color:var(--tx3);cursor:pointer;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;white-space:nowrap;}
+.tb.on{color:var(--gold);border-bottom-color:var(--gold);}
+.tb .nb{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;border-radius:8px;background:var(--r);color:#fff;font-size:9px;padding:0 4px;margin-left:5px;vertical-align:middle;}
 
 /* PANELS */
-.panel{display:none;padding:16px;}
-.panel.active{display:block;}
+#body{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.pn{display:none;flex:1;overflow-y:auto;padding:14px;}
+.pn.on{display:block;}
+#pn-messages{display:none;flex:1;flex-direction:column;overflow:hidden;}
+#pn-messages.on{display:flex;}
 
-/* CARDS */
-.admin-card{background:rgba(255,255,255,.03);border:1px solid rgba(245,200,66,.1);border-radius:16px;padding:16px;margin-bottom:12px;animation:fadeUp .3s ease both;}
-.ac-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
-.ac-user{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--text);}
-.ac-date{font-size:11px;font-weight:300;color:var(--text3);}
-.ac-amount{font-family:'Bebas Neue',cursive;font-size:28px;letter-spacing:2px;color:var(--gold);}
-.ac-meta{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px;}
-.ac-row{display:flex;flex-direction:column;gap:2px;}
-.ac-key{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);}
-.ac-val{font-size:12px;font-weight:400;color:var(--text2);word-break:break-all;}
-.ac-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.btn-valider{padding:12px;border-radius:10px;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(135deg,rgba(0,209,102,.2),rgba(0,209,102,.08));border:1.5px solid rgba(0,209,102,.3);color:var(--green);transition:all .2s;}
-.btn-valider:hover{background:rgba(0,209,102,.2);}
-.btn-rejeter{padding:12px;border-radius:10px;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:rgba(255,59,78,.08);border:1.5px solid rgba(255,59,78,.25);color:var(--red);transition:all .2s;}
-.btn-rejeter:hover{background:rgba(255,59,78,.15);}
-.btn-full{grid-column:1/-1;padding:12px;border-radius:10px;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff;transition:all .2s;}
-.status-badge{display:inline-flex;align-items:center;gap:5px;font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 10px;border-radius:8px;}
-.st-wait{background:rgba(255,184,48,.1);border:1px solid rgba(255,184,48,.25);color:var(--amber);}
-.st-ok{background:rgba(0,209,102,.1);border:1px solid rgba(0,209,102,.25);color:var(--green);}
-.st-ko{background:rgba(255,59,78,.1);border:1px solid rgba(255,59,78,.25);color:var(--red);}
+/* SEARCH ROW */
+.sr{display:flex;gap:8px;margin-bottom:12px;}
+.si{flex:1;background:rgba(255,255,255,.04);border:1.5px solid var(--bd);border-radius:9px;padding:9px 12px;color:var(--tx);font-family:'Outfit';font-size:12px;}
+.si:focus{outline:none;border-color:rgba(245,200,66,.35);}
+.srb{padding:9px 13px;border-radius:9px;border:1.5px solid var(--bd);background:rgba(255,255,255,.03);color:var(--tx2);cursor:pointer;font-size:14px;}
 
-/* NOTE MODAL */
-.modal{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
-.modal.show{opacity:1;pointer-events:all;}
-.modal-box{background:#1A1400;border:1.5px solid rgba(245,200,66,.2);border-radius:24px 24px 0 0;padding:24px 20px;width:100%;max-width:480px;transform:translateY(100%);transition:transform .35s cubic-bezier(.32,1,.5,1);}
-.modal.show .modal-box{transform:translateY(0);}
-.mb-title{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:3px;color:var(--gold);margin-bottom:16px;}
-.mb-inp{width:100%;background:rgba(255,255,255,.04);border:1.5px solid rgba(245,200,66,.2);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;resize:vertical;min-height:80px;}
-.mb-inp:focus{outline:none;border-color:rgba(245,200,66,.4);}
-.mb-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+/* CARD */
+.card{background:var(--ca);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:10px;animation:fu .3s ease both;}
+.ch{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.cn{font-family:'Rajdhani';font-size:13px;font-weight:700;color:var(--tx);}
+.cs{font-size:11px;color:var(--tx3);margin-top:2px;}
+.ca{font-family:'Bebas Neue';font-size:26px;letter-spacing:2px;}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;}
+.ci{background:rgba(255,255,255,.02);border-radius:8px;padding:7px 9px;}
+.ck{font-family:'Rajdhani';font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);}
+.cv{font-size:12px;color:var(--tx2);margin-top:2px;word-break:break-all;}
+.cac{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 
-/* USERS TABLE */
-.user-row{display:flex;align-items:center;gap:12px;padding:12px;background:rgba(255,255,255,.02);border:1px solid rgba(245,200,66,.08);border-radius:12px;margin-bottom:8px;}
-.ur-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--orange));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:18px;color:#000;flex-shrink:0;}
-.ur-info{flex:1;min-width:0;}
-.ur-name{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.ur-email{font-size:11px;font-weight:300;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.ur-bal{font-family:'Bebas Neue',cursive;font-size:18px;color:var(--gold);flex-shrink:0;}
-.ur-date{font-size:10px;color:var(--text3);flex-shrink:0;}
+/* BUTTONS */
+.bok{padding:11px;border-radius:9px;border:1.5px solid rgba(0,209,102,.3);background:rgba(0,209,102,.08);color:var(--g);font-family:'Rajdhani';font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.bok:hover{background:rgba(0,209,102,.18);}
+.bok:disabled{opacity:.35;cursor:not-allowed;}
+.bko{padding:11px;border-radius:9px;border:1.5px solid rgba(255,59,78,.25);background:rgba(255,59,78,.06);color:var(--r);font-family:'Rajdhani';font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.bko:hover{background:rgba(255,59,78,.15);}
+.bko:disabled{opacity:.35;cursor:not-allowed;}
+.bmsg{padding:10px;border-radius:9px;border:1.5px solid rgba(59,130,246,.25);background:rgba(59,130,246,.06);color:var(--bl);font-family:'Rajdhani';font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;grid-column:1/-1;transition:all .2s;}
+.bmsg:hover{background:rgba(59,130,246,.15);}
+.bgold{padding:10px;border-radius:9px;border:1.5px solid rgba(245,200,66,.25);background:rgba(245,200,66,.06);color:var(--gold);font-family:'Rajdhani';font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;grid-column:1/-1;transition:all .2s;}
 
-.empty-state{text-align:center;padding:40px 20px;color:var(--text3);}
-.es-ico{font-size:48px;margin-bottom:12px;opacity:.4;}
-.es-txt{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;}
+/* BADGES */
+.bk{display:inline-flex;align-items:center;font-family:'Rajdhani';font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:6px;}
+.bg{background:rgba(0,209,102,.1);border:1px solid rgba(0,209,102,.25);color:var(--g);}
+.br{background:rgba(255,59,78,.1);border:1px solid rgba(255,59,78,.25);color:var(--r);}
+.bb{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);color:var(--bl);}
+.bgo{background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.25);color:var(--gold);}
+.bam{background:rgba(255,184,48,.1);border:1px solid rgba(255,184,48,.25);color:var(--am);}
+.bpu{background:rgba(160,100,255,.1);border:1px solid rgba(160,100,255,.25);color:var(--pu);}
+
+/* USERS */
+.ur{display:flex;align-items:center;gap:10px;padding:12px;background:var(--ca);border:1px solid var(--bd);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:border-color .2s;}
+.ur:hover{border-color:rgba(245,200,66,.35);}
+.uav{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--pu),var(--bl));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:17px;color:#fff;flex-shrink:0;}
+.uname{font-family:'Rajdhani';font-size:12px;font-weight:700;color:var(--tx);}
+.usub{font-size:10px;color:var(--tx3);}
+
+/* PARRAINAGES */
+.rr{display:flex;align-items:center;gap:10px;padding:12px;background:var(--ca);border:1px solid var(--bd);border-radius:12px;margin-bottom:8px;}
+.rav{width:34px;height:34px;border-radius:50%;background:rgba(0,209,102,.1);border:1px solid rgba(0,209,102,.2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.smini{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+
+/* MESSAGES */
+#msg-list-wrap{flex:1;overflow-y:auto;padding:14px;}
+#msg-chat-wrap{flex:1;flex-direction:column;overflow:hidden;display:none;}
+#msg-chat-wrap.show{display:flex;}
+.conv-item{display:flex;align-items:center;gap:10px;padding:12px;background:var(--ca);border:1px solid var(--bd);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:border-color .2s;}
+.conv-item:hover{border-color:rgba(59,130,246,.35);}
+.conv-item.unread{border-color:rgba(59,130,246,.4);background:rgba(59,130,246,.04);}
+.cav{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--pu),var(--bl));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:18px;color:#fff;flex-shrink:0;position:relative;}
+.cdot{position:absolute;top:0;right:0;width:10px;height:10px;border-radius:50%;background:var(--r);border:2px solid var(--bg);}
+.cname{font-family:'Rajdhani';font-size:12px;font-weight:700;color:var(--tx);}
+.clast{font-size:11px;color:var(--tx3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;}
+.ctime{font-size:10px;color:var(--tx3);flex-shrink:0;}
+.chat-top{flex-shrink:0;display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--bd);}
+.chat-back{font-family:'Rajdhani';font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px;border-radius:20px;border:1px solid var(--bd);background:transparent;color:var(--tx2);cursor:pointer;}
+.chat-name{font-family:'Rajdhani';font-size:13px;font-weight:700;color:var(--tx);}
+.chat-email{font-size:10px;color:var(--tx3);}
+.chat-quick{margin-left:auto;font-family:'Rajdhani';font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:7px 12px;border-radius:9px;border:1.5px solid rgba(245,200,66,.25);background:rgba(245,200,66,.06);color:var(--gold);cursor:pointer;}
+.bubbles{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.bubble{max-width:85%;padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.6;word-break:break-word;}
+.bubble.a{align-self:flex-end;background:linear-gradient(135deg,rgba(245,200,66,.15),rgba(255,122,53,.08));border:1px solid rgba(245,200,66,.2);color:var(--tx);}
+.bubble.u{align-self:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--tx2);}
+.bmeta{font-size:10px;color:var(--tx3);margin-top:4px;}
+.chat-bar{flex-shrink:0;display:flex;gap:8px;padding:10px 14px;border-top:1px solid var(--bd);background:var(--bg);}
+.chat-inp{flex:1;background:rgba(255,255,255,.04);border:1.5px solid var(--bd);border-radius:9px;padding:10px 12px;color:var(--tx);font-family:'Outfit';font-size:13px;resize:none;min-height:42px;max-height:100px;}
+.chat-inp:focus{outline:none;border-color:rgba(245,200,66,.35);}
+.chat-send{padding:10px 16px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--gold),var(--or));color:#000;font-family:'Rajdhani';font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;flex-shrink:0;}
+
+/* OVERLAY */
+#ov{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.78);backdrop-filter:blur(10px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
+#ov.on{opacity:1;pointer-events:all;}
+#ovbox{background:#12101A;border:1.5px solid rgba(245,200,66,.2);border-radius:22px 22px 0 0;padding:22px 18px 36px;width:100%;max-width:500px;transform:translateY(100%);transition:transform .35s cubic-bezier(.32,1,.5,1);max-height:88dvh;overflow-y:auto;}
+#ov.on #ovbox{transform:translateY(0);}
+.ovt{font-family:'Bebas Neue';font-size:20px;letter-spacing:3px;color:var(--gold);margin-bottom:5px;}
+.ovs{font-size:12px;color:var(--tx3);margin-bottom:14px;line-height:1.6;}
+.ovi{width:100%;background:rgba(255,255,255,.04);border:1.5px solid var(--bd);border-radius:9px;padding:11px 13px;color:var(--tx);font-family:'Outfit';font-size:13px;resize:vertical;min-height:80px;}
+.ovi:focus{outline:none;border-color:rgba(245,200,66,.35);}
+.ovbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+.ovc{padding:12px;border-radius:9px;border:1.5px solid var(--bd);background:transparent;color:var(--tx2);font-family:'Rajdhani';font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;}
+.ovok{padding:12px;border-radius:9px;border:none;font-family:'Rajdhani';font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;color:#fff;}
+.qbtn{display:block;width:100%;text-align:left;padding:10px 12px;border-radius:9px;border:1px solid var(--bd);background:var(--ca);color:var(--tx2);font-family:'Outfit';font-size:12px;cursor:pointer;margin-bottom:6px;transition:all .2s;line-height:1.5;}
+.qbtn:hover{border-color:rgba(245,200,66,.3);color:var(--tx);}
+.ust{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:12px 0;}
+.usb{background:rgba(255,255,255,.03);border-radius:8px;padding:8px;text-align:center;}
+.usbv{font-family:'Bebas Neue';font-size:20px;}
+.usbl{font-family:'Rajdhani';font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);}
 
 /* TOAST */
-.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);background:rgba(0,209,102,.95);color:#000;padding:10px 22px;border-radius:100px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;z-index:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.toast.err{background:rgba(255,59,78,.95);color:#fff;}
+#toast{position:fixed;top:68px;left:50%;transform:translateX(-50%) translateY(-14px);background:rgba(0,209,102,.95);color:#000;padding:9px 20px;border-radius:100px;font-family:'Rajdhani';font-size:12px;font-weight:700;letter-spacing:1.5px;z-index:9000;opacity:0;transition:all .3s;pointer-events:none;max-width:92vw;text-align:center;white-space:nowrap;}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+#toast.err{background:rgba(255,59,78,.95);color:#fff;}
+#toast.inf{background:rgba(59,130,246,.95);color:#fff;}
 
-/* SEARCH */
-.search-box{display:flex;gap:10px;margin-bottom:14px;}
-.search-inp{flex:1;background:rgba(255,255,255,.04);border:1.5px solid rgba(245,200,66,.15);border-radius:10px;padding:10px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;}
-.search-inp:focus{outline:none;border-color:rgba(245,200,66,.3);}
-.refresh-btn{padding:10px 16px;border-radius:10px;border:1.5px solid rgba(245,200,66,.2);background:rgba(245,200,66,.06);color:var(--gold);cursor:pointer;font-size:16px;}
+/* EMPTY */
+.emp{text-align:center;padding:50px 20px;}
+.emp-i{font-size:42px;opacity:.25;margin-bottom:10px;}
+.emp-t{font-family:'Rajdhani';font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);}
+
+/* SECTION HEADER */
+.sh{font-family:'Rajdhani';font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--tx3);padding:4px 0 10px;border-bottom:1px solid var(--bd);margin-bottom:12px;}
 </style>
 </head>
 <body>
 
-<div class="loading-screen" id="loader">
-  <div class="load-logo">⚠️ ADMIN</div>
-  <div class="load-bar"><div class="load-fill"></div></div>
-  <div style="font-family:'Rajdhani',sans-serif;font-size:11px;letter-spacing:2px;color:var(--text3)">ACCÈS RESTREINT</div>
+<div id="loader">
+  <div class="ll">⚡ ADMIN</div>
+  <div class="lb"><div class="lbf"></div></div>
+  <div style="font-family:'Rajdhani';font-size:10px;letter-spacing:3px;color:var(--tx3)">ACCÈS RESTREINT</div>
 </div>
 
-<div class="bg-mesh"></div>
-<div class="toast" id="toast"></div>
+<div id="toast"></div>
 
-<!-- NOTE MODAL (pour motif de rejet) -->
-<div class="modal" id="note-modal" onclick="closeNoteModal(event)">
-  <div class="modal-box">
-    <div class="mb-title">📝 MOTIF DU REJET</div>
-    <textarea class="mb-inp" id="note-inp" placeholder="Expliquez pourquoi cette demande est rejetée (ex: référence invalide, montant non reçu…)"></textarea>
-    <div class="mb-btns">
-      <button class="btn-rejeter" onclick="closeNoteModal()">Annuler</button>
-      <button class="btn-full" style="background:linear-gradient(135deg,var(--red),#C02040)" onclick="confirmRejet()">Confirmer le rejet</button>
-    </div>
-  </div>
-</div>
+<!-- OVERLAY -->
+<div id="ov" onclick="ovClose(event)"><div id="ovbox"></div></div>
 
 <!-- TOPBAR -->
-<div class="topbar">
-  <div style="display:flex;align-items:center;gap:10px">
-    <div class="t-brand">SYLLA</div>
-    <div class="t-badge">🔐 ADMIN</div>
-  </div>
-  <div id="t-admin-name" class="t-admin">…</div>
-  <button class="logout-btn" onclick="logout()">Déconnexion</button>
+<div id="topbar">
+  <div class="tb-brand">SYLLA</div>
+  <div class="tb-pill">🔐 ADMIN</div>
+  <span class="tb-user" id="tb-user">…</span>
+  <button class="tb-out" onclick="logout()">Sortir</button>
 </div>
 
 <!-- STATS -->
-<div class="stats-row" id="stats-row">
-  <div class="stat-box">
-    <div class="sb-val" style="color:var(--amber)" id="st-recharges-pending">…</div>
-    <div class="sb-lbl">Recharges en attente</div>
-  </div>
-  <div class="stat-box">
-    <div class="sb-val" style="color:var(--red)" id="st-retraits-pending">…</div>
-    <div class="sb-lbl">Retraits en attente</div>
-  </div>
-  <div class="stat-box">
-    <div class="sb-val" style="color:var(--green)" id="st-users">…</div>
-    <div class="sb-lbl">Utilisateurs</div>
-  </div>
-  <div class="stat-box">
-    <div class="sb-val" style="color:var(--gold)" id="st-volume">…</div>
-    <div class="sb-lbl">Volume total (FCFA)</div>
-  </div>
+<div id="statbar">
+  <div class="sc" onclick="goTab('recharges')"><div class="scv" id="s-rc" style="color:var(--am)">—</div><div class="scl">Recharges</div></div>
+  <div class="sc" onclick="goTab('retraits')"><div class="scv" id="s-rt" style="color:var(--r)">—</div><div class="scl">Retraits</div></div>
+  <div class="sc" onclick="goTab('users')"><div class="scv" id="s-us" style="color:var(--pu)">—</div><div class="scl">Users</div></div>
+  <div class="sc" onclick="goTab('messages')"><div class="scv" id="s-mg" style="color:var(--bl)">—</div><div class="scl">Messages</div></div>
 </div>
 
 <!-- TABS -->
-<div class="tabs">
-  <button class="tab active" onclick="switchTab('recharges',this)">
-    💳 Recharges <span class="count" id="badge-recharges">0</span>
-  </button>
-  <button class="tab" onclick="switchTab('retraits',this)">
-    💸 Retraits <span class="count" id="badge-retraits">0</span>
-  </button>
-  <button class="tab" onclick="switchTab('users',this)">
-    👥 Utilisateurs
-  </button>
-  <button class="tab" onclick="switchTab('history',this)">
-    📋 Historique
-  </button>
+<div id="tabs">
+  <button class="tb on" data-tab="recharges">💳 Recharges<span class="nb" id="nb-rc">0</span></button>
+  <button class="tb" data-tab="retraits">💸 Retraits<span class="nb" id="nb-rt">0</span></button>
+  <button class="tb" data-tab="users">👥 Users</button>
+  <button class="tb" data-tab="parrainages">🤝 Parrainages</button>
+  <button class="tb" data-tab="messages">💬 Messages<span class="nb" id="nb-mg" style="display:none">0</span></button>
+  <button class="tb" data-tab="historique">📋 Historique</button>
 </div>
 
-<!-- PANEL RECHARGES -->
-<div class="panel active" id="panel-recharges">
-  <div class="search-box">
-    <input class="search-inp" id="search-recharges" placeholder="🔍 Rechercher…" oninput="filterRecharges()">
-    <button class="refresh-btn" onclick="loadRecharges()">🔄</button>
-  </div>
-  <div id="list-recharges"><div class="empty-state"><div class="es-ico">⏳</div><div class="es-txt">Chargement…</div></div></div>
-</div>
+<!-- BODY -->
+<div id="body">
 
-<!-- PANEL RETRAITS -->
-<div class="panel" id="panel-retraits">
-  <div class="search-box">
-    <input class="search-inp" id="search-retraits" placeholder="🔍 Rechercher…" oninput="filterRetraits()">
-    <button class="refresh-btn" onclick="loadRetraits()">🔄</button>
+  <!-- RECHARGES -->
+  <div class="pn on" id="pn-recharges">
+    <div class="sh">DEMANDES EN ATTENTE</div>
+    <div class="sr">
+      <input class="si" id="f-rc" placeholder="🔍 Nom, référence, méthode…" oninput="fRC()">
+      <button class="srb" onclick="loadRC()">🔄</button>
+    </div>
+    <div id="l-rc"></div>
   </div>
-  <div id="list-retraits"><div class="empty-state"><div class="es-ico">⏳</div><div class="es-txt">Chargement…</div></div></div>
-</div>
 
-<!-- PANEL USERS -->
-<div class="panel" id="panel-users">
-  <div class="search-box">
-    <input class="search-inp" id="search-users" placeholder="🔍 Nom, email…" oninput="filterUsers()">
-    <button class="refresh-btn" onclick="loadUsers()">🔄</button>
+  <!-- RETRAITS -->
+  <div class="pn" id="pn-retraits">
+    <div class="sh">DEMANDES EN ATTENTE</div>
+    <div class="sr">
+      <input class="si" id="f-rt" placeholder="🔍 Nom, numéro, méthode…" oninput="fRT()">
+      <button class="srb" onclick="loadRT()">🔄</button>
+    </div>
+    <div id="l-rt"></div>
   </div>
-  <div id="list-users"><div class="empty-state"><div class="es-ico">⏳</div><div class="es-txt">Chargement…</div></div></div>
-</div>
 
-<!-- PANEL HISTORIQUE -->
-<div class="panel" id="panel-history">
-  <div class="search-box">
-    <input class="search-inp" id="search-history" placeholder="🔍 Type, utilisateur…" oninput="filterHistory()">
-    <button class="refresh-btn" onclick="loadHistory()">🔄</button>
+  <!-- USERS -->
+  <div class="pn" id="pn-users">
+    <div class="sh">TOUS LES UTILISATEURS</div>
+    <div class="sr">
+      <input class="si" id="f-us" placeholder="🔍 Nom, email, code parrainage…" oninput="fUS()">
+      <button class="srb" onclick="loadUS()">🔄</button>
+    </div>
+    <div id="l-us"></div>
   </div>
-  <div id="list-history"><div class="empty-state"><div class="es-ico">⏳</div><div class="es-txt">Chargement…</div></div></div>
+
+  <!-- PARRAINAGES -->
+  <div class="pn" id="pn-parrainages">
+    <div class="sh">RÉSEAU DE PARRAINAGES</div>
+    <div class="sr">
+      <input class="si" id="f-rf" placeholder="🔍 Parrain, filleul, code…" oninput="fRF()">
+      <button class="srb" onclick="loadRF()">🔄</button>
+    </div>
+    <div class="smini" id="rf-stats"></div>
+    <div id="l-rf"></div>
+  </div>
+
+  <!-- MESSAGES -->
+  <div id="pn-messages">
+    <div id="msg-list-wrap">
+      <div style="padding:14px 14px 0">
+        <div class="sh">CONVERSATIONS CLIENTS</div>
+        <div class="sr">
+          <input class="si" id="f-mg" placeholder="🔍 Nom ou email…" oninput="fMG()">
+          <button class="srb" onclick="loadMG()">🔄</button>
+        </div>
+      </div>
+      <div id="l-mg" style="padding:0 14px"></div>
+    </div>
+    <div id="msg-chat-wrap">
+      <div class="chat-top">
+        <button class="chat-back" onclick="chatClose()">← Retour</button>
+        <div style="flex:1;min-width:0">
+          <div class="chat-name" id="chat-name">—</div>
+          <div class="chat-email" id="chat-email">—</div>
+        </div>
+        <button class="chat-quick" onclick="quickOpen()">✉️ Rapide</button>
+      </div>
+      <div class="bubbles" id="chat-bubbles"></div>
+      <div class="chat-bar">
+        <textarea class="chat-inp" id="chat-inp" rows="1"
+          placeholder="Votre message au client…"
+          oninput="aResize(this)"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();msgSend();}"></textarea>
+        <button class="chat-send" onclick="msgSend()">Envoyer ✈️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORIQUE -->
+  <div class="pn" id="pn-historique">
+    <div class="sh">TRANSACTIONS TRAITÉES</div>
+    <div class="sr">
+      <input class="si" id="f-hi" placeholder="🔍 Type, utilisateur, méthode…" oninput="fHI()">
+      <button class="srb" onclick="loadHI()">🔄</button>
+    </div>
+    <div id="l-hi"></div>
+  </div>
+
 </div>
 
 <script>
-const{createClient}=supabase;
-const sb=createClient('https://fqiotqrraobmsrcyewsi.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc');
+/* ════════════════════════════════════════
+   SUPABASE CONFIG
+════════════════════════════════════════ */
+const {createClient} = supabase;
+const sb = createClient(
+  'https://fqiotqrraobmsrcyewsi.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc'
+);
 
-// ⚠️ ADMIN ID — Remplace par ton UUID Supabase
-// Pour trouver ton UUID : Supabase > Authentication > Users > clique sur ton compte
-const ADMIN_IDS = [
-  '56d72615-7d4b-443e-ad11-1d83324e49d5', // abdoula (remplace si besoin)
-  // Ajoute d'autres IDs admin si nécessaire
+// ⚠️ AJOUTE ICI TON UUID SUPABASE (Settings > API > User UUID)
+// Pour trouver : va dans Supabase > Authentication > Users > clique sur ton compte
+const ADMINS = [
+  '56d72615-7d4b-443e-ad11-1d83324e49d5', // abdoula
 ];
 
-let cu=null, currentTab='recharges';
-let allRecharges=[], allRetraits=[], allUsers=[], allHistory=[];
-let pendingAction=null;
-let toastT=null;
+const QUICK_MSGS = [
+  '✅ Votre solde a été mis à jour avec succès.',
+  '⏳ Votre demande est en cours de traitement, merci de patienter.',
+  '✅ Votre paiement a été confirmé. Votre compte a été crédité.',
+  '💸 Votre retrait a été effectué avec succès.',
+  '⚠️ Nous avons besoin d\'informations supplémentaires. Merci de nous répondre.',
+  '❌ Votre demande a été rejetée. Contactez le support pour plus de détails.',
+  '🎉 Bienvenue sur SYLLA ! Votre compte est désormais actif.',
+  '🔐 Pour votre sécurité, nous avons besoin de vérifier votre identité.',
+  '📊 Vos gains du jour ont été crédités sur votre compte.',
+  '🤝 Commission de parrainage créditée sur votre compte.',
+];
 
-// ══ INIT ══
+let CU=null, TAB='recharges', CONV=null, PA=null, TT=null;
+let ARC=[], ART=[], AUS=[], ARF=[], AHI=[], AMG=[];
+
+/* ════════════════════════════════════════
+   INIT
+════════════════════════════════════════ */
 async function init(){
-  const{data:{session}}=await sb.auth.getSession();
-  if(!session){window.location.href='index.html';return;}
-  cu=session.user;
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session){ location.href='index.html'; return; }
+  CU = session.user;
 
-  // Vérifier accès admin
-  if(!ADMIN_IDS.includes(cu.id)){
-    document.getElementById('loader').classList.add('hide');
-    document.body.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:20px;font-family:'Outfit',sans-serif">
-      <div style="font-size:64px">⛔</div>
-      <div style="font-size:24px;font-weight:700;color:#FF3B4E">Accès refusé</div>
-      <div style="color:#888">Vous n'avez pas les droits administrateur.</div>
-      <a href="dashboard.html" style="padding:12px 24px;background:rgba(255,59,78,.1);border:1px solid rgba(255,59,78,.3);border-radius:12px;color:#FF3B4E;text-decoration:none">Retour au dashboard</a>
-    </div>`;
+  if(!ADMINS.includes(CU.id)){
+    q('loader').classList.add('gone');
+    q('body').innerHTML = `
+      <div class="emp" style="padding-top:80px">
+        <div class="emp-i" style="font-size:64px;opacity:1">⛔</div>
+        <div class="emp-t" style="font-size:16px;margin-bottom:10px">Accès Refusé</div>
+        <p style="color:var(--tx3);font-size:12px">Vous n'êtes pas administrateur SYLLA</p>
+        <a href="dashboard.html" style="display:inline-block;margin-top:20px;padding:10px 20px;border-radius:10px;border:1px solid rgba(255,59,78,.3);color:var(--r);text-decoration:none;font-family:'Rajdhani';font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase">← Dashboard</a>
+      </div>`;
     return;
   }
 
-  document.getElementById('t-admin-name').textContent=cu.email||'Admin';
-  await Promise.allSettled([loadStats(),loadRecharges(),loadRetraits()]);
-  document.getElementById('loader').classList.add('hide');
+  q('tb-user').textContent = CU.email;
+  document.querySelectorAll('.tb').forEach(b => b.addEventListener('click', ()=>goTab(b.dataset.tab)));
+
+  await Promise.allSettled([loadStats(), loadRC(), loadRT()]);
+  q('loader').classList.add('gone');
+
+  // Auto-refresh toutes les 30 secondes
+  setInterval(async ()=>{
+    await loadStats();
+    if(TAB==='recharges') loadRC();
+    else if(TAB==='retraits') loadRT();
+    else if(TAB==='messages'){ if(CONV) loadChatMsgs(CONV.uid); else loadMG(); }
+  }, 30000);
 }
 
-// ══ STATS ══
+/* ════════════════════════════════════════
+   STATS
+════════════════════════════════════════ */
 async function loadStats(){
   try{
-    const[rc,rt,us,vol]=await Promise.allSettled([
-      sb.from('recharges').select('id').eq('statut','en_attente'),
-      sb.from('retraits').select('id').eq('statut','en_attente'),
-      sb.from('profiles').select('id'),
-      sb.from('recharges').select('montant').eq('statut','valide'),
+    const [r1,r2,r3,r4] = await Promise.allSettled([
+      sb.from('recharges').select('id',{count:'exact',head:true}).eq('statut','en_attente'),
+      sb.from('retraits').select('id',{count:'exact',head:true}).eq('statut','en_attente'),
+      sb.from('profiles').select('id',{count:'exact',head:true}),
+      sb.from('messages').select('id',{count:'exact',head:true}).eq('lu',false).eq('expediteur','user'),
     ]);
-    const rcPending=rc.value?.data?.length||0;
-    const rtPending=rt.value?.data?.length||0;
-    const users=us.value?.data?.length||0;
-    const volume=(vol.value?.data||[]).reduce((s,r)=>s+Number(r.montant),0);
-
-    document.getElementById('st-recharges-pending').textContent=rcPending;
-    document.getElementById('st-retraits-pending').textContent=rtPending;
-    document.getElementById('st-users').textContent=users;
-    document.getElementById('st-volume').textContent=fmt(volume);
-    document.getElementById('badge-recharges').textContent=rcPending;
-    document.getElementById('badge-retraits').textContent=rtPending;
+    const rc=r1.value?.count||0, rt=r2.value?.count||0,
+          us=r3.value?.count||0, mg=r4.value?.count||0;
+    q('s-rc').textContent=rc; q('s-rt').textContent=rt;
+    q('s-us').textContent=us; q('s-mg').textContent=mg;
+    q('nb-rc').textContent=rc; q('nb-rt').textContent=rt;
+    const nm=q('nb-mg');
+    if(mg>0){nm.textContent=mg;nm.style.display='inline-flex';} else nm.style.display='none';
   }catch(e){}
 }
 
-// ══ RECHARGES ══
-async function loadRecharges(){
-  const list=document.getElementById('list-recharges');
-  list.innerHTML='<div class="empty-state"><div class="es-ico" style="animation:pulse 1.5s infinite">⏳</div></div>';
+/* ════════════════════════════════════════
+   RECHARGES
+════════════════════════════════════════ */
+async function loadRC(){
+  load('l-rc');
   try{
-    const{data,error}=await sb.from('recharges')
-      .select('*, profiles(full_name,email)')
+    const {data,error} = await sb.from('recharges')
+      .select('*,profiles(full_name,email,phone)')
       .eq('statut','en_attente')
       .order('created_at',{ascending:true});
-
-    if(error)throw error;
-    allRecharges=data||[];
-    renderRecharges(allRecharges);
-  }catch(e){
-    list.innerHTML=`<div class="empty-state"><div class="es-ico">❌</div><div class="es-txt">${e.message}</div></div>`;
-  }
+    if(error) throw error;
+    ARC = data||[]; renderRC(ARC);
+  }catch(e){ err('l-rc',e.message); }
 }
 
-function renderRecharges(items){
-  const list=document.getElementById('list-recharges');
-  if(!items.length){
-    list.innerHTML='<div class="empty-state"><div class="es-ico">✅</div><div class="es-txt">Aucune recharge en attente</div></div>';
-    return;
-  }
-  list.innerHTML=items.map(r=>{
-    const d=new Date(r.created_at);
-    const ds=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-    const name=r.profiles?.full_name||r.profiles?.email||'Utilisateur';
-    return `<div class="admin-card">
-      <div class="ac-header">
+function renderRC(list){
+  const el=q('l-rc');
+  if(!list.length){ el.innerHTML=emp('✅','Aucune recharge en attente — Parfait !'); return; }
+  el.innerHTML = list.map(r => {
+    const nm = r.profiles?.full_name||r.profiles?.email||'Utilisateur inconnu';
+    const em = r.profiles?.email||'—';
+    const ph = r.profiles?.phone||'—';
+    const uid = r.user_id;
+    return `<div class="card">
+      <div class="ch">
         <div>
-          <div class="ac-user">👤 ${name}</div>
-          <div class="ac-date">${ds}</div>
+          <div class="cn">👤 ${x(nm)}</div>
+          <div class="cs">${d(r.created_at)} · ${x(em)}</div>
         </div>
-        <div class="ac-amount">${fmt(r.montant)} F</div>
+        <div class="ca" style="color:var(--g)">+${f(r.montant)} F</div>
       </div>
-      <div class="ac-meta">
-        <div class="ac-row"><div class="ac-key">Méthode</div><div class="ac-val">${r.methode}</div></div>
-        <div class="ac-row"><div class="ac-key">Référence</div><div class="ac-val">${r.reference_paiement}</div></div>
-        <div class="ac-row"><div class="ac-key">Email</div><div class="ac-val">${r.profiles?.email||'—'}</div></div>
-        <div class="ac-row"><div class="ac-key">ID Demande</div><div class="ac-val">${r.id.substring(0,8)}…</div></div>
+      <div class="cg">
+        <div class="ci"><div class="ck">Méthode de paiement</div><div class="cv">${x(r.methode)}</div></div>
+        <div class="ci"><div class="ck">Référence paiement</div><div class="cv" style="color:var(--gold);font-weight:600">${x(r.reference_paiement)}</div></div>
+        <div class="ci"><div class="ck">Téléphone client</div><div class="cv">${x(ph)}</div></div>
+        <div class="ci"><div class="ck">ID demande</div><div class="cv">${r.id.slice(0,8)}…</div></div>
       </div>
-      <div class="ac-actions">
-        <button class="btn-valider" onclick="validerRecharge('${r.id}','${r.user_id}',${r.montant},'${r.methode}',this)">
-          ✅ Valider
-        </button>
-        <button class="btn-rejeter" onclick="openNoteModal('recharge','${r.id}','${r.user_id}',this)">
-          ❌ Rejeter
-        </button>
+      <div class="cac">
+        <button class="bok" onclick="valRC('${r.id}',${r.montant},'${x(nm)}',this)">✅ Valider</button>
+        <button class="bko" onclick="openRejet('rc','${r.id}','${uid}','${x(nm)}')">❌ Rejeter</button>
+        <button class="bmsg" onclick="chatOpen('${uid}','${x(nm)}','${x(em)}')">💬 Envoyer un message au client</button>
       </div>
     </div>`;
   }).join('');
 }
 
-function filterRecharges(){
-  const q=document.getElementById('search-recharges').value.toLowerCase();
-  renderRecharges(allRecharges.filter(r=>
-    (r.profiles?.full_name||'').toLowerCase().includes(q)||
-    (r.profiles?.email||'').toLowerCase().includes(q)||
-    r.reference_paiement.toLowerCase().includes(q)||
-    r.methode.toLowerCase().includes(q)
-  ));
-}
+function fRC(){ const q_=q('f-rc').value.toLowerCase(); renderRC(ARC.filter(r=>srch(r,q_))); }
 
-async function validerRecharge(id, userId, montant, methode, btn){
-  btn.disabled=true;btn.innerHTML='<span class="ld"></span>Validation…';
-  try{
-    // 1. Créer la transaction créditée dans transactions
-    const{data:tx,error:te}=await sb.from('transactions').insert({
-      user_id:userId,
-      type:'depot',
-      label:`💰 Recharge validée — ${methode}`,
-      amount:montant,
-      status:'credited',
-      ref_admin:'Validé par admin '+cu.id.substring(0,8),
-      created_at:new Date().toISOString()
-    }).select('id').single();
-
-    if(te)throw te;
-
-    // 2. Mettre à jour la recharge
-    const{error:re}=await sb.from('recharges').update({
-      statut:'valide',
-      note_admin:'Paiement confirmé',
-      transaction_id:tx.id,
-      updated_at:new Date().toISOString()
-    }).eq('id',id);
-
-    if(re)throw re;
-
-    showToast('✅ Recharge validée — '+fmt(montant)+' FCFA crédités');
-    await Promise.allSettled([loadStats(),loadRecharges()]);
-  }catch(e){
-    btn.disabled=false;btn.innerHTML='✅ Valider';
-    showToast('❌ Erreur : '+e.message, true);
+async function valRC(id, montant, nm, btn){
+  btn.disabled=true; btn.innerHTML='<span class="ld"></span>Validation…';
+  const {data,error} = await sb.rpc('admin_valider_recharge',{p_recharge_id:id, p_note:'Paiement confirmé'});
+  if(error||!data?.success){
+    btn.disabled=false; btn.innerHTML='✅ Valider';
+    toast('❌ '+(data?.error||error?.message||'Erreur'), 1); return;
   }
+  toast('✅ +'+f(montant)+' FCFA crédités — '+nm+' notifié');
+  await Promise.allSettled([loadStats(), loadRC()]);
 }
 
-// ══ RETRAITS ══
-async function loadRetraits(){
-  const list=document.getElementById('list-retraits');
-  list.innerHTML='<div class="empty-state"><div class="es-ico" style="animation:pulse 1.5s infinite">⏳</div></div>';
+/* ════════════════════════════════════════
+   RETRAITS
+════════════════════════════════════════ */
+async function loadRT(){
+  load('l-rt');
   try{
-    const{data,error}=await sb.from('retraits')
-      .select('*, profiles(full_name,email)')
+    const {data,error} = await sb.from('retraits')
+      .select('*,profiles(full_name,email,phone)')
       .eq('statut','en_attente')
       .order('created_at',{ascending:true});
-
-    if(error)throw error;
-    allRetraits=data||[];
-    renderRetraits(allRetraits);
-  }catch(e){
-    list.innerHTML=`<div class="empty-state"><div class="es-ico">❌</div><div class="es-txt">${e.message}</div></div>`;
-  }
+    if(error) throw error;
+    ART = data||[]; renderRT(ART);
+  }catch(e){ err('l-rt',e.message); }
 }
 
-function renderRetraits(items){
-  const list=document.getElementById('list-retraits');
-  if(!items.length){
-    list.innerHTML='<div class="empty-state"><div class="es-ico">✅</div><div class="es-txt">Aucun retrait en attente</div></div>';
-    return;
-  }
-  list.innerHTML=items.map(r=>{
-    const d=new Date(r.created_at);
-    const ds=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-    const name=r.profiles?.full_name||r.profiles?.email||'Utilisateur';
-    return `<div class="admin-card">
-      <div class="ac-header">
+function renderRT(list){
+  const el=q('l-rt');
+  if(!list.length){ el.innerHTML=emp('✅','Aucun retrait en attente — Parfait !'); return; }
+  el.innerHTML = list.map(r => {
+    const nm = r.profiles?.full_name||r.profiles?.email||'Utilisateur inconnu';
+    const em = r.profiles?.email||'—';
+    const ph = r.profiles?.phone||'—';
+    const uid = r.user_id;
+    return `<div class="card">
+      <div class="ch">
         <div>
-          <div class="ac-user">👤 ${name}</div>
-          <div class="ac-date">${ds}</div>
-        </div>
-        <div>
-          <div class="ac-amount" style="color:var(--red)">-${fmt(r.montant_brut)} F</div>
-          <div style="font-size:11px;color:var(--green);text-align:right">Net: ${fmt(r.montant_net)} F</div>
-        </div>
-      </div>
-      <div class="ac-meta">
-        <div class="ac-row"><div class="ac-key">Méthode</div><div class="ac-val">${r.methode}</div></div>
-        <div class="ac-row"><div class="ac-key">Numéro</div><div class="ac-val">${r.numero_compte}</div></div>
-        <div class="ac-row"><div class="ac-key">Frais (10%)</div><div class="ac-val">${fmt(r.frais)} FCFA</div></div>
-        <div class="ac-row"><div class="ac-key">Email</div><div class="ac-val">${r.profiles?.email||'—'}</div></div>
-      </div>
-      <div class="ac-actions">
-        <button class="btn-valider" onclick="validerRetrait('${r.id}','${r.transaction_id}',this)">
-          ✅ Confirmé envoyé
-        </button>
-        <button class="btn-rejeter" onclick="openNoteModal('retrait','${r.id}','${r.transaction_id}',this)">
-          ❌ Annuler / Rembourser
-        </button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function filterRetraits(){
-  const q=document.getElementById('search-retraits').value.toLowerCase();
-  renderRetraits(allRetraits.filter(r=>
-    (r.profiles?.full_name||'').toLowerCase().includes(q)||
-    (r.profiles?.email||'').toLowerCase().includes(q)||
-    r.numero_compte.toLowerCase().includes(q)||
-    r.methode.toLowerCase().includes(q)
-  ));
-}
-
-async function validerRetrait(retraitId, txId, btn){
-  btn.disabled=true;btn.innerHTML='<span class="ld"></span>Confirmation…';
-  try{
-    // Marquer la transaction comme créditée (retrait effectué)
-    await sb.from('transactions').update({
-      status:'credited',
-      ref_admin:'Envoyé par admin '+cu.id.substring(0,8),
-      updated_at:new Date().toISOString()
-    }).eq('id',txId);
-
-    // Marquer le retrait comme validé
-    await sb.from('retraits').update({
-      statut:'valide',
-      note_admin:'Montant envoyé',
-      updated_at:new Date().toISOString()
-    }).eq('id',retraitId);
-
-    showToast('✅ Retrait marqué comme envoyé');
-    await Promise.allSettled([loadStats(),loadRetraits()]);
-  }catch(e){
-    btn.disabled=false;btn.innerHTML='✅ Confirmé envoyé';
-    showToast('❌ Erreur : '+e.message, true);
-  }
-}
-
-// ══ USERS ══
-async function loadUsers(){
-  const list=document.getElementById('list-users');
-  list.innerHTML='<div class="empty-state"><div class="es-ico" style="animation:pulse 1.5s infinite">⏳</div></div>';
-  try{
-    const{data,error}=await sb.from('profiles')
-      .select('*').order('created_at',{ascending:false}).limit(50);
-
-    if(error)throw error;
-    allUsers=data||[];
-    renderUsers(allUsers);
-  }catch(e){
-    list.innerHTML=`<div class="empty-state"><div class="es-ico">❌</div><div class="es-txt">${e.message}</div></div>`;
-  }
-}
-
-function renderUsers(items){
-  const list=document.getElementById('list-users');
-  if(!items.length){list.innerHTML='<div class="empty-state"><div class="es-ico">👥</div><div class="es-txt">Aucun utilisateur</div></div>';return;}
-  list.innerHTML=items.map(p=>{
-    const initial=(p.full_name||p.email||'?')[0].toUpperCase();
-    const d=new Date(p.created_at);
-    const ds=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'});
-    const isAdmin=ADMIN_IDS.includes(p.id);
-    return `<div class="user-row">
-      <div class="ur-avatar" style="${isAdmin?'background:linear-gradient(135deg,var(--red),var(--orange))':''}">${initial}</div>
-      <div class="ur-info">
-        <div class="ur-name">${p.full_name||'—'} ${isAdmin?'<span style="font-size:10px;color:var(--red)">[ADMIN]</span>':''}</div>
-        <div class="ur-email">${p.email||'—'} · ${p.referral_code||'—'}</div>
-      </div>
-      <div class="ur-date">${ds}</div>
-    </div>`;
-  }).join('');
-}
-
-function filterUsers(){
-  const q=document.getElementById('search-users').value.toLowerCase();
-  renderUsers(allUsers.filter(u=>
-    (u.full_name||'').toLowerCase().includes(q)||
-    (u.email||'').toLowerCase().includes(q)||
-    (u.referral_code||'').toLowerCase().includes(q)
-  ));
-}
-
-// ══ HISTORIQUE ══
-async function loadHistory(){
-  const list=document.getElementById('list-history');
-  list.innerHTML='<div class="empty-state"><div class="es-ico" style="animation:pulse 1.5s infinite">⏳</div></div>';
-  try{
-    const[recs,rets]=await Promise.allSettled([
-      sb.from('recharges').select('*,profiles(full_name,email)').in('statut',['valide','rejete']).order('updated_at',{ascending:false}).limit(30),
-      sb.from('retraits').select('*,profiles(full_name,email)').in('statut',['valide','rejete']).order('updated_at',{ascending:false}).limit(30),
-    ]);
-    const all=[
-      ...(recs.value?.data||[]).map(r=>({...r,_type:'recharge'})),
-      ...(rets.value?.data||[]).map(r=>({...r,_type:'retrait'})),
-    ].sort((a,b)=>new Date(b.updated_at||b.created_at)-new Date(a.updated_at||a.created_at));
-    allHistory=all;
-    renderHistory(all);
-  }catch(e){
-    list.innerHTML=`<div class="empty-state"><div class="es-ico">❌</div><div class="es-txt">${e.message}</div></div>`;
-  }
-}
-
-function renderHistory(items){
-  const list=document.getElementById('list-history');
-  if(!items.length){list.innerHTML='<div class="empty-state"><div class="es-ico">📋</div><div class="es-txt">Aucun historique</div></div>';return;}
-  list.innerHTML=items.map(r=>{
-    const d=new Date(r.updated_at||r.created_at);
-    const ds=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-    const name=r.profiles?.full_name||r.profiles?.email||'?';
-    const ok=r.statut==='valide';
-    const ico=r._type==='recharge'?'💳':'💸';
-    const stBg=ok?'rgba(0,209,102,.08)':'rgba(255,59,78,.08)';
-    const stBorder=ok?'rgba(0,209,102,.2)':'rgba(255,59,78,.2)';
-    const stColor=ok?'var(--green)':'var(--red)';
-    const stLabel=ok?(r._type==='recharge'?'✅ Crédité':'✅ Envoyé'):'❌ Rejeté';
-    const montant=r.montant||r.montant_brut||0;
-    return `<div class="admin-card" style="border-color:${stBorder}">
-      <div class="ac-header">
-        <div>
-          <div class="ac-user">${ico} ${name}</div>
-          <div class="ac-date">${ds} · ${r.methode||'—'}</div>
-          ${r.note_admin?`<div style="font-size:11px;color:${stColor};margin-top:3px">${r.note_admin}</div>`:''}
+          <div class="cn">👤 ${x(nm)}</div>
+          <div class="cs">${d(r.created_at)}</div>
         </div>
         <div style="text-align:right">
-          <div class="ac-amount" style="color:${ok?'var(--green)':stColor}">${ok?'+':'−'}${fmt(montant)} F</div>
-          <div style="font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;color:${stColor}">${stLabel}</div>
+          <div class="ca" style="color:var(--r)">-${f(r.montant_brut)} F</div>
+          <div style="font-size:11px;color:var(--g);margin-top:2px">Net client: ${f(r.montant_net)} F</div>
+        </div>
+      </div>
+      <div class="cg">
+        <div class="ci"><div class="ck">Méthode</div><div class="cv">${x(r.methode)}</div></div>
+        <div class="ci"><div class="ck">Numéro à envoyer</div><div class="cv" style="color:var(--gold);font-weight:600">${x(r.numero_compte)}</div></div>
+        <div class="ci"><div class="ck">Frais SYLLA (10%)</div><div class="cv">${f(r.frais)} F</div></div>
+        <div class="ci"><div class="ck">Téléphone client</div><div class="cv">${x(ph)}</div></div>
+      </div>
+      <div class="cac">
+        <button class="bok" onclick="valRT('${r.id}','${x(nm)}',this)">✅ Confirmé envoyé</button>
+        <button class="bko" onclick="openRejet('rt','${r.id}','${uid}','${x(nm)}')">↩️ Annuler / Rembourser</button>
+        <button class="bmsg" onclick="chatOpen('${uid}','${x(nm)}','${x(em)}')">💬 Envoyer un message au client</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function fRT(){ const q_=q('f-rt').value.toLowerCase(); renderRT(ART.filter(r=>srch(r,q_))); }
+
+async function valRT(id, nm, btn){
+  btn.disabled=true; btn.innerHTML='<span class="ld"></span>Validation…';
+  const {data,error} = await sb.rpc('admin_valider_retrait',{p_retrait_id:id, p_note:'Montant envoyé'});
+  if(error||!data?.success){
+    btn.disabled=false; btn.innerHTML='✅ Confirmé envoyé';
+    toast('❌ '+(data?.error||error?.message||'Erreur'), 1); return;
+  }
+  toast('✅ Retrait validé — '+nm+' notifié');
+  await Promise.allSettled([loadStats(), loadRT()]);
+}
+
+/* ════════════════════════════════════════
+   USERS
+════════════════════════════════════════ */
+async function loadUS(){
+  load('l-us');
+  try{
+    const {data,error} = await sb.from('profiles')
+      .select('*')
+      .order('created_at',{ascending:false})
+      .limit(500);
+    if(error) throw error;
+    AUS = data||[]; renderUS(AUS);
+  }catch(e){ err('l-us',e.message); }
+}
+
+function renderUS(list){
+  const el=q('l-us');
+  if(!list.length){ el.innerHTML=emp('👥','Aucun utilisateur'); return; }
+  el.innerHTML = list.map(p => {
+    const init=(p.full_name||p.email||'?')[0].toUpperCase();
+    const isAdm=ADMINS.includes(p.id);
+    return `<div class="ur" onclick="openUser('${p.id}','${x(p.full_name||'')}','${x(p.email||'')}','${x(p.phone||'')}','${x(p.referral_code||'')}')">
+      <div class="uav" style="${isAdm?'background:linear-gradient(135deg,var(--r),var(--or))':''}">
+        ${init}
+      </div>
+      <div style="flex:1;min-width:0">
+        <div class="uname">${x(p.full_name||'—')} ${isAdm?'<span style="color:var(--r);font-size:9px">[ADMIN]</span>':''}</div>
+        <div class="usub">${x(p.email||'—')} · ${x(p.referral_code||'—')}</div>
+      </div>
+      <div style="font-size:9px;color:var(--tx3);flex-shrink:0">${d(p.created_at).split(' ')[0]}</div>
+    </div>`;
+  }).join('');
+}
+
+function fUS(){
+  const q_=q('f-us').value.toLowerCase();
+  renderUS(AUS.filter(p=>[p.full_name,p.email,p.referral_code,p.phone].some(v=>(v||'').toLowerCase().includes(q_))));
+}
+
+async function openUser(uid, nm, em, ph, code){
+  const [sRes,iRes,depRes,refRes,msgRes] = await Promise.allSettled([
+    sb.rpc('get_solde',{p_user_id:uid}),
+    sb.from('investments').select('id',{count:'exact',head:true}).eq('user_id',uid).eq('status','active'),
+    sb.from('transactions').select('amount').eq('user_id',uid).eq('type','depot').eq('status','credited'),
+    sb.from('referrals').select('id',{count:'exact',head:true}).eq('referrer_id',uid),
+    sb.from('messages').select('id',{count:'exact',head:true}).eq('user_id',uid),
+  ]);
+  const solde=Number(sRes.value?.data)||0;
+  const plans=iRes.value?.count||0;
+  const depose=(depRes.value?.data||[]).reduce((s,t)=>s+Number(t.amount),0);
+  const refs=refRes.value?.count||0;
+  const msgs=msgRes.value?.count||0;
+
+  ovShow(`
+    <div class="ovt">👤 ${x(nm)||'Utilisateur'}</div>
+    <div class="ovs">${x(em)||'email inconnu'}${ph?' · '+x(ph):''}${code?' · Code: <strong style="color:var(--gold)">'+x(code)+'</strong>':''}</div>
+    <div class="ust">
+      <div class="usb"><div class="usbv" style="color:var(--gold)">${f(solde)}</div><div class="usbl">Solde F</div></div>
+      <div class="usb"><div class="usbv" style="color:var(--te)">${plans}</div><div class="usbl">Plans actifs</div></div>
+      <div class="usb"><div class="usbv" style="color:var(--g)">${refs}</div><div class="usbl">Filleuls</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px">
+      <div class="usb"><div class="usbv" style="color:var(--pu)">${f(depose)}</div><div class="usbl">Total déposé F</div></div>
+      <div class="usb"><div class="usbv" style="color:var(--bl)">${msgs}</div><div class="usbl">Messages</div></div>
+    </div>
+    <div class="sh" style="margin-bottom:10px">ENVOYER UNE NOTIFICATION</div>
+    <textarea class="ovi" id="ud-msg" placeholder="Message pour ${x(nm)}…" rows="3"></textarea>
+    <div class="ovbtns">
+      <button class="ovc" onclick="ovClose()">Annuler</button>
+      <button class="ovok" style="background:linear-gradient(135deg,var(--bl),var(--pu))" onclick="sendToUser('${uid}','${x(nm)}')">✉️ Envoyer</button>
+    </div>
+    <button class="bmsg" style="margin-top:10px" onclick="ovClose();chatOpen('${uid}','${x(nm)}','${x(em)}')">💬 Voir conversation complète →</button>
+  `);
+}
+
+async function sendToUser(uid, nm){
+  const c=q('ud-msg')?.value.trim();
+  if(!c){ toast('⚠️ Message vide', 1); return; }
+  const {data,error}=await sb.rpc('admin_send_message',{p_user_id:uid,p_contenu:c});
+  if(error||!data?.success){ toast('❌ '+(data?.error||error?.message||'Erreur'), 1); return; }
+  ovClose(); toast('✅ Message envoyé à '+nm);
+  await loadStats();
+}
+
+/* ════════════════════════════════════════
+   PARRAINAGES
+════════════════════════════════════════ */
+async function loadRF(){
+  load('l-rf');
+  try{
+    const {data,error} = await sb.from('referrals')
+      .select(`
+        id, parrain_code, niveau, bonus_parrain, created_at,
+        parrain:profiles!referrals_referrer_id_fkey(full_name,email,referral_code),
+        filleul:profiles!referrals_referred_id_fkey(full_name,email)
+      `)
+      .order('created_at',{ascending:false})
+      .limit(500);
+    if(error) throw error;
+    ARF = data||[];
+
+    // Stats
+    const totalComm = ARF.reduce((s,r)=>s+Number(r.bonus_parrain||0),0);
+    const parrains = new Set(ARF.map(r=>r.parrain?.email)).size;
+    q('rf-stats').innerHTML=`
+      <span class="bk bg">🤝 ${ARF.length} parrainages</span>
+      <span class="bk bb">👑 ${parrains} parrains actifs</span>
+      <span class="bk bgo">💰 ${f(totalComm)} FCFA commissions</span>
+    `;
+    renderRF(ARF);
+  }catch(e){ err('l-rf',e.message); }
+}
+
+function renderRF(list){
+  const el=q('l-rf');
+  if(!list.length){ el.innerHTML=emp('🤝','Aucun parrainage enregistré'); return; }
+  el.innerHTML = list.map(r => {
+    const pn=r.parrain?.full_name||r.parrain?.email||'?';
+    const fn=r.filleul?.full_name||r.filleul?.email||'?';
+    const bonus=Number(r.bonus_parrain||0);
+    return `<div class="rr">
+      <div class="rav">🤝</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'Rajdhani';font-size:12px;font-weight:700;color:var(--tx)">
+          <span style="color:var(--gold)">👑 ${x(pn)}</span>
+          <span style="color:var(--tx3)"> → </span>
+          <span style="color:var(--te)">👤 ${x(fn)}</span>
+        </div>
+        <div style="font-size:10px;color:var(--tx3);margin-top:3px">
+          Code: <span style="color:var(--pu)">${x(r.parrain_code||'—')}</span>
+          · ${x(r.parrain?.email||'')}
+          · Niveau ${r.niveau||1}
+        </div>
+        <div style="display:flex;gap:6px;margin-top:6px">
+          ${r.parrain?.email?`<button style="padding:4px 10px;border-radius:6px;border:1px solid rgba(59,130,246,.25);background:rgba(59,130,246,.06);color:var(--bl);font-family:'Rajdhani';font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer" onclick="chatFromRF('${r.referrer_id||''}','${x(pn)}','${x(r.parrain?.email||'')}')">💬 Parrain</button>`:''}
+          ${r.referred_id?`<button style="padding:4px 10px;border-radius:6px;border:1px solid rgba(0,209,102,.2);background:rgba(0,209,102,.05);color:var(--g);font-family:'Rajdhani';font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer" onclick="chatFromRF('${r.referred_id||''}','${x(fn)}','${x(r.filleul?.email||'')}')">💬 Filleul</button>`:''}
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div class="bk ${bonus>0?'bg':'bpu'}">Niv.${r.niveau||1}</div>
+        <div style="font-size:9px;color:var(--tx3);margin-top:4px">${d(r.created_at).split(' ')[0]}</div>
+        ${bonus>0?`<div style="font-size:11px;color:var(--g);font-weight:600;margin-top:2px">+${f(bonus)} F</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function fRF(){
+  const q_=q('f-rf').value.toLowerCase();
+  renderRF(ARF.filter(r=>[r.parrain?.full_name,r.parrain?.email,r.filleul?.full_name,r.filleul?.email,r.parrain_code].some(v=>(v||'').toLowerCase().includes(q_))));
+}
+
+function chatFromRF(uid, nm, em){
+  if(!uid||uid==='undefined') return;
+  chatOpen(uid, nm, em);
+}
+
+/* ════════════════════════════════════════
+   MESSAGES / CONVERSATIONS
+════════════════════════════════════════ */
+async function loadMG(){
+  const el=q('l-mg');
+  el.innerHTML=`<div class="emp"><div class="emp-i" style="animation:pu 1.5s infinite">⏳</div></div>`;
+  try{
+    const {data,error} = await sb.from('messages')
+      .select('*,profiles(full_name,email)')
+      .order('created_at',{ascending:false})
+      .limit(1000);
+    if(error) throw error;
+
+    // Grouper par user_id
+    const map={};
+    (data||[]).forEach(m=>{
+      if(!map[m.user_id]){
+        map[m.user_id]={
+          uid:m.user_id,
+          name:m.profiles?.full_name||m.profiles?.email||'Utilisateur',
+          email:m.profiles?.email||'',
+          last:m.contenu,
+          time:m.created_at,
+          unread:0
+        };
+      } else if(new Date(m.created_at)>new Date(map[m.user_id].time)){
+        map[m.user_id].last=m.contenu;
+        map[m.user_id].time=m.created_at;
+      }
+      if(!m.lu && m.expediteur==='user') map[m.user_id].unread++;
+    });
+
+    AMG = Object.values(map).sort((a,b)=>new Date(b.time)-new Date(a.time));
+    renderMG(AMG);
+  }catch(e){ el.innerHTML=`<div class="emp"><div class="emp-i">❌</div><div class="emp-t">${x(e.message)}</div></div>`; }
+}
+
+function renderMG(list){
+  const el=q('l-mg');
+  if(!list.length){ el.innerHTML=emp('💬','Aucune conversation'); return; }
+  el.innerHTML = list.map(c => {
+    const init=(c.name||'?')[0].toUpperCase();
+    const preview=c.last?.substring(0,55)||'';
+    return `<div class="conv-item ${c.unread?'unread':''}" onclick="chatOpen('${c.uid}','${x(c.name)}','${x(c.email)}')">
+      <div class="cav">${init}${c.unread?'<div class="cdot"></div>':''}</div>
+      <div style="flex:1;min-width:0">
+        <div class="cname">${x(c.name)}${c.unread?` <span class="bk br" style="font-size:8px;padding:2px 5px">${c.unread}</span>`:''}</div>
+        <div class="clast">${x(preview)}${c.last?.length>55?'…':''}</div>
+      </div>
+      <div class="ctime">${d(c.time).split(' ')[1]||''}</div>
+    </div>`;
+  }).join('');
+}
+
+function fMG(){
+  const q_=q('f-mg').value.toLowerCase();
+  renderMG(AMG.filter(c=>c.name.toLowerCase().includes(q_)||c.email.toLowerCase().includes(q_)));
+}
+
+async function chatOpen(uid, name, email){
+  if(!uid||uid==='undefined'||uid===''){ toast('⚠️ UID utilisateur manquant', 1); return; }
+  if(TAB!=='messages') goTab('messages');
+  CONV={uid,name,email};
+  q('chat-name').textContent=name||'Utilisateur';
+  q('chat-email').textContent=email||'—';
+  q('msg-list-wrap').style.display='none';
+  q('msg-chat-wrap').classList.add('show');
+  q('chat-inp').value='';
+  await loadChatMsgs(uid);
+}
+
+async function loadChatMsgs(uid){
+  const el=q('chat-bubbles');
+  el.innerHTML=`<div style="text-align:center;padding:20px;color:var(--tx3);font-size:12px;opacity:.5">Chargement des messages…</div>`;
+  try{
+    const {data,error} = await sb.from('messages')
+      .select('*')
+      .eq('user_id',uid)
+      .order('created_at',{ascending:true});
+    if(error) throw error;
+
+    // Marquer messages user comme lus (sans bloquer)
+    sb.from('messages').update({lu:true})
+      .eq('user_id',uid).eq('expediteur','user').eq('lu',false)
+      .then(()=>loadStats()).catch(()=>{});
+
+    if(!data?.length){
+      el.innerHTML='<div class="emp"><div class="emp-i">💬</div><div class="emp-t">Aucun message — Commencez la conversation</div></div>';
+      return;
+    }
+
+    el.innerHTML = data.map(m => {
+      const isA = m.expediteur==='admin';
+      return `<div style="display:flex;flex-direction:column;align-items:${isA?'flex-end':'flex-start'}">
+        <div class="bubble ${isA?'a':'u'}">${x(m.contenu).replace(/\n/g,'<br>')}</div>
+        <div class="bmeta" style="text-align:${isA?'right':'left'}">${isA?'👤 Admin SYLLA':'👤 Client'} · ${d(m.created_at)}</div>
+      </div>`;
+    }).join('');
+    el.scrollTop = el.scrollHeight;
+  }catch(e){
+    el.innerHTML=`<div class="emp"><div class="emp-i">❌</div><div class="emp-t">${x(e.message)}</div></div>`;
+  }
+}
+
+async function msgSend(){
+  if(!CONV) return;
+  const inp=q('chat-inp');
+  const c=inp.value.trim();
+  if(!c) return;
+  inp.value=''; inp.style.height='auto';
+
+  const {data,error}=await sb.rpc('admin_send_message',{p_user_id:CONV.uid,p_contenu:c});
+  if(error||!data?.success){
+    toast('❌ '+(data?.error||error?.message||'Erreur envoi'), 1);
+    inp.value=c; return;
+  }
+  await loadChatMsgs(CONV.uid);
+  await loadStats();
+}
+
+function chatClose(){
+  CONV=null;
+  q('msg-chat-wrap').classList.remove('show');
+  q('msg-list-wrap').style.display='block';
+  loadMG();
+}
+
+function quickOpen(){
+  if(!CONV) return;
+  ovShow(`
+    <div class="ovt">✉️ MESSAGE RAPIDE</div>
+    <div class="ovs">Pour : <strong style="color:var(--gold)">${x(CONV.name)}</strong></div>
+    <div style="margin:2px 0 14px">
+      ${QUICK_MSGS.map((m,i)=>`<button class="qbtn" onclick="sendQuick(${i})">${x(m)}</button>`).join('')}
+    </div>
+    <div class="sh" style="margin-bottom:10px">OU MESSAGE PERSONNALISÉ</div>
+    <textarea class="ovi" id="q-inp" placeholder="Votre message…" rows="3"></textarea>
+    <div class="ovbtns">
+      <button class="ovc" onclick="ovClose()">Annuler</button>
+      <button class="ovok" style="background:linear-gradient(135deg,var(--bl),var(--pu))" onclick="sendQuickCustom()">Envoyer ✈️</button>
+    </div>
+  `);
+}
+
+async function sendQuick(i){
+  ovClose();
+  const {data,error}=await sb.rpc('admin_send_message',{p_user_id:CONV.uid,p_contenu:QUICK_MSGS[i]});
+  if(error||!data?.success){ toast('❌ Erreur envoi', 1); return; }
+  toast('✅ Message rapide envoyé');
+  await loadChatMsgs(CONV.uid);
+  await loadStats();
+}
+
+async function sendQuickCustom(){
+  const c=q('q-inp')?.value.trim();
+  if(!c){ toast('⚠️ Message vide', 1); return; }
+  ovClose();
+  const {data,error}=await sb.rpc('admin_send_message',{p_user_id:CONV.uid,p_contenu:c});
+  if(error||!data?.success){ toast('❌ Erreur envoi', 1); return; }
+  toast('✅ Message envoyé');
+  await loadChatMsgs(CONV.uid);
+  await loadStats();
+}
+
+/* ════════════════════════════════════════
+   HISTORIQUE
+════════════════════════════════════════ */
+async function loadHI(){
+  load('l-hi');
+  try{
+    const [recs,rets] = await Promise.allSettled([
+      sb.from('recharges').select('*,profiles(full_name,email)')
+        .in('statut',['valide','rejete'])
+        .order('updated_at',{ascending:false}).limit(100),
+      sb.from('retraits').select('*,profiles(full_name,email)')
+        .in('statut',['valide','rejete'])
+        .order('updated_at',{ascending:false}).limit(100),
+    ]);
+    const all = [
+      ...(recs.value?.data||[]).map(r=>({...r,_t:'recharge'})),
+      ...(rets.value?.data||[]).map(r=>({...r,_t:'retrait'})),
+    ].sort((a,b)=>new Date(b.updated_at||b.created_at)-new Date(a.updated_at||a.created_at));
+    AHI=all; renderHI(all);
+  }catch(e){ err('l-hi',e.message); }
+}
+
+function renderHI(list){
+  const el=q('l-hi');
+  if(!list.length){ el.innerHTML=emp('📋','Aucun historique'); return; }
+  el.innerHTML = list.map(r => {
+    const ok=r.statut==='valide';
+    const nm=r.profiles?.full_name||r.profiles?.email||'?';
+    const m=r.montant||r.montant_brut||0;
+    const ico=r._t==='recharge'?'💳':'💸';
+    const col=ok?(r._t==='recharge'?'var(--g)':'var(--bl)'):'var(--r)';
+    const lbl=ok?(r._t==='recharge'?'✅ Crédité':'✅ Envoyé'):'❌ Rejeté';
+    return `<div class="card" style="border-color:${ok?'rgba(0,209,102,.15)':'rgba(255,59,78,.15)'}">
+      <div class="ch">
+        <div>
+          <div class="cn">${ico} ${x(nm)}</div>
+          <div class="cs">${d(r.updated_at||r.created_at)} · ${x(r.methode||'—')}</div>
+          ${r.note_admin?`<div style="font-size:11px;color:${col};margin-top:3px">${x(r.note_admin)}</div>`:''}
+        </div>
+        <div style="text-align:right">
+          <div class="ca" style="color:${col};font-size:22px">${ok&&r._t==='recharge'?'+':'−'}${f(m)} F</div>
+          <span class="bk ${ok?'bg':'br'}">${lbl}</span>
         </div>
       </div>
     </div>`;
   }).join('');
 }
 
-function filterHistory(){
-  const q=document.getElementById('search-history').value.toLowerCase();
-  renderHistory(allHistory.filter(r=>
-    (r.profiles?.full_name||'').toLowerCase().includes(q)||
-    (r.profiles?.email||'').toLowerCase().includes(q)||
-    (r.methode||'').toLowerCase().includes(q)||
-    (r._type||'').includes(q)
-  ));
+function fHI(){
+  const q_=q('f-hi').value.toLowerCase();
+  renderHI(AHI.filter(r=>[r.profiles?.full_name,r.profiles?.email,r.methode,r._t].some(v=>(v||'').toLowerCase().includes(q_))));
 }
 
-// ══ MODAL NOTE ══
-function openNoteModal(type, id, secondId, btn){
-  pendingAction={type,id,secondId,btn};
-  document.getElementById('note-inp').value='';
-  document.getElementById('note-modal').classList.add('show');
+/* ════════════════════════════════════════
+   REJET MODAL
+════════════════════════════════════════ */
+function openRejet(type, id, uid, nm){
+  PA={type,id,uid,nm};
+  const isRC=type==='rc';
+  ovShow(`
+    <div class="ovt">${isRC?'❌ REJETER LA RECHARGE':'↩️ ANNULER LE RETRAIT'}</div>
+    <div class="ovs">${isRC
+      ?`La recharge de <strong style="color:var(--gold)">${x(nm)}</strong> sera rejetée. Le client recevra une notification automatique.`
+      :`Le retrait de <strong style="color:var(--gold)">${x(nm)}</strong> sera annulé. Le montant sera <strong style="color:var(--g)">remboursé automatiquement</strong> sur son compte.`
+    }</div>
+    <div class="sh" style="margin-bottom:8px">MOTIF DU REJET (OBLIGATOIRE)</div>
+    <textarea class="ovi" id="rj-note" placeholder="${isRC?'Ex: référence invalide, paiement non reçu, montant incorrect…':'Ex: numéro de compte invalide, problème de transfert…'}" rows="3"></textarea>
+    <div class="ovbtns" style="margin-top:14px">
+      <button class="ovc" onclick="ovClose()">Annuler</button>
+      <button class="ovok" style="background:linear-gradient(135deg,var(--r),#C02040)" onclick="doRejet()">Confirmer le rejet</button>
+    </div>
+  `);
 }
 
-function closeNoteModal(e){
-  if(e&&e.target!==document.getElementById('note-modal'))return;
-  document.getElementById('note-modal').classList.remove('show');
-  pendingAction=null;
-}
+async function doRejet(){
+  const note=q('rj-note')?.value.trim();
+  if(!note||note.length<5){ toast('⚠️ Motif obligatoire (min 5 caractères)', 1); return; }
+  const {type,id,nm}=PA;
+  ovClose();
 
-async function confirmRejet(){
-  if(!pendingAction)return;
-  const note=document.getElementById('note-inp').value.trim();
-  if(!note){showToast('⚠️ Entrez un motif de rejet',true);return;}
+  let data,error;
+  if(type==='rc') ({data,error}=await sb.rpc('admin_rejeter_recharge',{p_recharge_id:id,p_note:note}));
+  else ({data,error}=await sb.rpc('admin_rejeter_retrait',{p_retrait_id:id,p_note:note}));
 
-  const{type,id,secondId,btn}=pendingAction;
-  document.getElementById('note-modal').classList.remove('show');
-
-  if(btn){btn.disabled=true;btn.innerHTML='<span class="ld"></span>Rejet…';}
-
-  try{
-    if(type==='recharge'){
-      // Rejeter la recharge — pas de transaction créée donc solde inchangé
-      await sb.from('recharges').update({
-        statut:'rejete',
-        note_admin:note,
-        updated_at:new Date().toISOString()
-      }).eq('id',id);
-      showToast('❌ Recharge rejetée');
-      await Promise.allSettled([loadStats(),loadRecharges()]);
-
-    } else if(type==='retrait'){
-      // Rejeter le retrait = rembourser l'utilisateur
-      // secondId = transaction_id (la transaction pending qui a débité le solde)
-      // On change le status de la transaction en rejected = le solde est restauré
-      await sb.from('transactions').update({
-        status:'rejected',
-        ref_admin:'Rejeté par admin — '+note,
-        updated_at:new Date().toISOString()
-      }).eq('id',secondId);
-
-      await sb.from('retraits').update({
-        statut:'rejete',
-        note_admin:note,
-        updated_at:new Date().toISOString()
-      }).eq('id',id);
-
-      showToast('↩️ Retrait rejeté — solde remboursé automatiquement');
-      await Promise.allSettled([loadStats(),loadRetraits()]);
-    }
-  }catch(e){
-    if(btn){btn.disabled=false;btn.innerHTML='❌ Annuler / Rembourser';}
-    showToast('❌ Erreur : '+e.message, true);
+  if(error||!data?.success){
+    toast('❌ '+(data?.error||error?.message||'Erreur'), 1); return;
   }
-  pendingAction=null;
+  toast(type==='rc'?'❌ Recharge rejetée — '+nm+' notifié':'↩️ Retrait annulé — solde remboursé — '+nm+' notifié');
+  await Promise.allSettled([loadStats(), type==='rc'?loadRC():loadRT()]);
+  PA=null;
 }
 
-// ══ UTILS ══
-function switchTab(name,el){
-  currentTab=name;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('panel-'+name).classList.add('active');
+/* ════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════ */
+function goTab(name){
+  TAB=name;
+  document.querySelectorAll('.tb').forEach(b=>b.classList.toggle('on',b.dataset.tab===name));
+  document.querySelectorAll('.pn').forEach(p=>p.classList.remove('on'));
+  const pmsg=q('pn-messages');
+  pmsg.style.display='none';
 
-  if(name==='users'&&!allUsers.length)loadUsers();
-  if(name==='history')loadHistory();
+  if(name==='messages'){
+    pmsg.style.display='flex';
+    if(!AMG.length) loadMG();
+  } else {
+    const pn=q('pn-'+name);
+    if(pn) pn.classList.add('on');
+    if(name==='users'&&!AUS.length) loadUS();
+    if(name==='parrainages'&&!ARF.length) loadRF();
+    if(name==='historique') loadHI();
+  }
 }
 
-function fmt(n){return Number(n).toLocaleString('fr-FR');}
-function showToast(msg,err=false){
-  const t=document.getElementById('toast');t.textContent=msg;
-  err?t.classList.add('err'):t.classList.remove('err');
-  t.classList.add('show');clearTimeout(toastT);
-  toastT=setTimeout(()=>t.classList.remove('show'),4000);
+/* ════════════════════════════════════════
+   OVERLAY
+════════════════════════════════════════ */
+function ovShow(html){ q('ovbox').innerHTML=html; q('ov').classList.add('on'); }
+function ovClose(e){ if(e&&e.target!==q('ov')) return; q('ov').classList.remove('on'); }
+
+/* ════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════ */
+function q(id){ return document.getElementById(id); }
+function load(id){ q(id).innerHTML=`<div class="emp"><div class="emp-i" style="animation:pu 1.5s infinite">⏳</div></div>`; }
+function err(id,m){ q(id).innerHTML=`<div class="emp"><div class="emp-i">❌</div><div class="emp-t">${x(m)}</div></div>`; }
+function emp(ico,txt){ return `<div class="emp"><div class="emp-i">${ico}</div><div class="emp-t">${txt}</div></div>`; }
+function f(n){ return Number(n).toLocaleString('fr-FR'); }
+function d(s){
+  if(!s) return '—';
+  const dt=new Date(s);
+  return dt.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})+' '+dt.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
 }
-async function logout(){
-  await sb.auth.signOut();
-  window.location.href='index.html';
+function x(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function aResize(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,110)+'px'; }
+function srch(r,q_){ return [r.profiles?.full_name,r.profiles?.email,r.methode,r.reference_paiement,r.numero_compte,r.profiles?.phone].some(v=>(v||'').toLowerCase().includes(q_)); }
+function toast(msg,isErr=0){
+  const t=q('toast'); t.textContent=msg;
+  t.className='on'+(isErr?' err':'');
+  clearTimeout(TT); TT=setTimeout(()=>t.classList.remove('on'),4500);
 }
+async function logout(){ await sb.auth.signOut(); location.href='index.html'; }
 
 init();
 </script>
