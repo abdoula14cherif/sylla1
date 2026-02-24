@@ -551,19 +551,10 @@ async function init() {
 
 /* ── LOAD BALANCE ── */
 async function loadBalance() {
-  let total = 1000;
   try {
-    const { data } = await sb.from('transactions').select('amount,type').eq('user_id', currentUser.id);
-    if (data && data.length) {
-      total = 0;
-      data.forEach(t => {
-        if (['bonus_bienvenue','depot','gain','referral'].includes(t.type)) total += Number(t.amount);
-        if (t.type === 'retrait') total -= Number(t.amount);
-        if (t.type === 'investissement') total -= Number(t.amount);
-      });
-    }
-  } catch(e) {}
-  userBalance = Math.max(0, total);
+    const{data,error}=await sb.rpc('get_solde',{p_user_id:currentUser.id});
+    userBalance=error?0:Math.max(0,Number(data)||0);
+  } catch(e) { userBalance=0; }
   document.getElementById('bal-display').textContent = fmt(userBalance);
   document.getElementById('m-balance').textContent = fmt(userBalance) + ' FCFA';
 }
@@ -730,6 +721,13 @@ async function confirmInvest() {
 
   try {
     const now = new Date().toISOString();
+
+    // 0. Vérifier le solde en temps réel avant tout
+    const{data:soldeCheck}=await sb.rpc('get_solde',{p_user_id:currentUser.id});
+    const soldeReel=Number(soldeCheck)||0;
+    if(soldeReel<p.cost){
+      throw new Error(`Solde insuffisant. Disponible: ${fmt(soldeReel)} FCFA, requis: ${fmt(p.cost)} FCFA`);
+    }
 
     // 1. Create investment transaction (debit)
     const { error: txErr } = await sb.from('transactions').insert({
