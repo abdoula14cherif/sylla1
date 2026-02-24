@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SYLLA — Administration</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --gold:#F5C842;--orange:#FF7A35;--green:#00D166;--red:#FF3B4E;
+  --purple:#A064FF;--teal:#00C9C0;--amber:#FFB830;
+  --bg:#080600;--bg2:#120E00;--text:#FFFDF0;--text2:#8A7030;--text3:#3A2A08;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(245,200,66,.1) 0%,transparent 60%),
+  linear-gradient(160deg,#080600,#120E00);}
+
+/* LOADING */
+.loading-screen{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .5s,visibility .5s;}
+.loading-screen.hide{opacity:0;visibility:hidden;pointer-events:none;}
+.load-logo{font-family:'Bebas Neue',cursive;font-size:40px;letter-spacing:6px;color:var(--red);}
+.load-bar{width:120px;height:2px;background:rgba(255,59,78,.15);border-radius:2px;overflow:hidden;}
+.load-fill{height:100%;background:var(--red);animation:lf 1.5s ease-in-out infinite;}
+@keyframes lf{0%{width:0%;margin-left:0}50%{width:100%;margin-left:0}100%{width:0%;margin-left:100%}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.ld{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.2);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
+
+/* TOPBAR */
+.topbar{background:rgba(8,6,0,.97);border-bottom:1px solid rgba(245,200,66,.15);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.t-brand{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:5px;color:var(--red);}
+.t-badge{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:rgba(255,59,78,.12);border:1px solid rgba(255,59,78,.3);color:var(--red);}
+.t-admin{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text2);}
+.logout-btn{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:7px 14px;border-radius:20px;border:1px solid rgba(255,59,78,.3);background:transparent;color:var(--red);cursor:pointer;}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:16px 16px 0;}
+.stat-box{background:rgba(255,255,255,.03);border:1px solid rgba(245,200,66,.1);border-radius:16px;padding:14px 16px;text-align:center;animation:fadeUp .4s ease both;}
+.sb-val{font-family:'Bebas Neue',cursive;font-size:30px;letter-spacing:2px;}
+.sb-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-top:3px;}
+
+/* TABS */
+.tabs{display:flex;gap:0;padding:16px 16px 0;overflow-x:auto;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:10px 16px;border:1px solid rgba(245,200,66,.15);cursor:pointer;background:transparent;color:var(--text3);white-space:nowrap;transition:all .2s;border-radius:0;}
+.tab:first-child{border-radius:10px 0 0 10px;}
+.tab:last-child{border-radius:0 10px 10px 0;}
+.tab.active{background:rgba(245,200,66,.1);border-color:rgba(245,200,66,.35);color:var(--gold);}
+.tab .count{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--red);color:#fff;font-size:9px;margin-left:6px;vertical-align:middle;}
+
+/* PANELS */
+.panel{display:none;padding:16px;}
+.panel.active{display:block;}
+
+/* CARDS */
+.admin-card{background:rgba(255,255,255,.03);border:1px solid rgba(245,200,66,.1);border-radius:16px;padding:16px;margin-bottom:12px;animation:fadeUp .3s ease both;}
+.ac-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.ac-user{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--text);}
+.ac-date{font-size:11px;font-weight:300;color:var(--text3);}
+.ac-amount{font-family:'Bebas Neue',cursive;font-size:28px;letter-spacing:2px;color:var(--gold);}
+.ac-meta{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px;}
+.ac-row{display:flex;flex-direction:column;gap:2px;}
+.ac-key{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);}
+.ac-val{font-size:12px;font-weight:400;color:var(--text2);word-break:break-all;}
+.ac-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.btn-valider{padding:12px;border-radius:10px;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(135deg,rgba(0,209,102,.2),rgba(0,209,102,.08));border:1.5px solid rgba(0,209,102,.3);color:var(--green);transition:all .2s;}
+.btn-valider:hover{background:rgba(0,209,102,.2);}
+.btn-rejeter{padding:12px;border-radius:10px;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:rgba(255,59,78,.08);border:1.5px solid rgba(255,59,78,.25);color:var(--red);transition:all .2s;}
+.btn-rejeter:hover{background:rgba(255,59,78,.15);}
+.btn-full{grid-column:1/-1;padding:12px;border-radius:10px;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff;transition:all .2s;}
+.status-badge{display:inline-flex;align-items:center;gap:5px;font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 10px;border-radius:8px;}
+.st-wait{background:rgba(255,184,48,.1);border:1px solid rgba(255,184,48,.25);color:var(--amber);}
+.st-ok{background:rgba(0,209,102,.1);border:1px solid rgba(0,209,102,.25);color:var(--green);}
+.st-ko{background:rgba(255,59,78,.1);border:1px solid rgba(255,59,78,.25);color:var(--red);}
+
+/* NOTE MODAL */
+.modal{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
+.modal.show{opacity:1;pointer-events:all;}
+.modal-box{background:#1A1400;border:1.5px solid rgba(245,200,66,.2);border-radius:24px 24px 0 0;padding:24px 20px;width:100%;max-width:480px;transform:translateY(100%);transition:transform .35s cubic-bezier(.32,1,.5,1);}
+.modal.show .modal-box{transform:translateY(0);}
+.mb-title{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:3px;color:var(--gold);margin-bottom:16px;}
+.mb-inp{width:100%;background:rgba(255,255,255,.04);border:1.5px solid rgba(245,200,66,.2);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;resize:vertical;min-height:80px;}
+.mb-inp:focus{outline:none;border-color:rgba(245,200,66,.4);}
+.mb-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+
+/* USERS TABLE */
+.user-row{display:flex;align-items:center;gap:12px;padding:12px;background:rgba(255,255,255,.02);border:1px solid rgba(245,200,66,.08);border-radius:12px;margin-bottom:8px;}
+.ur-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--orange));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:18px;color:#000;flex-shrink:0;}
+.ur-info{flex:1;min-width:0;}
+.ur-name{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ur-email{font-size:11px;font-weight:300;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ur-bal{font-family:'Bebas Neue',cursive;font-size:18px;color:var(--gold);flex-shrink:0;}
+.ur-date{font-size:10px;color:var(--text3);flex-shrink:0;}
+
+.empty-state{text-align:center;padding:40px 20px;color:var(--text3);}
+.es-ico{font-size:48px;margin-bottom:12px;opacity:.4;}
+.es-txt{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;}
+
+/* TOAST */
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);background:rgba(0,209,102,.95);color:#000;padding:10px 22px;border-radius:100px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;z-index:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.err{background:rgba(255,59,78,.95);color:#fff;}
+
+/* SEARCH */
+.search-box{display:flex;gap:10px;margin-bottom:14px;}
+.search-inp{flex:1;background:rgba(255,255,255,.04);border:1.5px solid rgba(245,200,66,.15);border-radius:10px;padding:10px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;}
+.search-inp:focus{outline:none;border-color:rgba(245,200,66,.3);}
+.refresh-btn{padding:10px 16px;border-radius:10px;border:1.5px solid rgba(245,200,66,.2);background:rgba(245,200,66,.06);color:var(--gold);cursor:pointer;font-size:16px;}
+</style>
+</head>
+<body>
+
+<div class="loading-screen" id="loader">
+  <div class="load-logo">⚠️ ADMIN</div>
+  <div class="load-bar"><div class="load-fill"></div></div>
+  <div style="font-family:'Rajdhani',sans-serif;font-size:11px;letter-spacing:2px;color:var(--text3)">ACCÈS RESTREINT</div>
+</div>
+
+<div class="bg-mesh"></div>
+<div class="toast" id="toast"></div>
+
+<!-- NOTE MODAL (pour motif de rejet) -->
+<div class="modal" id="note-modal" onclick="closeNoteModal(event)">
+  <div class="modal-box">
+    <div class="mb-title">📝 MOTIF DU REJET</div>
+    <textarea class="mb-inp" id="note-inp" placeholder="Expliquez pourquoi cette demande est rejetée (ex: référence invalide, montant non reçu…)"></textarea>
+    <div class="mb-btns">
+      <button class="btn-rejeter" onclick="closeNoteModal()">Annuler</button>
+      <button class="btn-full" style="background:linear-gradient(135deg,var(--red),#C02040)" onclick="confirmRejet()">Confirmer le rejet</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="t-brand">SYLLA</div>
+    <div class="t-badge">🔐 ADMIN</div>
+  </div>
+  <div id="t-admin-name" class="t-admin">…</div>
+  <button class="logout-btn" onclick="logout()">Déconnexion</button>
+</div>
+
+<!-- STATS -->
+<div class="stats-row" id="stats-row">
+  <div class="stat-box">
+    <div class="sb-val" style="color:var(--amber)" id="st-recharges-pending">…</div>
+    <div class="sb-lbl">Recharges en attente</div>
+  </div>
+  <div class="stat-box">
+    <div class="sb-val" style="color:var(--red)" id="st-retraits-pending">…</div>
+    <div class="sb-lbl">Retraits en attente</div>
+  </div>
+  <div class="stat-box">
+    <div class="sb-val" style="color:var(--green)" id="st-users">…</div>
+    <div class="sb-lbl">Utilisateurs</div>
+  </div>
+  <div class="stat-box">
+    <div class="sb-val" style="color:var(--gold)" id="st-volume">…</div>
+    <div class="sb-lbl">Volume total (FCFA)</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('recharges',this)">
+    💳 Recharges <span class="count" id="badge-recharges">0</span>
+  </button>
+  <button class="tab" onclick="switchTab('retraits',this)">
+    💸 Retraits <span class="count" id="badge-retraits">0</span>
+  </button>
+  <button class="tab" onclick="switchTab('users',this)">
+    👥 Utilisateurs
+  </button>
+  <button class="tab" onclick="switchTab('history',this)">
+    📋 Historique
+  </button>
+</div>
+
+<!-- PANEL RECHARGES -->
+<div class="panel active" id="panel-recharges">
+  <div class="search-box">
+    <input class="search-inp" id="search-recharges" placeholder="🔍 Rechercher…" oninput="filterRecharges()">
+    <button class="refresh-btn" onclick="loadRecharges()">🔄</button>
+  </div>
+  <div id="list-recharges"><div class="empty-state"><div class="es-ico">⏳</div><div class="es-txt">Chargement…</div></div></div>
+</div>
+
+<!-- PANEL RETRAITS -->
+<div class="panel" id="panel-retraits">
+  <div class="search-box">
+    <input class="search-inp" id="search-retraits" placeholder="🔍 Rechercher…" oninput="filterRetraits()">
+    <button class="refresh-btn" onclick="loadRetraits()">🔄</button>
+  </div>
+  <div id="list-retraits"><div class="empty-state"><div class="es-ico">⏳</div><div class="es-txt">Chargement…</div></div></div>
+</div>
+
+<!-- PANEL USERS -->
+<div class="panel" id="panel-users">
+  <div class="search-box">
+    <input class="search-inp" id="search-users" placeholder="🔍 Nom, email…" oninput="filterUsers()">
+    <button class="refresh-btn" onclick="loadUsers()">🔄</button>
+  </div>
+  <div id="list-users"><div class="empty-state"><div class="es-ico">⏳</div><div class="es-txt">Chargement…</div></div></div>
+</div>
+
+<!-- PANEL HISTORIQUE -->
+<div class="panel" id="panel-history">
+  <div class="search-box">
+    <input class="search-inp" id="search-history" placeholder="🔍 Type, utilisateur…" oninput="filterHistory()">
+    <button class="refresh-btn" onclick="loadHistory()">🔄</button>
+  </div>
+  <div id="list-history"><div class="empty-state"><div class="es-ico">⏳</div><div class="es-txt">Chargement…</div></div></div>
+</div>
+
+<script>
+const{createClient}=supabase;
+const sb=createClient('https://fqiotqrraobmsrcyewsi.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc');
+
+// ⚠️ ADMIN ID — Remplace par ton UUID Supabase
+// Pour trouver ton UUID : Supabase > Authentication > Users > clique sur ton compte
+const ADMIN_IDS = [
+  '56d72615-7d4b-443e-ad11-1d83324e49d5', // abdoula (remplace si besoin)
+  // Ajoute d'autres IDs admin si nécessaire
+];
+
+let cu=null, currentTab='recharges';
+let allRecharges=[], allRetraits=[], allUsers=[], allHistory=[];
+let pendingAction=null;
+let toastT=null;
+
+// ══ INIT ══
+async function init(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='index.html';return;}
+  cu=session.user;
+
+  // Vérifier accès admin
+  if(!ADMIN_IDS.includes(cu.id)){
+    document.getElementById('loader').classList.add('hide');
+    document.body.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:20px;font-family:'Outfit',sans-serif">
+      <div style="font-size:64px">⛔</div>
+      <div style="font-size:24px;font-weight:700;color:#FF3B4E">Accès refusé</div>
+      <div style="color:#888">Vous n'avez pas les droits administrateur.</div>
+      <a href="dashboard.html" style="padding:12px 24px;background:rgba(255,59,78,.1);border:1px solid rgba(255,59,78,.3);border-radius:12px;color:#FF3B4E;text-decoration:none">Retour au dashboard</a>
+    </div>`;
+    return;
+  }
+
+  document.getElementById('t-admin-name').textContent=cu.email||'Admin';
+  await Promise.allSettled([loadStats(),loadRecharges(),loadRetraits()]);
+  document.getElementById('loader').classList.add('hide');
+}
+
+// ══ STATS ══
+async function loadStats(){
+  try{
+    const[rc,rt,us,vol]=await Promise.allSettled([
+      sb.from('recharges').select('id').eq('statut','en_attente'),
+      sb.from('retraits').select('id').eq('statut','en_attente'),
+      sb.from('profiles').select('id'),
+      sb.from('recharges').select('montant').eq('statut','valide'),
+    ]);
+    const rcPending=rc.value?.data?.length||0;
+    const rtPending=rt.value?.data?.length||0;
+    const users=us.value?.data?.length||0;
+    const volume=(vol.value?.data||[]).reduce((s,r)=>s+Number(r.montant),0);
+
+    document.getElementById('st-recharges-pending').textContent=rcPending;
+    document.getElementById('st-retraits-pending').textContent=rtPending;
+    document.getElementById('st-users').textContent=users;
+    document.getElementById('st-volume').textContent=fmt(volume);
+    document.getElementById('badge-recharges').textContent=rcPending;
+    document.getElementById('badge-retraits').textContent=rtPending;
+  }catch(e){}
+}
+
+// ══ RECHARGES ══
+async function loadRecharges(){
+  const list=document.getElementById('list-recharges');
+  list.innerHTML='<div class="empty-state"><div class="es-ico" style="animation:pulse 1.5s infinite">⏳</div></div>';
+  try{
+    const{data,error}=await sb.from('recharges')
+      .select('*, profiles(full_name,email)')
+      .eq('statut','en_attente')
+      .order('created_at',{ascending:true});
+
+    if(error)throw error;
+    allRecharges=data||[];
+    renderRecharges(allRecharges);
+  }catch(e){
+    list.innerHTML=`<div class="empty-state"><div class="es-ico">❌</div><div class="es-txt">${e.message}</div></div>`;
+  }
+}
+
+function renderRecharges(items){
+  const list=document.getElementById('list-recharges');
+  if(!items.length){
+    list.innerHTML='<div class="empty-state"><div class="es-ico">✅</div><div class="es-txt">Aucune recharge en attente</div></div>';
+    return;
+  }
+  list.innerHTML=items.map(r=>{
+    const d=new Date(r.created_at);
+    const ds=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    const name=r.profiles?.full_name||r.profiles?.email||'Utilisateur';
+    return `<div class="admin-card">
+      <div class="ac-header">
+        <div>
+          <div class="ac-user">👤 ${name}</div>
+          <div class="ac-date">${ds}</div>
+        </div>
+        <div class="ac-amount">${fmt(r.montant)} F</div>
+      </div>
+      <div class="ac-meta">
+        <div class="ac-row"><div class="ac-key">Méthode</div><div class="ac-val">${r.methode}</div></div>
+        <div class="ac-row"><div class="ac-key">Référence</div><div class="ac-val">${r.reference_paiement}</div></div>
+        <div class="ac-row"><div class="ac-key">Email</div><div class="ac-val">${r.profiles?.email||'—'}</div></div>
+        <div class="ac-row"><div class="ac-key">ID Demande</div><div class="ac-val">${r.id.substring(0,8)}…</div></div>
+      </div>
+      <div class="ac-actions">
+        <button class="btn-valider" onclick="validerRecharge('${r.id}','${r.user_id}',${r.montant},'${r.methode}',this)">
+          ✅ Valider
+        </button>
+        <button class="btn-rejeter" onclick="openNoteModal('recharge','${r.id}','${r.user_id}',this)">
+          ❌ Rejeter
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterRecharges(){
+  const q=document.getElementById('search-recharges').value.toLowerCase();
+  renderRecharges(allRecharges.filter(r=>
+    (r.profiles?.full_name||'').toLowerCase().includes(q)||
+    (r.profiles?.email||'').toLowerCase().includes(q)||
+    r.reference_paiement.toLowerCase().includes(q)||
+    r.methode.toLowerCase().includes(q)
+  ));
+}
+
+async function validerRecharge(id, userId, montant, methode, btn){
+  btn.disabled=true;btn.innerHTML='<span class="ld"></span>Validation…';
+  try{
+    // 1. Créer la transaction créditée dans transactions
+    const{data:tx,error:te}=await sb.from('transactions').insert({
+      user_id:userId,
+      type:'depot',
+      label:`💰 Recharge validée — ${methode}`,
+      amount:montant,
+      status:'credited',
+      ref_admin:'Validé par admin '+cu.id.substring(0,8),
+      created_at:new Date().toISOString()
+    }).select('id').single();
+
+    if(te)throw te;
+
+    // 2. Mettre à jour la recharge
+    const{error:re}=await sb.from('recharges').update({
+      statut:'valide',
+      note_admin:'Paiement confirmé',
+      transaction_id:tx.id,
+      updated_at:new Date().toISOString()
+    }).eq('id',id);
+
+    if(re)throw re;
+
+    showToast('✅ Recharge validée — '+fmt(montant)+' FCFA crédités');
+    await Promise.allSettled([loadStats(),loadRecharges()]);
+  }catch(e){
+    btn.disabled=false;btn.innerHTML='✅ Valider';
+    showToast('❌ Erreur : '+e.message, true);
+  }
+}
+
+// ══ RETRAITS ══
+async function loadRetraits(){
+  const list=document.getElementById('list-retraits');
+  list.innerHTML='<div class="empty-state"><div class="es-ico" style="animation:pulse 1.5s infinite">⏳</div></div>';
+  try{
+    const{data,error}=await sb.from('retraits')
+      .select('*, profiles(full_name,email)')
+      .eq('statut','en_attente')
+      .order('created_at',{ascending:true});
+
+    if(error)throw error;
+    allRetraits=data||[];
+    renderRetraits(allRetraits);
+  }catch(e){
+    list.innerHTML=`<div class="empty-state"><div class="es-ico">❌</div><div class="es-txt">${e.message}</div></div>`;
+  }
+}
+
+function renderRetraits(items){
+  const list=document.getElementById('list-retraits');
+  if(!items.length){
+    list.innerHTML='<div class="empty-state"><div class="es-ico">✅</div><div class="es-txt">Aucun retrait en attente</div></div>';
+    return;
+  }
+  list.innerHTML=items.map(r=>{
+    const d=new Date(r.created_at);
+    const ds=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    const name=r.profiles?.full_name||r.profiles?.email||'Utilisateur';
+    return `<div class="admin-card">
+      <div class="ac-header">
+        <div>
+          <div class="ac-user">👤 ${name}</div>
+          <div class="ac-date">${ds}</div>
+        </div>
+        <div>
+          <div class="ac-amount" style="color:var(--red)">-${fmt(r.montant_brut)} F</div>
+          <div style="font-size:11px;color:var(--green);text-align:right">Net: ${fmt(r.montant_net)} F</div>
+        </div>
+      </div>
+      <div class="ac-meta">
+        <div class="ac-row"><div class="ac-key">Méthode</div><div class="ac-val">${r.methode}</div></div>
+        <div class="ac-row"><div class="ac-key">Numéro</div><div class="ac-val">${r.numero_compte}</div></div>
+        <div class="ac-row"><div class="ac-key">Frais (10%)</div><div class="ac-val">${fmt(r.frais)} FCFA</div></div>
+        <div class="ac-row"><div class="ac-key">Email</div><div class="ac-val">${r.profiles?.email||'—'}</div></div>
+      </div>
+      <div class="ac-actions">
+        <button class="btn-valider" onclick="validerRetrait('${r.id}','${r.transaction_id}',this)">
+          ✅ Confirmé envoyé
+        </button>
+        <button class="btn-rejeter" onclick="openNoteModal('retrait','${r.id}','${r.transaction_id}',this)">
+          ❌ Annuler / Rembourser
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterRetraits(){
+  const q=document.getElementById('search-retraits').value.toLowerCase();
+  renderRetraits(allRetraits.filter(r=>
+    (r.profiles?.full_name||'').toLowerCase().includes(q)||
+    (r.profiles?.email||'').toLowerCase().includes(q)||
+    r.numero_compte.toLowerCase().includes(q)||
+    r.methode.toLowerCase().includes(q)
+  ));
+}
+
+async function validerRetrait(retraitId, txId, btn){
+  btn.disabled=true;btn.innerHTML='<span class="ld"></span>Confirmation…';
+  try{
+    // Marquer la transaction comme créditée (retrait effectué)
+    await sb.from('transactions').update({
+      status:'credited',
+      ref_admin:'Envoyé par admin '+cu.id.substring(0,8),
+      updated_at:new Date().toISOString()
+    }).eq('id',txId);
+
+    // Marquer le retrait comme validé
+    await sb.from('retraits').update({
+      statut:'valide',
+      note_admin:'Montant envoyé',
+      updated_at:new Date().toISOString()
+    }).eq('id',retraitId);
+
+    showToast('✅ Retrait marqué comme envoyé');
+    await Promise.allSettled([loadStats(),loadRetraits()]);
+  }catch(e){
+    btn.disabled=false;btn.innerHTML='✅ Confirmé envoyé';
+    showToast('❌ Erreur : '+e.message, true);
+  }
+}
+
+// ══ USERS ══
+async function loadUsers(){
+  const list=document.getElementById('list-users');
+  list.innerHTML='<div class="empty-state"><div class="es-ico" style="animation:pulse 1.5s infinite">⏳</div></div>';
+  try{
+    const{data,error}=await sb.from('profiles')
+      .select('*').order('created_at',{ascending:false}).limit(50);
+
+    if(error)throw error;
+    allUsers=data||[];
+    renderUsers(allUsers);
+  }catch(e){
+    list.innerHTML=`<div class="empty-state"><div class="es-ico">❌</div><div class="es-txt">${e.message}</div></div>`;
+  }
+}
+
+function renderUsers(items){
+  const list=document.getElementById('list-users');
+  if(!items.length){list.innerHTML='<div class="empty-state"><div class="es-ico">👥</div><div class="es-txt">Aucun utilisateur</div></div>';return;}
+  list.innerHTML=items.map(p=>{
+    const initial=(p.full_name||p.email||'?')[0].toUpperCase();
+    const d=new Date(p.created_at);
+    const ds=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'});
+    const isAdmin=ADMIN_IDS.includes(p.id);
+    return `<div class="user-row">
+      <div class="ur-avatar" style="${isAdmin?'background:linear-gradient(135deg,var(--red),var(--orange))':''}">${initial}</div>
+      <div class="ur-info">
+        <div class="ur-name">${p.full_name||'—'} ${isAdmin?'<span style="font-size:10px;color:var(--red)">[ADMIN]</span>':''}</div>
+        <div class="ur-email">${p.email||'—'} · ${p.referral_code||'—'}</div>
+      </div>
+      <div class="ur-date">${ds}</div>
+    </div>`;
+  }).join('');
+}
+
+function filterUsers(){
+  const q=document.getElementById('search-users').value.toLowerCase();
+  renderUsers(allUsers.filter(u=>
+    (u.full_name||'').toLowerCase().includes(q)||
+    (u.email||'').toLowerCase().includes(q)||
+    (u.referral_code||'').toLowerCase().includes(q)
+  ));
+}
+
+// ══ HISTORIQUE ══
+async function loadHistory(){
+  const list=document.getElementById('list-history');
+  list.innerHTML='<div class="empty-state"><div class="es-ico" style="animation:pulse 1.5s infinite">⏳</div></div>';
+  try{
+    const[recs,rets]=await Promise.allSettled([
+      sb.from('recharges').select('*,profiles(full_name,email)').in('statut',['valide','rejete']).order('updated_at',{ascending:false}).limit(30),
+      sb.from('retraits').select('*,profiles(full_name,email)').in('statut',['valide','rejete']).order('updated_at',{ascending:false}).limit(30),
+    ]);
+    const all=[
+      ...(recs.value?.data||[]).map(r=>({...r,_type:'recharge'})),
+      ...(rets.value?.data||[]).map(r=>({...r,_type:'retrait'})),
+    ].sort((a,b)=>new Date(b.updated_at||b.created_at)-new Date(a.updated_at||a.created_at));
+    allHistory=all;
+    renderHistory(all);
+  }catch(e){
+    list.innerHTML=`<div class="empty-state"><div class="es-ico">❌</div><div class="es-txt">${e.message}</div></div>`;
+  }
+}
+
+function renderHistory(items){
+  const list=document.getElementById('list-history');
+  if(!items.length){list.innerHTML='<div class="empty-state"><div class="es-ico">📋</div><div class="es-txt">Aucun historique</div></div>';return;}
+  list.innerHTML=items.map(r=>{
+    const d=new Date(r.updated_at||r.created_at);
+    const ds=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    const name=r.profiles?.full_name||r.profiles?.email||'?';
+    const ok=r.statut==='valide';
+    const ico=r._type==='recharge'?'💳':'💸';
+    const stBg=ok?'rgba(0,209,102,.08)':'rgba(255,59,78,.08)';
+    const stBorder=ok?'rgba(0,209,102,.2)':'rgba(255,59,78,.2)';
+    const stColor=ok?'var(--green)':'var(--red)';
+    const stLabel=ok?(r._type==='recharge'?'✅ Crédité':'✅ Envoyé'):'❌ Rejeté';
+    const montant=r.montant||r.montant_brut||0;
+    return `<div class="admin-card" style="border-color:${stBorder}">
+      <div class="ac-header">
+        <div>
+          <div class="ac-user">${ico} ${name}</div>
+          <div class="ac-date">${ds} · ${r.methode||'—'}</div>
+          ${r.note_admin?`<div style="font-size:11px;color:${stColor};margin-top:3px">${r.note_admin}</div>`:''}
+        </div>
+        <div style="text-align:right">
+          <div class="ac-amount" style="color:${ok?'var(--green)':stColor}">${ok?'+':'−'}${fmt(montant)} F</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;color:${stColor}">${stLabel}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterHistory(){
+  const q=document.getElementById('search-history').value.toLowerCase();
+  renderHistory(allHistory.filter(r=>
+    (r.profiles?.full_name||'').toLowerCase().includes(q)||
+    (r.profiles?.email||'').toLowerCase().includes(q)||
+    (r.methode||'').toLowerCase().includes(q)||
+    (r._type||'').includes(q)
+  ));
+}
+
+// ══ MODAL NOTE ══
+function openNoteModal(type, id, secondId, btn){
+  pendingAction={type,id,secondId,btn};
+  document.getElementById('note-inp').value='';
+  document.getElementById('note-modal').classList.add('show');
+}
+
+function closeNoteModal(e){
+  if(e&&e.target!==document.getElementById('note-modal'))return;
+  document.getElementById('note-modal').classList.remove('show');
+  pendingAction=null;
+}
+
+async function confirmRejet(){
+  if(!pendingAction)return;
+  const note=document.getElementById('note-inp').value.trim();
+  if(!note){showToast('⚠️ Entrez un motif de rejet',true);return;}
+
+  const{type,id,secondId,btn}=pendingAction;
+  document.getElementById('note-modal').classList.remove('show');
+
+  if(btn){btn.disabled=true;btn.innerHTML='<span class="ld"></span>Rejet…';}
+
+  try{
+    if(type==='recharge'){
+      // Rejeter la recharge — pas de transaction créée donc solde inchangé
+      await sb.from('recharges').update({
+        statut:'rejete',
+        note_admin:note,
+        updated_at:new Date().toISOString()
+      }).eq('id',id);
+      showToast('❌ Recharge rejetée');
+      await Promise.allSettled([loadStats(),loadRecharges()]);
+
+    } else if(type==='retrait'){
+      // Rejeter le retrait = rembourser l'utilisateur
+      // secondId = transaction_id (la transaction pending qui a débité le solde)
+      // On change le status de la transaction en rejected = le solde est restauré
+      await sb.from('transactions').update({
+        status:'rejected',
+        ref_admin:'Rejeté par admin — '+note,
+        updated_at:new Date().toISOString()
+      }).eq('id',secondId);
+
+      await sb.from('retraits').update({
+        statut:'rejete',
+        note_admin:note,
+        updated_at:new Date().toISOString()
+      }).eq('id',id);
+
+      showToast('↩️ Retrait rejeté — solde remboursé automatiquement');
+      await Promise.allSettled([loadStats(),loadRetraits()]);
+    }
+  }catch(e){
+    if(btn){btn.disabled=false;btn.innerHTML='❌ Annuler / Rembourser';}
+    showToast('❌ Erreur : '+e.message, true);
+  }
+  pendingAction=null;
+}
+
+// ══ UTILS ══
+function switchTab(name,el){
+  currentTab=name;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+
+  if(name==='users'&&!allUsers.length)loadUsers();
+  if(name==='history')loadHistory();
+}
+
+function fmt(n){return Number(n).toLocaleString('fr-FR');}
+function showToast(msg,err=false){
+  const t=document.getElementById('toast');t.textContent=msg;
+  err?t.classList.add('err'):t.classList.remove('err');
+  t.classList.add('show');clearTimeout(toastT);
+  toastT=setTimeout(()=>t.classList.remove('show'),4000);
+}
+async function logout(){
+  await sb.auth.signOut();
+  window.location.href='index.html';
+}
+
+init();
+</script>
+</body>
+</html>
