@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SYLLA — Messages</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --green:#00D166;--green-l:#4ADE80;--green-d:#009948;
+  --teal:#00C9C0;--teal-l:#00EDDE;
+  --orange:#FF7A35;--gold:#F5C842;--red:#FF3B4E;--amber:#FFB830;
+  --bg:#060E0A;--text:#F0FFF5;--text2:#6BA885;--text3:#2E5A40;
+  --nav-h:70px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);height:100dvh;display:flex;flex-direction:column;overflow:hidden;}
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 55% at 20% 10%,rgba(0,209,102,.12) 0%,transparent 60%),
+             radial-gradient(ellipse 50% 60% at 85% 80%,rgba(0,201,192,.08) 0%,transparent 55%),
+             linear-gradient(160deg,#060E0A,#0A1A10 55%,#081209);}
+
+/* LOADER */
+.loading-screen{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .5s,visibility .5s;}
+.loading-screen.hide{opacity:0;visibility:hidden;pointer-events:none;}
+.load-logo{font-family:'Bebas Neue';font-size:44px;letter-spacing:8px;background:linear-gradient(135deg,var(--green),var(--teal-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:pulse 1.5s ease-in-out infinite;}
+.load-bar{width:120px;height:2px;background:rgba(0,209,102,.15);border-radius:2px;overflow:hidden;}
+.load-fill{height:100%;background:linear-gradient(90deg,var(--green-d),var(--green));border-radius:2px;animation:lf 1.5s ease-in-out infinite;}
+@keyframes lf{0%{width:0%;margin-left:0}50%{width:100%;margin-left:0}100%{width:0%;margin-left:100%}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.ld{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.15);border-top-color:var(--green);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:5px;}
+
+/* TOPBAR */
+.topbar{position:relative;z-index:50;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;background:rgba(6,14,10,.94);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,209,102,.1);}
+.back-btn{font-family:'Rajdhani';font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--green);text-decoration:none;padding:8px 14px;border:1px solid rgba(0,209,102,.3);border-radius:20px;}
+.page-title{font-family:'Bebas Neue';font-size:22px;letter-spacing:4px;background:linear-gradient(135deg,var(--green),var(--teal-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.unread-badge{font-family:'Rajdhani';font-size:10px;font-weight:700;letter-spacing:1px;padding:5px 11px;border-radius:20px;background:rgba(255,59,78,.12);border:1px solid rgba(255,59,78,.3);color:#FF3B4E;display:none;}
+
+/* BODY */
+.chat-body{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.bubbles{flex:1;overflow-y:auto;padding:16px;}
+.bubbles::-webkit-scrollbar{width:3px;}
+.bubbles::-webkit-scrollbar-track{background:transparent;}
+.bubbles::-webkit-scrollbar-thumb{background:rgba(0,209,102,.2);border-radius:3px;}
+
+/* BUBBLE */
+.bubble-wrap{display:flex;flex-direction:column;margin-bottom:14px;animation:fu .3s ease both;}
+.bubble-wrap.admin{align-items:flex-start;}
+.bubble-wrap.user{align-items:flex-end;}
+.sender-label{font-family:'Rajdhani';font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
+.bubble-wrap.admin .sender-label{color:var(--green);padding-left:4px;}
+.bubble-wrap.user .sender-label{color:var(--teal);padding-right:4px;}
+.bubble{max-width:82%;padding:11px 14px;border-radius:16px;font-size:13px;line-height:1.65;word-break:break-word;}
+.bubble.admin-bubble{background:linear-gradient(135deg,rgba(0,209,102,.12),rgba(0,201,192,.06));border:1px solid rgba(0,209,102,.2);color:var(--text);border-radius:4px 16px 16px 16px;}
+.bubble.user-bubble{background:linear-gradient(135deg,rgba(0,201,192,.15),rgba(0,209,102,.08));border:1px solid rgba(0,201,192,.25);color:var(--text);border-radius:16px 4px 16px 16px;}
+.bubble-time{font-size:10px;color:var(--text3);margin-top:4px;}
+.bubble-wrap.admin .bubble-time{padding-left:4px;}
+.bubble-wrap.user .bubble-time{padding-right:4px;text-align:right;}
+
+/* SYLLA HEADER */
+.sylla-header{display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(0,209,102,.04);border-bottom:1px solid rgba(0,209,102,.1);}
+.sh-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--teal));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:20px;color:#000;flex-shrink:0;}
+.sh-name{font-family:'Rajdhani';font-size:14px;font-weight:700;color:var(--text);}
+.sh-status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);}
+.sh-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);}
+
+/* INPUT BAR */
+.input-bar{position:relative;z-index:50;flex-shrink:0;display:flex;gap:8px;padding:10px 14px;border-top:1px solid rgba(0,209,102,.1);background:rgba(6,14,10,.97);}
+.msg-inp{flex:1;background:rgba(255,255,255,.04);border:1.5px solid rgba(0,209,102,.2);border-radius:12px;padding:11px 14px;color:var(--text);font-family:'Outfit';font-size:13px;resize:none;min-height:44px;max-height:110px;line-height:1.5;}
+.msg-inp:focus{outline:none;border-color:rgba(0,209,102,.45);}
+.msg-inp::placeholder{color:var(--text3);}
+.send-btn{padding:11px 16px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--green),var(--teal));color:#000;font-family:'Rajdhani';font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;flex-shrink:0;transition:opacity .2s;}
+.send-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+/* BOTTOM NAV */
+.bot-nav{position:relative;z-index:50;display:flex;background:rgba(6,14,10,.97);border-top:1px solid rgba(0,209,102,.1);height:var(--nav-h);}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-decoration:none;color:var(--text3);transition:color .2s;position:relative;}
+.nav-item.active{color:var(--green);}
+.nav-ico{font-size:20px;}
+.nav-lbl{font-family:'Rajdhani';font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
+.nav-dot{position:absolute;top:10px;right:calc(50% - 14px);width:7px;height:7px;border-radius:50%;background:var(--red);border:2px solid var(--bg);display:none;}
+
+/* EMPTY STATE */
+.empty-chat{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;text-align:center;}
+.ec-ico{font-size:56px;opacity:.25;}
+.ec-title{font-family:'Bebas Neue';font-size:24px;letter-spacing:3px;color:var(--text2);}
+.ec-sub{font-size:12px;color:var(--text3);line-height:1.6;}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(var(--nav-h)+16px);left:50%;transform:translateX(-50%) translateY(12px);background:rgba(0,209,102,.96);color:#000;padding:10px 22px;border-radius:100px;font-family:'Rajdhani';font-size:12px;font-weight:700;letter-spacing:1.5px;z-index:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.err{background:rgba(255,59,78,.96);color:#fff;}
+</style>
+</head>
+<body>
+
+<div class="loading-screen" id="loader">
+  <div class="load-logo">SYLLA</div>
+  <div class="load-bar"><div class="load-fill"></div></div>
+</div>
+
+<div class="bg-mesh"></div>
+<div class="toast" id="toast"></div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="dashboard.html" class="back-btn">← Retour</a>
+  <div class="page-title">MESSAGES</div>
+  <div class="unread-badge" id="unread-badge">0 non lu</div>
+</div>
+
+<!-- SYLLA HEADER (agent) -->
+<div class="sylla-header">
+  <div class="sh-avatar">S</div>
+  <div>
+    <div class="sh-name">Équipe SYLLA</div>
+    <div class="sh-status"><div class="sh-dot"></div> Support en ligne · Réponse sous 2h</div>
+  </div>
+</div>
+
+<!-- CHAT BODY -->
+<div class="chat-body">
+  <div class="bubbles" id="bubbles">
+    <!-- Messages chargés ici -->
+  </div>
+
+  <!-- INPUT -->
+  <div class="input-bar">
+    <textarea class="msg-inp" id="msg-inp"
+      placeholder="Votre message à l'équipe SYLLA…"
+      rows="1"
+      oninput="autoResize(this)"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"></textarea>
+    <button class="send-btn" id="send-btn" onclick="sendMsg()">✈️</button>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bot-nav">
+  <a href="dashboard.html" class="nav-item"><span class="nav-ico">🏠</span><span class="nav-lbl">Accueil</span></a>
+  <a href="plan.html" class="nav-item"><span class="nav-ico">🚀</span><span class="nav-lbl">Plans</span></a>
+  <a href="messages.html" class="nav-item active"><span class="nav-ico">💬</span><span class="nav-lbl">Messages</span><div class="nav-dot" id="nav-dot"></div></a>
+  <a href="profil.html" class="nav-item"><span class="nav-ico">👤</span><span class="nav-lbl">Profil</span></a>
+</nav>
+
+<script>
+const {createClient}=supabase;
+const sb=createClient(
+  'https://fqiotqrraobmsrcyewsi.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc'
+);
+
+let cu=null, toastT=null, pollT=null;
+
+async function init(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='index.html';return;}
+  cu=session.user;
+  await loadMessages();
+  document.getElementById('loader').classList.add('hide');
+  // Polling toutes les 10 secondes pour nouveaux messages
+  pollT=setInterval(loadMessages,10000);
+}
+
+async function loadMessages(){
+  const el=document.getElementById('bubbles');
+  try{
+    const {data,error}=await sb.from('messages')
+      .select('*').eq('user_id',cu.id)
+      .order('created_at',{ascending:true});
+    if(error) throw error;
+
+    const msgs=data||[];
+
+    if(!msgs.length){
+      el.innerHTML=`
+        <div class="empty-chat">
+          <div class="ec-ico">💬</div>
+          <div class="ec-title">PAS ENCORE DE MESSAGES</div>
+          <div class="ec-sub">Envoyez un message à l'équipe SYLLA pour toute question concernant votre compte, vos investissements ou un problème.</div>
+        </div>`;
+
+      // Message de bienvenue auto
+      el.innerHTML+=`
+        <div class="bubble-wrap admin" style="margin:0 0 14px">
+          <div class="sender-label">🏅 Équipe SYLLA</div>
+          <div class="bubble admin-bubble">
+            👋 Bienvenue sur le support SYLLA !<br><br>
+            Vous pouvez nous contacter ici pour :<br>
+            • Suivre vos recharges et retraits<br>
+            • Signaler un problème<br>
+            • Obtenir des informations sur vos investissements<br><br>
+            Notre équipe répond généralement sous <strong>2 heures</strong> en journée.
+          </div>
+          <div class="bubble-time">Message automatique</div>
+        </div>`;
+      updateUnread(0);
+      return;
+    }
+
+    // Compter non lus (messages admin pas encore vus)
+    const unread=msgs.filter(m=>m.expediteur==='admin'&&!m.lu).length;
+    updateUnread(unread);
+
+    // Marquer admin messages comme lus
+    const unreadIds=msgs.filter(m=>m.expediteur==='admin'&&!m.lu).map(m=>m.id);
+    if(unreadIds.length){
+      sb.from('messages').update({lu:true}).in('id',unreadIds).catch(()=>{});
+    }
+
+    const scrollEl=el;
+    const wasAtBottom=scrollEl.scrollHeight-scrollEl.scrollTop-scrollEl.clientHeight<50;
+
+    el.innerHTML=msgs.map((m,i)=>{
+      const isAdmin=m.expediteur==='admin';
+      const dt=new Date(m.created_at);
+      const ds=dt.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})+' '+dt.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+      // Show date separator
+      let sep='';
+      if(i===0||new Date(msgs[i-1].created_at).toDateString()!==dt.toDateString()){
+        sep=`<div style="text-align:center;margin:8px 0;font-family:'Rajdhani';font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3)">${dt.toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'long'})}</div>`;
+      }
+      return sep+`
+        <div class="bubble-wrap ${isAdmin?'admin':'user'}">
+          <div class="sender-label">${isAdmin?'🏅 Équipe SYLLA':'👤 Vous'}</div>
+          <div class="bubble ${isAdmin?'admin-bubble':'user-bubble'}">${esc(m.contenu).replace(/\n/g,'<br>')}</div>
+          <div class="bubble-time">${ds}${isAdmin&&!m.lu?' · <span style="color:var(--amber)">nouveau</span>':''}</div>
+        </div>`;
+    }).join('');
+
+    if(wasAtBottom||unread>0) el.scrollTop=el.scrollHeight;
+
+  }catch(e){
+    el.innerHTML=`<div class="empty-chat"><div class="ec-ico">❌</div><div class="ec-title">Erreur</div><div class="ec-sub">${esc(e.message)}</div></div>`;
+  }
+}
+
+async function sendMsg(){
+  const inp=document.getElementById('msg-inp');
+  const btn=document.getElementById('send-btn');
+  const content=inp.value.trim();
+  if(!content) return;
+  if(content.length<2){showToast('Message trop court',true);return;}
+
+  btn.disabled=true;
+  inp.value='';
+  inp.style.height='auto';
+
+  try{
+    const {error}=await sb.from('messages').insert({
+      user_id:cu.id,
+      expediteur:'user',
+      contenu:content,
+      lu:false,
+      created_at:new Date().toISOString()
+    });
+    if(error)throw error;
+    await loadMessages();
+    document.getElementById('bubbles').scrollTop=document.getElementById('bubbles').scrollHeight;
+  }catch(e){
+    showToast('❌ Erreur : '+(e.message||'Réessayez'),true);
+    inp.value=content;
+  }finally{
+    btn.disabled=false;
+  }
+}
+
+function updateUnread(n){
+  const badge=document.getElementById('unread-badge');
+  const dot=document.getElementById('nav-dot');
+  if(n>0){
+    badge.textContent=n+' non lu'+(n>1?'s':'');
+    badge.style.display='block';
+    dot.style.display='block';
+  } else {
+    badge.style.display='none';
+    dot.style.display='none';
+  }
+}
+
+function autoResize(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,110)+'px';
+}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function showToast(msg,err=false){
+  const t=document.getElementById('toast');t.textContent=msg;
+  err?t.classList.add('err'):t.classList.remove('err');
+  t.classList.add('show');clearTimeout(toastT);
+  toastT=setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+init();
+</script>
+</body>
+</html>
