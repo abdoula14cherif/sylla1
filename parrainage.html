@@ -367,7 +367,7 @@ async function init(){
 }
 
 function buildCode(){
-  myCode='SYLLA-'+cu.id.replace(/-/g,'').substring(0,6).toUpperCase();
+  myCode='SYL-'+cu.id.replace(/-/g,'').substring(0,6).toUpperCase();
   myLink=window.location.origin+'/index.html?ref='+myCode;
   document.getElementById('my-code').textContent=myCode;
   document.getElementById('my-link').textContent=myLink;
