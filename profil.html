@@ -398,7 +398,7 @@ async function loadHistory(){
 
 function buildRefCode(){
   if(!cu)return;
-  const code='SYLLA-'+cu.id.replace(/-/g,'').substring(0,6).toUpperCase();
+  const code='SYL-'+cu.id.replace(/-/g,'').substring(0,6).toUpperCase();
   const link=window.location.origin+'/index.html?ref='+code;
   document.getElementById('ref-code').textContent=code;
   document.getElementById('ref-link').textContent=link;
