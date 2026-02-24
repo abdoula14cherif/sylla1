@@ -340,25 +340,21 @@ async function loadProfile(){
 async function loadStats(){
   let total=0,plans=0,refEarned=0,refN1=0;
   try{
-    const[txRes,invRes,refRes]=await Promise.allSettled([
-      sb.from('transactions').select('amount,type').eq('user_id',cu.id),
+    const[soldeRes,invRes,refRes]=await Promise.allSettled([
+      sb.rpc('get_solde',{p_user_id:cu.id}),  // Solde réel via function SQL
       sb.from('investments').select('id').eq('user_id',cu.id).eq('status','active'),
-      sb.from('transactions').select('amount').eq('user_id',cu.id).eq('type','referral'),
+      sb.from('transactions').select('amount').eq('user_id',cu.id).eq('type','commission'),
     ]);
-    if(txRes.status==='fulfilled'&&txRes.value.data){
-      txRes.value.data.forEach(t=>{
-        const a=Number(t.amount);
-        if(['bonus_bienvenue','depot','gain','referral','coffre_retrait'].includes(t.type))total+=a;
-        if(['investissement','coffre_depot','retrait'].includes(t.type))total-=a;
-      });
-    }
+    if(soldeRes.status==='fulfilled')total=Math.max(0,Number(soldeRes.value.data)||0);
     if(invRes.status==='fulfilled')plans=invRes.value.data?.length||0;
     if(refRes.status==='fulfilled'&&refRes.value.data){
       refEarned=refRes.value.data.reduce((s,t)=>s+Number(t.amount),0);
       refN1=refRes.value.data.length;
     }
+    // Also count referrals from referrals table
+    const{data:refs}=await sb.from('referrals').select('id,niveau').eq('referrer_id',cu.id);
+    if(refs)refN1=refs.filter(r=>r.niveau===1).length;
   }catch(e){}
-  total=Math.max(0,total);
   document.getElementById('stat-balance').textContent=fmtShort(total);
   document.getElementById('stat-plans').textContent=plans;
   document.getElementById('stat-refs').textContent=refN1;
