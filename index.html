@@ -268,7 +268,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
             </div>
             <div class="div"><span>🎁 Parrainage</span></div>
             <div class="fi"><label class="fl or">Code parrain <span style="color:var(--text3);font-size:9px">(optionnel)</span></label>
-              <input class="inp" id="sref" type="text" placeholder="Ex: SYLLA-ABC123" autocomplete="off" style="text-transform:uppercase">
+              <input class="inp" id="sref" type="text" placeholder="Ex: SYL-ABC123" autocomplete="off" style="text-transform:uppercase">
             </div>
             <button class="btn" type="submit" id="su-btn">🚀 Rejoindre SYLLA</button>
           </form>
@@ -352,7 +352,7 @@ const sb=createClient(
   }
   if(code){
     code=code.toUpperCase().trim();
-    if(!code.startsWith('SYLLA-'))code='SYLLA-'+code;
+    if(!code.startsWith('SYL-'))code='SYL-'+code;
     document.getElementById('sref').value=code;
     document.getElementById('sref').classList.add('ref-locked');
     document.getElementById('ref-banner-code').textContent=code;
@@ -416,7 +416,7 @@ async function applyReferralBonus(newUserId, refCode, nom, tel, email){
     console.error('[PARRAINAGE] Erreur RPC:', error.message);
     // Fallback : créer le profil + bonus bienvenue manuellement
     try{
-      const myCode = 'SYLLA-' + newUserId.replace(/-/g,'').substring(0,6).toUpperCase();
+      const myCode = 'SYL-' + newUserId.replace(/-/g,'').substring(0,6).toUpperCase();
       await sb.from('profiles').upsert({
         id: newUserId, full_name: nom, phone: tel||null,
         email: email, referral_code: myCode,
