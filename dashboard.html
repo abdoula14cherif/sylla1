@@ -564,18 +564,17 @@ async function ensureBonus(uid){
 
 /* ── LOAD BALANCE ── */
 async function loadBalance(uid){
-  let total=1000; // default bonus
-  let invested=0;
+  let total=0, invested=0;
   try{
-    const{data}=await sb.from('transactions').select('amount,type').eq('user_id',uid);
-    if(data&&data.length){
-      total=0;
-      data.forEach(t=>{
-        if(['bonus_bienvenue','depot','gain','referral'].includes(t.type)) total+=Number(t.amount);
-        if(t.type==='retrait') total-=Number(t.amount);
-        if(t.type==='investissement') invested+=Number(t.amount);
-      });
-    }
+    // Solde réel via function SQL (inclut retraits pending)
+    const{data:s,error:se}=await sb.rpc('get_solde',{p_user_id:uid});
+    total=se?0:Math.max(0,Number(s)||0);
+
+    // Montant investi (pour affichage info)
+    const{data:txs}=await sb.from('transactions')
+      .select('amount,type,status').eq('user_id',uid)
+      .eq('type','investissement').eq('status','credited');
+    if(txs)txs.forEach(t=>invested+=Number(t.amount));
   }catch(e){}
   animCount('bal-total',total);
   document.getElementById('bal-invest').textContent=`Investi : ${fmt(invested)} FCFA`;
