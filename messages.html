@@ -208,7 +208,7 @@ async function loadMessages(){
     // Marquer admin messages comme lus
     const unreadIds=msgs.filter(m=>m.expediteur==='admin'&&!m.lu).map(m=>m.id);
     if(unreadIds.length){
-      sb.from('messages').update({lu:true}).in('id',unreadIds).catch(()=>{});
+      try{ await sb.from('messages').update({lu:true}).in('id',unreadIds); }catch(e){}
     }
 
     const scrollEl=el;
