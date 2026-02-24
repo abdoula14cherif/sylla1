@@ -392,11 +392,19 @@ async function loadRC(){
   load('l-rc');
   try{
     const {data,error} = await sb.from('recharges')
-      .select('*,profiles(full_name,email,phone)')
+      .select('*')
       .eq('statut','en_attente')
       .order('created_at',{ascending:true});
     if(error) throw error;
-    ARC = data||[]; renderRC(ARC);
+    // Enrichir avec les profils
+    const recs = data||[];
+    if(recs.length){
+      const uids=[...new Set(recs.map(r=>r.user_id))];
+      const {data:profs}=await sb.from('profiles').select('id,full_name,email,phone').in('id',uids);
+      const pm={};(profs||[]).forEach(p=>pm[p.id]=p);
+      recs.forEach(r=>r.profiles=pm[r.user_id]||{});
+    }
+    ARC = recs; renderRC(ARC);
   }catch(e){ err('l-rc',e.message); }
 }
 
@@ -451,11 +459,18 @@ async function loadRT(){
   load('l-rt');
   try{
     const {data,error} = await sb.from('retraits')
-      .select('*,profiles(full_name,email,phone)')
+      .select('*')
       .eq('statut','en_attente')
       .order('created_at',{ascending:true});
     if(error) throw error;
-    ART = data||[]; renderRT(ART);
+    const recs=data||[];
+    if(recs.length){
+      const uids=[...new Set(recs.map(r=>r.user_id))];
+      const {data:profs}=await sb.from('profiles').select('id,full_name,email,phone').in('id',uids);
+      const pm={};(profs||[]).forEach(p=>pm[p.id]=p);
+      recs.forEach(r=>r.profiles=pm[r.user_id]||{});
+    }
+    ART = recs; renderRT(ART);
   }catch(e){ err('l-rt',e.message); }
 }
 
@@ -597,15 +612,18 @@ async function loadRF(){
   load('l-rf');
   try{
     const {data,error} = await sb.from('referrals')
-      .select(`
-        id, parrain_code, niveau, bonus_parrain, created_at,
-        parrain:profiles!referrals_referrer_id_fkey(full_name,email,referral_code),
-        filleul:profiles!referrals_referred_id_fkey(full_name,email)
-      `)
+      .select('id, referrer_id, referred_id, parrain_code, niveau, bonus_parrain, created_at')
       .order('created_at',{ascending:false})
       .limit(500);
     if(error) throw error;
-    ARF = data||[];
+    const recs=data||[];
+    if(recs.length){
+      const uids=[...new Set([...recs.map(r=>r.referrer_id),...recs.map(r=>r.referred_id)].filter(Boolean))];
+      const {data:profs}=await sb.from('profiles').select('id,full_name,email,referral_code').in('id',uids);
+      const pm={};(profs||[]).forEach(p=>pm[p.id]=p);
+      recs.forEach(r=>{r.parrain=pm[r.referrer_id]||{};r.filleul=pm[r.referred_id]||{};});
+    }
+    ARF = recs;
 
     // Stats
     const totalComm = ARF.reduce((s,r)=>s+Number(r.bonus_parrain||0),0);
@@ -671,14 +689,22 @@ async function loadMG(){
   el.innerHTML=`<div class="emp"><div class="emp-i" style="animation:pu 1.5s infinite">⏳</div></div>`;
   try{
     const {data,error} = await sb.from('messages')
-      .select('*,profiles(full_name,email)')
+      .select('*')
       .order('created_at',{ascending:false})
       .limit(1000);
     if(error) throw error;
 
     // Grouper par user_id
+    // Enrichir avec profils
+    const msgs=data||[];
+    if(msgs.length){
+      const uids=[...new Set(msgs.map(m=>m.user_id))];
+      const {data:profs}=await sb.from('profiles').select('id,full_name,email').in('id',uids);
+      const pm={};(profs||[]).forEach(p=>pm[p.id]=p);
+      msgs.forEach(m=>m.profiles=pm[m.user_id]||{});
+    }
     const map={};
-    (data||[]).forEach(m=>{
+    (msgs).forEach(m=>{
       if(!map[m.user_id]){
         map[m.user_id]={
           uid:m.user_id,
@@ -834,17 +860,20 @@ async function loadHI(){
   load('l-hi');
   try{
     const [recs,rets] = await Promise.allSettled([
-      sb.from('recharges').select('*,profiles(full_name,email)')
-        .in('statut',['valide','rejete'])
-        .order('updated_at',{ascending:false}).limit(100),
-      sb.from('retraits').select('*,profiles(full_name,email)')
-        .in('statut',['valide','rejete'])
-        .order('updated_at',{ascending:false}).limit(100),
+      sb.from('recharges').select('*').in('statut',['valide','rejete']).order('updated_at',{ascending:false}).limit(100),
+      sb.from('retraits').select('*').in('statut',['valide','rejete']).order('updated_at',{ascending:false}).limit(100),
     ]);
-    const all = [
+    let all = [
       ...(recs.value?.data||[]).map(r=>({...r,_t:'recharge'})),
       ...(rets.value?.data||[]).map(r=>({...r,_t:'retrait'})),
     ].sort((a,b)=>new Date(b.updated_at||b.created_at)-new Date(a.updated_at||a.created_at));
+    // Enrichir avec profils
+    if(all.length){
+      const uids=[...new Set(all.map(r=>r.user_id).filter(Boolean))];
+      const {data:profs}=await sb.from('profiles').select('id,full_name,email').in('id',uids);
+      const pm={};(profs||[]).forEach(p=>pm[p.id]=p);
+      all.forEach(r=>r.profiles=pm[r.user_id]||{});
+    }
     AHI=all; renderHI(all);
   }catch(e){ err('l-hi',e.message); }
 }
