@@ -335,86 +335,56 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 const{createClient}=supabase;
 const sb=createClient('https://fqiotqrraobmsrcyewsi.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc');
 
-/* ═══ PAYMENT CONFIGS ═══ */
 const PAYMENT_INFO={
-  wave:{
-    number:'+225 07 00 00 00 00',
-    name:'SYLLA PLATEFORME',
-    steps:[
-      {t:'Ouvrez votre application <strong>Wave</strong>',d:''},
-      {t:'Cliquez sur <strong>Envoyer de l\'argent</strong>',d:''},
-      {t:'Entrez le numéro Wave SYLLA',d:'',copy:'+225 07 00 00 00 00'},
-      {t:'Entrez le montant : <strong id="wave-amt">—</strong>',d:''},
-      {t:'Validez et notez la <strong>référence de transaction</strong>',d:'Vous en aurez besoin à l\'étape suivante'},
-    ]
-  },
-  orange:{
-    number:'+225 07 77 77 77 77',
-    name:'SYLLA PLATEFORME',
-    steps:[
-      {t:'Ouvrez <strong>Orange Money</strong> ou composez <strong>#144#</strong>',d:''},
-      {t:'Sélectionnez <strong>Transfert d\'argent</strong>',d:''},
-      {t:'Entrez le numéro bénéficiaire',d:'',copy:'+225 07 77 77 77 77'},
-      {t:'Entrez le montant et confirmez avec votre code PIN',d:''},
-      {t:'Notez la <strong>référence de transaction</strong> reçue par SMS',d:''},
-    ]
-  },
-  mtn:{
-    number:'+225 05 55 55 55 55',
-    name:'SYLLA PLATEFORME',
-    steps:[
-      {t:'Ouvrez <strong>MTN MoMo</strong> ou composez <strong>*133#</strong>',d:''},
-      {t:'Sélectionnez <strong>Send Money</strong>',d:''},
-      {t:'Entrez le numéro MTN SYLLA',d:'',copy:'+225 05 55 55 55 55'},
-      {t:'Confirmez avec votre PIN et notez la référence',d:''},
-    ]
-  },
-  moov:{
-    number:'+225 01 11 11 11 11',
-    name:'SYLLA PLATEFORME',
-    steps:[
-      {t:'Ouvrez <strong>Moov Money</strong> ou composez <strong>#155#</strong>',d:''},
-      {t:'Sélectionnez <strong>Transfert</strong>',d:''},
-      {t:'Numéro Moov SYLLA',d:'',copy:'+225 01 11 11 11 11'},
-      {t:'Entrez le montant, confirmez et notez la référence',d:''},
-    ]
-  },
-  visa:{
-    number:'Via lien de paiement sécurisé',
-    steps:[
-      {t:'Cliquez sur le bouton <strong>Payer par carte</strong> ci-dessous',d:'Vous serez redirigé vers notre passerelle sécurisée'},
-      {t:'Entrez vos informations de carte Visa/Mastercard',d:'Connexion SSL 256-bit sécurisée'},
-      {t:'Validez le paiement et copiez la <strong>référence de confirmation</strong>',d:''},
-    ]
-  },
-  bank:{
-    number:'CI00 SYLLA 0001 0001',
-    name:'SYLLA INVESTMENTS SA',
-    steps:[
-      {t:'Effectuez un virement vers notre compte',d:'UBA / Ecobank / CBI acceptés',copy:'CI00 SYLLA 0001 0001'},
-      {t:'Nom du bénéficiaire : <strong>SYLLA INVESTMENTS SA</strong>',d:''},
-      {t:'Motif du virement : <strong>RECHARGE + votre email</strong>',d:''},
-      {t:'Envoyez-nous la preuve de virement',d:'Le crédit est effectué sous 1-2 heures'},
-    ]
-  },
-  usdt:{
-    number:'TRC20_SYLLA_WALLET_ADDRESS',
-    steps:[
-      {t:'Ouvrez votre wallet crypto (Trust Wallet, Binance, etc.)',d:''},
-      {t:'Sélectionnez <strong>USDT sur le réseau TRC-20</strong>',d:'⚠️ Vérifiez que le réseau est bien TRC-20, pas ERC-20'},
-      {t:'Envoyez vers l\'adresse SYLLA TRC-20',d:'',copy:'TRC20_SYLLA_WALLET_ADDRESS'},
-      {t:'Attendez 1-3 confirmations et copiez le <strong>hash de transaction</strong>',d:''},
-    ]
-  },
-  btc:{
-    number:'bc1qSYLLA_BTC_ADDRESS_HERE',
-    steps:[
-      {t:'Ouvrez votre wallet Bitcoin',d:''},
-      {t:'Envoyez Bitcoin vers l\'adresse SYLLA',d:'',copy:'bc1qSYLLA_BTC_ADDRESS_HERE'},
-      {t:'Attendez 1+ confirmation réseau',d:'Le crédit est effectué après confirmation'},
-      {t:'Copiez le <strong>hash de transaction</strong> (TXID)',d:''},
-    ]
-  },
+  wave:{number:'+225 07 00 00 00 00',name:'SYLLA PLATEFORME',steps:[
+    {t:'Ouvrez votre application <strong>Wave</strong>',d:''},
+    {t:'Cliquez sur <strong>Envoyer de l\'argent</strong>',d:''},
+    {t:'Entrez le numéro Wave SYLLA',d:'',copy:'+225 07 00 00 00 00'},
+    {t:'Entrez le montant : <strong id="wave-amt">—</strong>',d:''},
+    {t:'Validez et notez la <strong>référence de transaction</strong>',d:'Vous en aurez besoin à l\'étape suivante'},
+  ]},
+  orange:{number:'+225 07 77 77 77 77',name:'SYLLA PLATEFORME',steps:[
+    {t:'Ouvrez <strong>Orange Money</strong> ou composez <strong>#144#</strong>',d:''},
+    {t:'Sélectionnez <strong>Transfert d\'argent</strong>',d:''},
+    {t:'Entrez le numéro bénéficiaire',d:'',copy:'+225 07 77 77 77 77'},
+    {t:'Entrez le montant et confirmez avec votre code PIN',d:''},
+    {t:'Notez la <strong>référence de transaction</strong> reçue par SMS',d:''},
+  ]},
+  mtn:{number:'+225 05 55 55 55 55',name:'SYLLA PLATEFORME',steps:[
+    {t:'Ouvrez <strong>MTN MoMo</strong> ou composez <strong>*133#</strong>',d:''},
+    {t:'Sélectionnez <strong>Send Money</strong>',d:''},
+    {t:'Entrez le numéro MTN SYLLA',d:'',copy:'+225 05 55 55 55 55'},
+    {t:'Confirmez avec votre PIN et notez la référence',d:''},
+  ]},
+  moov:{number:'+225 01 11 11 11 11',name:'SYLLA PLATEFORME',steps:[
+    {t:'Ouvrez <strong>Moov Money</strong> ou composez <strong>#155#</strong>',d:''},
+    {t:'Sélectionnez <strong>Transfert</strong>',d:''},
+    {t:'Numéro Moov SYLLA',d:'',copy:'+225 01 11 11 11 11'},
+    {t:'Entrez le montant, confirmez et notez la référence',d:''},
+  ]},
+  visa:{number:'Via lien sécurisé',steps:[
+    {t:'Cliquez sur <strong>Payer par carte</strong>',d:'Redirigé vers passerelle SSL sécurisée'},
+    {t:'Entrez vos informations Visa/Mastercard',d:'Connexion SSL 256-bit'},
+    {t:'Validez et copiez la <strong>référence de confirmation</strong>',d:''},
+  ]},
+  bank:{number:'CI00 SYLLA 0001 0001',name:'SYLLA INVESTMENTS SA',steps:[
+    {t:'Effectuez un virement bancaire',d:'UBA / Ecobank / CBI acceptés',copy:'CI00 SYLLA 0001 0001'},
+    {t:'Bénéficiaire : <strong>SYLLA INVESTMENTS SA</strong>',d:''},
+    {t:'Motif : <strong>RECHARGE + votre email</strong>',d:''},
+    {t:'Envoyez la preuve de virement',d:'Crédit sous 1-2h après vérification'},
+  ]},
+  usdt:{number:'TRC20_SYLLA_WALLET_ADDRESS',steps:[
+    {t:'Ouvrez votre wallet crypto',d:'Trust Wallet, Binance, etc.'},
+    {t:'Sélectionnez <strong>USDT réseau TRC-20</strong>',d:'⚠️ Pas ERC-20 !'},
+    {t:'Envoyez à l\'adresse SYLLA TRC-20',d:'',copy:'TRC20_SYLLA_WALLET_ADDRESS'},
+    {t:'Copiez le <strong>hash de transaction</strong>',d:'Attendez 1-3 confirmations'},
+  ]},
+  btc:{number:'bc1qSYLLA_BTC_ADDRESS_HERE',steps:[
+    {t:'Ouvrez votre wallet Bitcoin',d:''},
+    {t:'Envoyez BTC vers l\'adresse SYLLA',d:'',copy:'bc1qSYLLA_BTC_ADDRESS_HERE'},
+    {t:'Attendez 1+ confirmation réseau',d:''},
+    {t:'Copiez le <strong>TXID</strong> (hash de transaction)',d:''},
+  ]},
 };
 
 let cu=null,userBalance=0,selM={id:'wave',ico:'🌊',name:'Wave Money'};
@@ -424,39 +394,58 @@ async function init(){
   const{data:{session}}=await sb.auth.getSession();
   if(!session){window.location.href='index.html';return;}
   cu=session.user;
-  await loadBalance();
-  await loadHistory();
+  await Promise.allSettled([loadBalance(),loadHistory()]);
   document.getElementById('loader').classList.add('hide');
 }
 
 async function loadBalance(){
-  let total=1000;
   try{
-    const{data}=await sb.from('transactions').select('amount,type').eq('user_id',cu.id);
-    if(data?.length){total=0;data.forEach(t=>{
-      const a=Number(t.amount);
-      if(['bonus_bienvenue','depot','gain','referral','coffre_retrait'].includes(t.type))total+=a;
-      if(['investissement','coffre_depot'].includes(t.type))total-=a;
-      if(t.type==='retrait'&&t.status!=='pending'&&t.status!=='rejected')total-=a;
-    });}
-  }catch(e){}
-  userBalance=Math.max(0,total);
+    // Utiliser la function SQL sécurisée pour le solde réel
+    const{data,error}=await sb.rpc('get_solde',{p_user_id:cu.id});
+    userBalance=error?0:Number(data)||0;
+  }catch(e){userBalance=0;}
   document.getElementById('bal-display').textContent=fmt(userBalance);
 }
 
 async function loadHistory(){
   const list=document.getElementById('hist-list');
   try{
-    const{data}=await sb.from('transactions').select('*').eq('user_id',cu.id).eq('type','depot').order('created_at',{ascending:false}).limit(10);
-    if(!data?.length){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">💳 Aucune recharge effectuée</div>';return;}
-    list.innerHTML=data.map(t=>{
-      const d=new Date(t.created_at);
+    // Chercher dans la table recharges (plus précis que transactions)
+    const{data:recs}=await sb.from('recharges')
+      .select('*').eq('user_id',cu.id)
+      .order('created_at',{ascending:false}).limit(15);
+
+    if(!recs?.length){
+      list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">💳 Aucune recharge effectuée</div>';
+      return;
+    }
+    list.innerHTML=recs.map(r=>{
+      const d=new Date(r.created_at);
       const ds=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-      const stCls=t.status==='pending'?'st-pend':'st-ok';
-      const stTxt=t.status==='pending'?'⏳ En vérification':'✓ Crédité';
-      return `<div class="hi"><div class="hi-ico" style="background:rgba(0,209,102,.08)">💳</div><div class="hi-info"><div class="hi-name">${t.label||'Recharge'}</div><div class="hi-date">${ds}</div></div><div class="hi-right"><div class="hi-amt">+${fmt(t.amount)} F</div><div class="hi-st ${stCls}">${stTxt}</div></div></div>`;
+      const stMap={
+        'en_attente':'⏳ En vérification',
+        'valide':'✅ Crédité',
+        'rejete':'❌ Rejeté'
+      };
+      const stCls=r.statut==='valide'?'st-ok':r.statut==='rejete'?'st-rej':'st-pend';
+      const stTxt=stMap[r.statut]||r.statut;
+      const refTxt=r.reference_paiement?` — Réf: ${r.reference_paiement}`:'';
+      return `<div class="hi">
+        <div class="hi-ico" style="background:rgba(0,209,102,.08)">💳</div>
+        <div class="hi-info">
+          <div class="hi-name">${r.methode}${refTxt}</div>
+          <div class="hi-date">${ds}</div>
+          ${r.statut==='rejete'&&r.note_admin?`<div style="font-size:11px;color:var(--red);margin-top:3px">Motif: ${r.note_admin}</div>`:''}
+        </div>
+        <div class="hi-right">
+          <div class="hi-amt">+${fmt(r.montant)} F</div>
+          <div class="hi-st ${stCls}">${stTxt}</div>
+        </div>
+      </div>`;
     }).join('');
-  }catch(e){list.innerHTML='<div style="text-align:center;padding:16px;color:var(--text3)">Historique indisponible</div>';}
+  }catch(e){
+    list.innerHTML='<div style="text-align:center;padding:16px;color:var(--text3)">Historique indisponible</div>';
+  }
 }
 
 function setAmt(v){document.getElementById('amount-inp').value=v;validateAmt();}
@@ -507,23 +496,38 @@ async function submitRecharge(){
   const btn=document.getElementById('submit-btn');
   const errBox=document.getElementById('err-box');
   errBox.style.display='none';
+
+  // ── Validations strictes ──
   if(amount<1000){errBox.style.display='block';errBox.textContent='Montant minimum 1 000 FCFA.';return;}
-  if(!ref){errBox.style.display='block';errBox.textContent='Entrez la référence de votre paiement.';return;}
+  if(!ref||ref.length<3){errBox.style.display='block';errBox.textContent='Référence de paiement requise (minimum 3 caractères).';return;}
+  if(!selM.id){errBox.style.display='block';errBox.textContent='Sélectionnez une méthode de paiement.';return;}
+
   btn.disabled=true;btn.innerHTML='<span class="ld"></span>Envoi en cours…';
+
   try{
-    await sb.from('transactions').insert({
-      user_id:cu.id,type:'depot',
-      label:`Recharge (${selM.name}) — Réf: ${ref}`,
-      amount:amount,status:'pending',
-      created_at:new Date().toISOString()
+    // ── Appel via function sécurisée ──
+    const{data,error}=await sb.rpc('demander_recharge',{
+      p_user_id   : cu.id,
+      p_montant   : amount,
+      p_methode   : selM.name,
+      p_reference : ref
     });
-    document.getElementById('suc-msg').textContent=`Votre demande de ${fmt(amount)} FCFA via ${selM.name} a été enregistrée (Réf: ${ref}). Votre compte sera crédité sous 2 heures après vérification.`;
+
+    if(error||!data?.success){
+      throw new Error(data?.error||error?.message||'Erreur inconnue');
+    }
+
+    // ── Succès ──
+    document.getElementById('suc-msg').textContent=
+      `Votre demande de ${fmt(amount)} FCFA via ${selM.name} a été enregistrée (Réf: ${ref}). ` +
+      `Votre solde sera crédité après validation par notre équipe (délai max 2h).`;
     document.getElementById('suc-overlay').classList.add('show');
     await loadHistory();
+
   }catch(err){
     btn.disabled=false;btn.innerHTML='✅ Confirmer le dépôt';
     errBox.style.display='block';
-    errBox.textContent='❌ Erreur : '+(err.message||'Réessayez.');
+    errBox.textContent='❌ '+(err.message||'Erreur. Réessayez.');
   }
 }
 
