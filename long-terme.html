@@ -506,6 +506,8 @@ async function confirmInvest(){
     if(e1)throw e1;
     const{error:e2}=await sb.from('investments').insert({user_id:currentUser.id,plan_id:p.id,plan_name:p.name,plane_name:p.plane,amount:p.cost,daily_gain:p.daily,duration_days:365,days_credited:0,status:'active',start_date:now,last_credit_date:now,created_at:now});
     if(e2)throw e2;
+    // Commission parrainage 10%
+    sb.rpc('commission_parrainage',{p_filleul_id:currentUser.id,p_montant:p.cost,p_plan_name:p.name}).catch(()=>{});
     document.getElementById('modal-main').style.display='none';
     document.getElementById('modal-success').classList.add('show');
     document.getElementById('ms-title').textContent=p.name+' Activé ! 🌿';
