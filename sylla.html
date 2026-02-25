@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SYLLA INVEST — Lancement Officiel</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --gold:#F5C842;--gold2:#FFD700;--gold3:#B8960C;
+  --teal:#00C9C0;--teal2:#00EDDE;
+  --green:#00D166;--green2:#4ADE80;
+  --purple:#A064FF;--red:#FF3B4E;
+  --orange:#FF7A35;
+  --bg:#05080A;--bg2:#080C0F;--bg3:#0D1318;
+  --text:#F0F4FF;--text2:#8899AA;
+}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── BACKGROUND ── */
+.bg-layer{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 0%,rgba(245,200,66,.07) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 40% at 20% 80%,rgba(0,201,192,.06) 0%,transparent 50%),
+    radial-gradient(ellipse 40% 30% at 80% 50%,rgba(160,100,255,.05) 0%,transparent 50%),
+    linear-gradient(180deg,#05080A 0%,#070B0E 100%);
+}
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) ease-in-out infinite var(--dl,0s);}
+@keyframes twinkle{0%,100%{opacity:var(--op,.3);transform:scale(1)}50%{opacity:.05;transform:scale(.5)}}
+
+/* ── WRAPPER ── */
+.wrapper{position:relative;z-index:2;max-width:480px;margin:0 auto;padding:0 0 40px;}
+
+/* ── HEADER ── */
+.header{
+  text-align:center;
+  padding:36px 24px 20px;
+  position:relative;
+}
+.logo{
+  font-family:'Bebas Neue',cursive;
+  font-size:72px;
+  letter-spacing:12px;
+  background:linear-gradient(135deg,var(--gold3),var(--gold),var(--gold2),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  text-shadow:none;
+  line-height:1;
+  animation:logoIn .8s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes logoIn{from{opacity:0;transform:translateY(-20px) scale(.9)}to{opacity:1;transform:none}}
+.logo-sub{
+  font-family:'Rajdhani',sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:5px;
+  text-transform:uppercase;
+  color:var(--text2);
+  margin-top:4px;
+  animation:fadeUp .6s .2s both;
+}
+.tagline{
+  font-family:'Bebas Neue',cursive;
+  font-size:18px;letter-spacing:3px;
+  color:var(--teal2);
+  margin-top:10px;
+  animation:fadeUp .6s .3s both;
+}
+
+/* ── LAUNCH BADGE ── */
+.launch-badge{
+  display:inline-flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,rgba(255,59,78,.15),rgba(245,200,66,.1));
+  border:1.5px solid rgba(255,59,78,.4);
+  border-radius:50px;
+  padding:10px 20px;
+  margin:16px auto 0;
+  animation:pulseGlow 2s ease-in-out infinite, fadeUp .6s .4s both;
+}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(255,59,78,.3)}50%{box-shadow:0 0 20px 4px rgba(255,59,78,.15)}}
+.lb-dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:blink 1s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.lb-text{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.lb-text span{color:var(--gold);}
+
+/* ── COUNTDOWN ── */
+.countdown{
+  display:flex;justify-content:center;gap:12px;
+  padding:20px 24px;
+  animation:fadeUp .6s .5s both;
+}
+.cd-item{
+  flex:1;max-width:70px;
+  background:rgba(245,200,66,.06);
+  border:1px solid rgba(245,200,66,.15);
+  border-radius:14px;
+  padding:12px 8px;
+  text-align:center;
+}
+.cd-num{
+  font-family:'Bebas Neue',cursive;
+  font-size:36px;line-height:1;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.cd-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);margin-top:2px;}
+.cd-sep{font-family:'Bebas Neue',cursive;font-size:30px;color:var(--gold);opacity:.4;align-self:center;padding-bottom:16px;}
+
+/* ── SECTION TITLE ── */
+.section-title{
+  font-family:'Rajdhani',sans-serif;
+  font-size:10px;font-weight:700;letter-spacing:4px;text-transform:uppercase;
+  color:var(--text2);
+  padding:0 24px 12px;
+  display:flex;align-items:center;gap:10px;
+}
+.section-title::before,.section-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06);}
+
+/* ── PLAN CARDS ── */
+.plans{padding:0 16px;display:flex;flex-direction:column;gap:12px;}
+
+.plan-card{
+  border-radius:20px;
+  padding:18px 20px;
+  position:relative;overflow:hidden;
+  border:1px solid var(--cb,rgba(245,200,66,.2));
+  background:linear-gradient(135deg,var(--cbg1,rgba(245,200,66,.05)),var(--cbg2,rgba(0,0,0,.3)));
+  animation:cardIn .5s var(--cd,0s) cubic-bezier(.16,1,.3,1) both;
+  cursor:default;
+  transition:transform .2s,box-shadow .2s;
+}
+.plan-card:hover{transform:translateY(-2px);box-shadow:0 12px 40px var(--cs,rgba(245,200,66,.1));}
+@keyframes cardIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+.plan-card::before{
+  content:'';position:absolute;
+  top:-30px;right:-30px;
+  width:100px;height:100px;
+  border-radius:50%;
+  background:radial-gradient(circle,var(--cg,rgba(245,200,66,.08)) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+.pc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.pc-icon{font-size:28px;line-height:1;}
+.pc-badge{
+  font-family:'Rajdhani',sans-serif;
+  font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  padding:4px 10px;border-radius:20px;
+  background:var(--bb,rgba(245,200,66,.15));
+  color:var(--bc,var(--gold));
+  border:1px solid var(--bbo,rgba(245,200,66,.3));
+}
+.pc-name{
+  font-family:'Bebas Neue',cursive;
+  font-size:22px;letter-spacing:2px;
+  color:var(--cc,var(--gold));
+  margin-bottom:2px;
+}
+.pc-desc{font-size:11px;color:var(--text2);font-weight:300;}
+
+.pc-stats{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  margin-top:12px;
+}
+.ps{
+  background:rgba(0,0,0,.3);border-radius:12px;
+  padding:10px 12px;
+}
+.ps-val{
+  font-family:'Bebas Neue',cursive;
+  font-size:18px;letter-spacing:1px;
+  color:var(--sv,var(--teal2));
+  line-height:1;
+}
+.ps-lbl{font-size:9px;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-top:3px;font-family:'Rajdhani',sans-serif;font-weight:600;}
+
+.pc-highlight{
+  margin-top:12px;
+  padding:10px 14px;
+  border-radius:12px;
+  background:rgba(0,209,102,.06);
+  border:1px solid rgba(0,209,102,.15);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.ph-label{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);}
+.ph-val{font-family:'Bebas Neue',cursive;font-size:20px;color:var(--green2);}
+
+/* ── PAYMENT METHODS ── */
+.payments{
+  margin:20px 16px 0;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:20px;
+  padding:16px 20px;
+  animation:fadeUp .6s .8s both;
+}
+.pay-title{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text2);text-align:center;margin-bottom:14px;}
+.pay-methods{display:flex;justify-content:space-around;gap:8px;}
+.pm{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.pm-ico{font-size:24px;}
+.pm-name{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2);text-align:center;}
+
+/* ── BONUS BANNER ── */
+.bonus{
+  margin:16px 16px 0;
+  background:linear-gradient(135deg,rgba(0,209,102,.12),rgba(0,201,192,.06));
+  border:1.5px solid rgba(0,209,102,.25);
+  border-radius:20px;
+  padding:18px 20px;
+  text-align:center;
+  animation:fadeUp .6s .9s both;
+}
+.bonus-ico{font-size:32px;margin-bottom:8px;}
+.bonus-title{font-family:'Bebas Neue',cursive;font-size:28px;letter-spacing:2px;background:linear-gradient(135deg,var(--green),var(--teal2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.bonus-sub{font-size:12px;color:var(--text2);margin-top:4px;font-weight:300;}
+
+/* ── FOOTER ── */
+.footer{
+  text-align:center;padding:20px 24px;
+  animation:fadeUp .6s 1s both;
+}
+.footer-url{
+  font-family:'Bebas Neue',cursive;
+  font-size:20px;letter-spacing:3px;
+  color:var(--teal);
+}
+.footer-sub{font-size:10px;color:var(--text2);letter-spacing:2px;text-transform:uppercase;margin-top:6px;font-family:'Rajdhani',sans-serif;font-weight:600;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<div class="stars" id="stars"></div>
+
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo">SYLLA</div>
+    <div class="logo-sub">INVEST PLATFORM</div>
+    <div class="tagline">VOTRE ARGENT TRAVAILLE POUR VOUS</div>
+    <div style="display:flex;justify-content:center;margin-top:14px;">
+      <div class="launch-badge">
+        <div class="lb-dot"></div>
+        <div class="lb-text">🚀 LANCEMENT OFFICIEL — <span>DEMAIN 8H00</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COUNTDOWN -->
+  <div class="countdown" id="countdown">
+    <div class="cd-item"><div class="cd-num" id="cd-h">00</div><div class="cd-lbl">Heures</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-item"><div class="cd-num" id="cd-m">00</div><div class="cd-lbl">Minutes</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-item"><div class="cd-num" id="cd-s">00</div><div class="cd-lbl">Secondes</div></div>
+  </div>
+
+  <!-- PLANS -->
+  <div class="section-title">NOS PLANS D'INVESTISSEMENT</div>
+
+  <div class="plans">
+
+    <!-- PLAN JOURNALIER -->
+    <div class="plan-card" style="--cd:.1s;--cb:rgba(245,200,66,.25);--cbg1:rgba(245,200,66,.07);--cbg2:rgba(0,0,0,.4);--cg:rgba(245,200,66,.12);--cs:rgba(245,200,66,.12);--cc:var(--gold);">
+      <div class="pc-top">
+        <div class="pc-icon">✈️</div>
+        <div class="pc-badge" style="--bb:rgba(245,200,66,.15);--bc:var(--gold);--bbo:rgba(245,200,66,.3);">30 JOURS</div>
+      </div>
+      <div class="pc-name">PLAN JOURNALIER</div>
+      <div class="pc-desc">5 niveaux · Starter → Diamant · Gains crédités chaque jour</div>
+      <div class="pc-stats">
+        <div class="ps"><div class="ps-val" style="--sv:var(--gold);">2 000 F</div><div class="ps-lbl">Mise min.</div></div>
+        <div class="ps"><div class="ps-val" style="--sv:var(--gold2);">50 000 F</div><div class="ps-lbl">Mise max.</div></div>
+        <div class="ps"><div class="ps-val" style="--sv:var(--green2);">+400 F</div><div class="ps-lbl">Gain/jour min.</div></div>
+        <div class="ps"><div class="ps-val" style="--sv:var(--green2);">+5 000 F</div><div class="ps-lbl">Gain/jour max.</div></div>
+      </div>
+      <div class="pc-highlight">
+        <div class="ph-label">ROI TOTAL</div>
+        <div class="ph-val">+20% → +100%</div>
+      </div>
+    </div>
+
+    <!-- COURT TERME -->
+    <div class="plan-card" style="--cd:.2s;--cb:rgba(255,122,53,.25);--cbg1:rgba(255,122,53,.07);--cbg2:rgba(0,0,0,.4);--cg:rgba(255,122,53,.12);--cs:rgba(255,122,53,.12);--cc:var(--orange);">
+      <div class="pc-top">
+        <div class="pc-icon">⚡</div>
+        <div class="pc-badge" style="--bb:rgba(255,122,53,.15);--bc:var(--orange);--bbo:rgba(255,122,53,.3);">48 HEURES</div>
+      </div>
+      <div class="pc-name">COURT TERME</div>
+      <div class="pc-desc">Rendement rapide · Mise récupérée + gains en 48h</div>
+      <div class="pc-stats">
+        <div class="ps"><div class="ps-val" style="--sv:var(--orange);">1 000 F</div><div class="ps-lbl">Mise min.</div></div>
+        <div class="ps"><div class="ps-val" style="--sv:var(--orange);">10 000 F</div><div class="ps-lbl">Mise max.</div></div>
+        <div class="ps"><div class="ps-val" style="--sv:var(--green2);">+200 F</div><div class="ps-lbl">Gain min.</div></div>
+        <div class="ps"><div class="ps-val" style="--sv:var(--green2);">+2 000 F</div><div class="ps-lbl">Gain max.</div></div>
+      </div>
+      <div class="pc-highlight">
+        <div class="ph-label">DURÉE</div>
+        <div class="ph-val" style="color:var(--orange);">48H SEULEMENT</div>
+      </div>
+    </div>
+
+    <!-- LONG TERME -->
+    <div class="plan-card" style="--cd:.3s;--cb:rgba(0,201,192,.25);--cbg1:rgba(0,201,192,.07);--cbg2:rgba(0,0,0,.4);--cg:rgba(0,201,192,.12);--cs:rgba(0,201,192,.12);--cc:var(--teal2);">
+      <div class="pc-top">
+        <div class="pc-icon">🌿</div>
+        <div class="pc-badge" style="--bb:rgba(0,201,192,.15);--bc:var(--teal);--bbo:rgba(0,201,192,.3);">365 JOURS</div>
+      </div>
+      <div class="pc-name">LONG TERME</div>
+      <div class="pc-desc">Revenus passifs hebdomadaires · Engagement 1 an</div>
+      <div class="pc-stats">
+        <div class="ps"><div class="ps-val" style="--sv:var(--teal2);">1 000 F</div><div class="ps-lbl">Mise min.</div></div>
+        <div class="ps"><div class="ps-val" style="--sv:var(--teal2);">50 000 F</div><div class="ps-lbl">Mise max.</div></div>
+        <div class="ps"><div class="ps-val" style="--sv:var(--green2);">+100 F</div><div class="ps-lbl">Gain/jour min.</div></div>
+        <div class="ps"><div class="ps-val" style="--sv:var(--green2);">+500 F</div><div class="ps-lbl">Gain/jour max.</div></div>
+      </div>
+      <div class="pc-highlight">
+        <div class="ph-label">RETRAIT</div>
+        <div class="ph-val" style="color:var(--teal2);">CHAQUE SEMAINE</div>
+      </div>
+    </div>
+
+    <!-- COFFRE FORT -->
+    <div class="plan-card" style="--cd:.4s;--cb:rgba(160,100,255,.25);--cbg1:rgba(160,100,255,.07);--cbg2:rgba(0,0,0,.4);--cg:rgba(160,100,255,.12);--cs:rgba(160,100,255,.12);--cc:var(--purple);">
+      <div class="pc-top">
+        <div class="pc-icon">🔐</div>
+        <div class="pc-badge" style="--bb:rgba(160,100,255,.15);--bc:var(--purple);--bbo:rgba(160,100,255,.3);">ÉPARGNE 24H</div>
+      </div>
+      <div class="pc-name">COFFRE FORT</div>
+      <div class="pc-desc">Épargne sécurisée · Verrouillage 24h · Capital protégé</div>
+      <div class="pc-stats">
+        <div class="ps"><div class="ps-val" style="--sv:var(--purple);">500 F</div><div class="ps-lbl">Dépôt min.</div></div>
+        <div class="ps"><div class="ps-val" style="--sv:var(--purple);">Illimité</div><div class="ps-lbl">Dépôt max.</div></div>
+        <div class="ps"><div class="ps-val" style="--sv:var(--green2);">Sécurisé</div><div class="ps-lbl">Capital garanti</div></div>
+        <div class="ps"><div class="ps-val" style="--sv:var(--purple);">24H</div><div class="ps-lbl">Déblocage auto</div></div>
+      </div>
+      <div class="pc-highlight" style="background:rgba(160,100,255,.06);border-color:rgba(160,100,255,.15);">
+        <div class="ph-label">SÉCURITÉ</div>
+        <div class="ph-val" style="color:var(--purple);">MAXIMALE 🔒</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PAYMENT METHODS -->
+  <div class="payments">
+    <div class="pay-title">DÉPÔT & RETRAIT DISPONIBLES</div>
+    <div class="pay-methods">
+      <div class="pm"><div class="pm-ico">🟠</div><div class="pm-name">Orange<br>Money</div></div>
+      <div class="pm"><div class="pm-ico">💛</div><div class="pm-name">MTN<br>MoMo</div></div>
+      <div class="pm"><div class="pm-ico">💎</div><div class="pm-name">USDT<br>BSC</div></div>
+      <div class="pm"><div class="pm-ico">🟣</div><div class="pm-name">Solana<br>SOL</div></div>
+    </div>
+  </div>
+
+  <!-- BONUS -->
+  <div class="bonus">
+    <div class="bonus-ico">🎁</div>
+    <div class="bonus-title">BONUS DE BIENVENUE : +1 000 FCFA</div>
+    <div class="bonus-sub">Offert automatiquement à chaque nouvelle inscription</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-url">sylla1.vercel.app</div>
+    <div class="footer-sub">Plateforme 100% sécurisée · Gains quotidiens garantis</div>
+  </div>
+
+</div>
+
+<script>
+// Stars
+const starsEl = document.getElementById('stars');
+for(let i=0;i<80;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  const size=Math.random()*2+.5;
+  s.style.cssText=`
+    width:${size}px;height:${size}px;
+    left:${Math.random()*100}%;top:${Math.random()*100}%;
+    --op:${Math.random()*.5+.1};
+    --d:${Math.random()*4+2}s;
+    --dl:${Math.random()*4}s;
+  `;
+  starsEl.appendChild(s);
+}
+
+// Countdown vers demain 8h
+function updateCountdown(){
+  const now=new Date();
+  const target=new Date();
+  target.setDate(target.getDate()+1);
+  target.setHours(8,0,0,0);
+  
+  const diff=target-now;
+  if(diff<=0){
+    document.getElementById('cd-h').textContent='00';
+    document.getElementById('cd-m').textContent='00';
+    document.getElementById('cd-s').textContent='00';
+    return;
+  }
+  
+  const h=Math.floor(diff/3600000);
+  const m=Math.floor((diff%3600000)/60000);
+  const s=Math.floor((diff%60000)/1000);
+  
+  document.getElementById('cd-h').textContent=String(h).padStart(2,'0');
+  document.getElementById('cd-m').textContent=String(m).padStart(2,'0');
+  document.getElementById('cd-s').textContent=String(s).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown,1000);
+</script>
+</body>
+</html>
