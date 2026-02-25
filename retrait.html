@@ -562,7 +562,7 @@ async function submitWithdraw(){
     const{data,error}=await sb.rpc('demander_retrait',{
       p_user_id   : cu.id,
       p_montant   : amount,
-      p_methode   : selM.id,
+      p_methode   : selM.name,
       p_numero    : acct,
       p_frais_pct : FEE
     });
