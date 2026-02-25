@@ -291,36 +291,36 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 
     <div class="cat-title"><span>📱</span> Mobile Money</div>
     <div class="method-grid">
-      <div class="method-opt selected" onclick="selectM('wave',this,'🌊','Wave','CI · SN · Mali')">
+      <div class="method-opt selected" onclick="selectMethod('wave',this)">
         <div class="mo-ico">🌊</div><div class="mo-name">Wave</div><div class="mo-tag tag-m">Sous 24h</div>
       </div>
-      <div class="method-opt" onclick="selectM('orange',this,'🟠','Orange Money','CI · SN · ML · BF')">
+      <div class="method-opt" onclick="selectMethod('orange',this)">
         <div class="mo-ico">🟠</div><div class="mo-name">Orange Money</div><div class="mo-tag tag-m">Sous 24h</div>
       </div>
-      <div class="method-opt" onclick="selectM('mtn',this,'💛','MTN MoMo','CI · Ghana · Bénin')">
+      <div class="method-opt" onclick="selectMethod('mtn',this)">
         <div class="mo-ico">💛</div><div class="mo-name">MTN MoMo</div><div class="mo-tag tag-m">Sous 24h</div>
       </div>
-      <div class="method-opt" onclick="selectM('moov',this,'🔵','Moov Money','CI · BJ · TG · ML')">
+      <div class="method-opt" onclick="selectMethod('moov',this)">
         <div class="mo-ico">🔵</div><div class="mo-name">Moov Money</div><div class="mo-tag tag-m">Sous 24h</div>
       </div>
     </div>
 
     <div class="cat-title" style="margin-top:16px"><span>💳</span> Carte Bancaire</div>
     <div class="method-grid">
-      <div class="method-opt" onclick="selectM('visa',this,'💳','Visa / Mastercard','Toutes banques')">
+      <div class="method-opt" onclick="selectMethod('visa',this)">
         <div class="mo-ico">💳</div><div class="mo-name">Visa / Mastercard</div><div class="mo-tag tag-b">Sous 24h</div>
       </div>
-      <div class="method-opt" onclick="selectM('bank',this,'🏦','Virement Bancaire','UBA · Ecobank · CBI')">
+      <div class="method-opt" onclick="selectMethod('bank',this)">
         <div class="mo-ico">🏦</div><div class="mo-name">Virement Banque</div><div class="mo-tag tag-b">Sous 24h</div>
       </div>
     </div>
 
     <div class="cat-title" style="margin-top:16px"><span>₿</span> Crypto-monnaie</div>
     <div class="method-grid">
-      <div class="method-opt" onclick="selectM('usdt',this,'₮','USDT TRC-20','Tether · Tron Network')">
+      <div class="method-opt" onclick="selectMethod('usdt',this)">
         <div class="mo-ico">₮</div><div class="mo-name">USDT TRC-20</div><div class="mo-tag tag-c">Sous 24h</div>
       </div>
-      <div class="method-opt" onclick="selectM('btc',this,'₿','Bitcoin (BTC)','Bitcoin Network')">
+      <div class="method-opt" onclick="selectMethod('btc',this)">
         <div class="mo-ico">₿</div><div class="mo-name">Bitcoin</div><div class="mo-tag tag-c">Sous 24h</div>
       </div>
     </div>
@@ -406,9 +406,14 @@ const sb=createClient('https://fqiotqrraobmsrcyewsi.supabase.co','eyJhbGciOiJIUz
 
 const FEE=0.10, MIN=1000;
 const METHODS=[
-  {id:'wave',  ico:'🌊',name:'Wave Money',    sub:'CI · Sénégal · Mali'},
-  {id:'orange',ico:'🟠',name:'Orange Money',  sub:'CI · SN · BF · ML'},
-  {id:'mtn',   ico:'💛',name:'MTN MoMo',      sub:'CI · Ghana · Bénin'},
+  {id:'wave',  ico:'🌊',name:'Wave Money',        sub:'CI · Sénégal · Mali'},
+  {id:'orange',ico:'🟠',name:'Orange Money',      sub:'CI · SN · BF · ML'},
+  {id:'mtn',   ico:'💛',name:'MTN MoMo',          sub:'CI · Ghana · Bénin'},
+  {id:'moov',  ico:'🔵',name:'Moov Money',        sub:'CI · BJ · TG · ML'},
+  {id:'visa',  ico:'💳',name:'Visa / Mastercard', sub:'Toutes banques'},
+  {id:'bank',  ico:'🏦',name:'Virement Bancaire', sub:'UBA · Ecobank · CBI'},
+  {id:'usdt',  ico:'₮', name:'USDT TRC-20',       sub:'Tether · Tron Network'},
+  {id:'btc',   ico:'₿', name:'Bitcoin (BTC)',      sub:'Bitcoin Network'},
   {id:'moov',  ico:'🔵',name:'Moov Money',    sub:'CI · BJ · TG · ML'},
   {id:'visa',  ico:'💳',name:'Visa/Mastercard',sub:'Toutes banques'},
   {id:'bank',  ico:'🏦',name:'Virement Bancaire',sub:'UBA · Ecobank · CBI'},
