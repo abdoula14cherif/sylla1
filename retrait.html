@@ -40,6 +40,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .page-title{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:4px;background:linear-gradient(135deg,var(--green),var(--teal-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .clock-pill{font-family:'Bebas Neue',cursive;font-size:13px;letter-spacing:2px;color:var(--green);background:rgba(0,209,102,.08);border:1px solid rgba(0,209,102,.2);border-radius:20px;padding:7px 12px;}
 
+/* BANNER */
 .window-banner{border-radius:20px;padding:16px 18px;margin-bottom:16px;animation:fadeUp .4s ease both;}
 .wb-open{background:linear-gradient(135deg,rgba(0,209,102,.1),rgba(0,201,192,.05));border:1.5px solid rgba(0,209,102,.28);}
 .wb-closed{background:linear-gradient(135deg,rgba(255,59,78,.08),rgba(255,122,53,.04));border:1.5px solid rgba(255,59,78,.22);}
@@ -54,6 +55,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .wb-open .wb-desc{color:var(--text2);}
 .wb-closed .wb-desc{color:rgba(255,130,100,.7);}
 
+/* BALANCE */
 .balance-card{background:linear-gradient(135deg,rgba(0,209,102,.09),rgba(0,201,192,.04));border:1.5px solid rgba(0,209,102,.18);border-radius:20px;padding:18px 20px;margin-bottom:20px;animation:fadeUp .4s .05s ease both;}
 .bc-lbl{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(0,209,102,.55);margin-bottom:5px;}
 .bc-amount{font-family:'Bebas Neue',cursive;font-size:48px;letter-spacing:3px;line-height:1;background:linear-gradient(135deg,#fff,var(--green-l),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
@@ -64,6 +66,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .bcs-v{font-family:'Bebas Neue',cursive;font-size:17px;letter-spacing:1px;}
 .bcs-l{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-top:3px;}
 
+/* STEPS */
 .steps-bar{display:flex;gap:0;background:rgba(0,0,0,.25);border-radius:14px;padding:4px;margin-bottom:20px;border:1px solid rgba(255,255,255,.05);animation:fadeUp .4s .1s ease both;}
 .step-tab{flex:1;padding:10px 4px;border-radius:10px;text-align:center;cursor:pointer;transition:all .25s;}
 .step-tab.active{background:rgba(0,209,102,.12);border:1px solid rgba(0,209,102,.25);}
@@ -73,9 +76,11 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .step-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-top:2px;}
 .step-tab.active .step-lbl{color:var(--green);}
 
+/* PANELS */
 .step-panel{display:none;animation:fadeUp .3s ease both;}
 .step-panel.active{display:block;}
 
+/* AMOUNT */
 .card{background:rgba(255,255,255,.03);border:1px solid rgba(0,209,102,.1);border-radius:20px;padding:18px;margin-bottom:14px;}
 .field-lbl{display:block;font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(0,209,102,.65);margin-bottom:8px;}
 .amount-wrap{position:relative;margin-bottom:10px;}
@@ -90,6 +95,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .qb.max-btn{background:rgba(245,200,66,.07);border-color:rgba(245,200,66,.22);color:var(--gold);}
 .qb.max-btn:hover{background:rgba(245,200,66,.14);}
 
+/* FEE */
 .fee-card{background:linear-gradient(135deg,rgba(255,122,53,.07),rgba(0,0,0,.2));border:1px solid rgba(255,122,53,.18);border-radius:16px;padding:14px 16px;margin-bottom:16px;}
 .fee-title{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,122,53,.7);margin-bottom:10px;}
 .fee-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);}
@@ -103,6 +109,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .next-btn:hover{transform:translateY(-2px);}
 .next-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
 
+/* METHOD */
 .cat-title{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin:14px 0 10px;display:flex;align-items:center;gap:8px;}
 .method-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;}
 .method-opt{background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 10px;cursor:pointer;text-align:center;transition:all .25s;position:relative;}
@@ -125,6 +132,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .back-step{padding:14px;border-radius:14px;border:1.5px solid rgba(255,255,255,.1);background:transparent;color:var(--text3);cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:all .2s;}
 .back-step:hover{background:rgba(255,255,255,.05);}
 
+/* CONFIRM */
 .confirm-card{background:rgba(0,0,0,.3);border:1px solid rgba(0,209,102,.12);border-radius:20px;overflow:hidden;margin-bottom:16px;}
 .cc-head{padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:12px;}
 .cc-head-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;background:rgba(0,209,102,.08);flex-shrink:0;}
@@ -149,12 +157,14 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .submit-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none;}
 .ld{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px;}
 
+/* RULES */
 .rules-card{background:rgba(255,184,48,.05);border:1px solid rgba(255,184,48,.15);border-radius:18px;padding:16px;margin-bottom:20px;animation:fadeUp .4s .2s ease both;}
 .rules-title{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:12px;}
 .rule{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.03);font-size:12px;font-weight:300;color:rgba(255,200,100,.7);line-height:1.55;}
 .rule:last-child{border-bottom:none;}
 .ri{font-size:14px;flex-shrink:0;margin-top:1px;}
 
+/* HISTORY */
 .sec-title{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin:4px 0 12px;display:flex;align-items:center;gap:10px;}
 .sec-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(0,209,102,.2),transparent);}
 .hist-list{display:flex;flex-direction:column;gap:8px;animation:fadeUp .4s .25s ease both;}
@@ -170,6 +180,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .st-pend{color:var(--amber);}
 .st-rej{color:var(--red);}
 
+/* SUCCESS OVERLAY */
 .suc-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.94);backdrop-filter:blur(20px);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s;padding:28px;text-align:center;}
 .suc-overlay.show{opacity:1;pointer-events:all;}
 .suc-ico{font-size:80px;margin-bottom:20px;animation:bounceIn .6s ease both .1s;}
@@ -180,7 +191,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .suc-badge-txt{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;color:var(--amber);line-height:1.5;text-align:left;}
 .suc-btn{padding:15px 40px;border-radius:14px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--green-d),var(--green));font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#fff;box-shadow:0 8px 24px rgba(0,209,102,.3);}
 
-.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);backdrop-filter:blur(12px);color:#fff;padding:10px 22px;border-radius:100px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;z-index:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);background:rgba(255,59,78,.92);backdrop-filter:blur(12px);color:#fff;padding:10px 22px;border-radius:100px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;z-index:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 .bot-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;height:var(--nav-h);background:rgba(6,14,10,.96);backdrop-filter:blur(24px);border-top:1px solid rgba(0,209,102,.1);display:grid;grid-template-columns:repeat(4,1fr);box-shadow:0 -8px 32px rgba(0,0,0,.5);}
@@ -251,10 +262,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
     <div class="card">
       <label class="field-lbl">Montant à retirer</label>
       <div class="amount-wrap">
-        <input class="amount-inp" type="number" id="amount-inp" placeholder="2 000" min="1000" oninput="calcFee()">
+        <input class="amount-inp" type="number" id="amount-inp" placeholder="2 000" min="2000" oninput="calcFee()">
         <span class="cur-tag">FCFA</span>
       </div>
-      <div class="min-hint">⚡ Minimum <strong style="color:var(--green)">1 000 FCFA</strong> · Frais <strong style="color:var(--orange)">10%</strong> prélevés</div>
+      <div class="min-hint">⚡ Minimum <strong style="color:var(--green)">2 000 FCFA</strong> · Frais <strong style="color:var(--orange)">10%</strong> prélevés</div>
       <div class="quick-row">
         <button class="qb" onclick="setAmt(2000)">2 000</button>
         <button class="qb" onclick="setAmt(5000)">5 000</button>
@@ -366,7 +377,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
   <!-- RULES -->
   <div class="rules-card" style="margin-top:20px">
     <div class="rules-title">📋 Règles de retrait</div>
-    <div class="rule"><span class="ri">💰</span><span>Minimum <strong>1 000 FCFA</strong>. Des frais de service de <strong>10%</strong> sont prélevés sur chaque retrait.</span></div>
+    <div class="rule"><span class="ri">💰</span><span>Minimum <strong>2 000 FCFA</strong>. Des frais de service de <strong>10%</strong> sont prélevés sur chaque retrait.</span></div>
     <div class="rule"><span class="ri">⏱</span><span>Traitement garanti sous <strong>24 heures</strong> après validation de la demande.</span></div>
     <div class="rule"><span class="ri">📱</span><span><strong>Mobile Money</strong> : Wave, Orange Money, MTN MoMo, Moov Money. Vérifiez votre numéro.</span></div>
     <div class="rule"><span class="ri">💳</span><span><strong>Carte bancaire</strong> : Visa, Mastercard ou virement bancaire (UBA, Ecobank, CBI). Vérifiez votre RIB.</span></div>
@@ -393,22 +404,25 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 const{createClient}=supabase;
 const sb=createClient('https://fqiotqrraobmsrcyewsi.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc');
 
-const FEE=0.10, MIN=1000;
-
-// ✅ CORRIGÉ : tableau sans doublons
+const FEE=0.10, MIN=1500;
 const METHODS=[
-  {id:'wave',  ico:'🌊', name:'Wave Money',        sub:'CI · Sénégal · Mali'},
-  {id:'orange',ico:'🟠', name:'Orange Money',      sub:'CI · SN · BF · ML'},
-  {id:'mtn',   ico:'💛', name:'MTN MoMo',          sub:'CI · Ghana · Bénin'},
-  {id:'moov',  ico:'🔵', name:'Moov Money',        sub:'CI · BJ · TG · ML'},
-  {id:'visa',  ico:'💳', name:'Visa / Mastercard', sub:'Toutes banques'},
-  {id:'bank',  ico:'🏦', name:'Virement Bancaire', sub:'UBA · Ecobank · CBI'},
-  {id:'usdt',  ico:'₮',  name:'USDT TRC-20',       sub:'Tether · Tron Network'},
-  {id:'btc',   ico:'₿',  name:'Bitcoin (BTC)',      sub:'Bitcoin Network'},
+  {id:'wave',  ico:'🌊',name:'Wave Money',        sub:'CI · Sénégal · Mali'},
+  {id:'orange',ico:'🟠',name:'Orange Money',      sub:'CI · SN · BF · ML'},
+  {id:'mtn',   ico:'💛',name:'MTN MoMo',          sub:'CI · Ghana · Bénin'},
+  {id:'moov',  ico:'🔵',name:'Moov Money',        sub:'CI · BJ · TG · ML'},
+  {id:'visa',  ico:'💳',name:'Visa / Mastercard', sub:'Toutes banques'},
+  {id:'bank',  ico:'🏦',name:'Virement Bancaire', sub:'UBA · Ecobank · CBI'},
+  {id:'usdt',  ico:'₮', name:'USDT TRC-20',       sub:'Tether · Tron Network'},
+  {id:'btc',   ico:'₿', name:'Bitcoin (BTC)',      sub:'Bitcoin Network'},
+  {id:'moov',  ico:'🔵',name:'Moov Money',    sub:'CI · BJ · TG · ML'},
+  {id:'visa',  ico:'💳',name:'Visa/Mastercard',sub:'Toutes banques'},
+  {id:'bank',  ico:'🏦',name:'Virement Bancaire',sub:'UBA · Ecobank · CBI'},
+  {id:'usdt',  ico:'₮', name:'USDT TRC-20',   sub:'Tether · Tron'},
+  {id:'btc',   ico:'₿', name:'Bitcoin',        sub:'Bitcoin Network'},
 ];
 
-let cu=null, userBalance=0, selM=METHODS[0];
-let toastT2=null;
+let cu=null,userBalance=0,selM=METHODS[0];
+let toastT=null;
 
 async function init(){
   const{data:{session}}=await sb.auth.getSession();
@@ -420,24 +434,18 @@ async function init(){
 }
 
 function renderBanner(){
-  document.getElementById('window-banner').innerHTML=`
-    <div class="window-banner wb-open">
-      <div class="wb-row">
-        <div class="wb-dot"></div>
-        <div>
-          <div class="wb-title">RETRAITS OUVERTS 24h/7j</div>
-          <div class="wb-desc">Traitement sous 24h après validation de votre demande</div>
-        </div>
-      </div>
-    </div>`;
+  const html=`<div class="window-banner wb-open"><div class="wb-row"><div class="wb-dot"></div><div><div class="wb-title">RETRAITS OUVERTS 24h/7j</div><div class="wb-desc">Traitement sous 24h après validation de votre demande</div></div></div></div>`;
+  document.getElementById('window-banner').innerHTML=html;
 }
 
 async function loadBalance(){
   try{
+    // Solde réel via function SQL sécurisée
     const{data,error}=await sb.rpc('get_solde',{p_user_id:cu.id});
     userBalance=error?0:Number(data)||0;
   }catch(e){userBalance=0;}
 
+  // Stats retraits
   let wd=0,pend=0,cnt=0;
   try{
     const{data}=await sb.from('retraits').select('montant_brut,statut').eq('user_id',cu.id);
@@ -461,6 +469,7 @@ async function loadHistory(){
     const{data}=await sb.from('retraits')
       .select('*').eq('user_id',cu.id)
       .order('created_at',{ascending:false}).limit(15);
+
     if(!data?.length){
       list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">💸 Aucun retrait effectué</div>';
       return;
@@ -484,74 +493,29 @@ async function loadHistory(){
         </div>
       </div>`;
     }).join('');
-  }catch(e){
-    list.innerHTML='<div style="text-align:center;padding:16px;color:var(--text3)">Historique indisponible</div>';
-  }
-}
-
-// ✅ CORRIGÉ : calcFee définie
-function calcFee(){
-  const v=Number(document.getElementById('amount-inp').value)||0;
-  const feeCard=document.getElementById('fee-card');
-  if(v>=MIN){
-    const frais=Math.round(v*FEE);
-    const net=v-frais;
-    const after=userBalance-v;
-    document.getElementById('f-brut').textContent=fmt(v)+' FCFA';
-    document.getElementById('f-frais').textContent='-'+fmt(frais)+' FCFA';
-    document.getElementById('f-net').textContent=fmt(net)+' FCFA';
-    document.getElementById('f-after').textContent=fmt(Math.max(0,after))+' FCFA';
-    feeCard.style.display='block';
-  }else{
-    feeCard.style.display='none';
-  }
-  validateStep1();
-}
-
-// ✅ CORRIGÉ : setMax définie
-function setMax(){
-  document.getElementById('amount-inp').value=userBalance;
-  calcFee();
+  }catch(e){list.innerHTML='<div style="text-align:center;padding:16px;color:var(--text3)">Historique indisponible</div>';}
 }
 
 function setAmt(v){
   document.getElementById('amount-inp').value=v;
-  calcFee();
+  validateStep1();
 }
 
-// ✅ CORRIGÉ : validation sans référence à #s1-err manquant
 function validateStep1(){
   const v=Number(document.getElementById('amount-inp').value)||0;
-  const btn=document.getElementById('btn-next1');
-  btn.disabled=!(v>=MIN && v<=userBalance);
+  const err=document.getElementById('s1-err');
+  if(v<MIN){err.style.display='block';err.textContent=`Minimum ${fmt(MIN)} FCFA`;document.getElementById('btn-next1').disabled=true;return;}
+  if(v>userBalance){err.style.display='block';err.textContent=`Solde insuffisant. Disponible : ${fmt(userBalance)} FCFA`;document.getElementById('btn-next1').disabled=true;return;}
+  err.style.display='none';
+  document.getElementById('btn-next1').disabled=false;
 }
 
-// ✅ CORRIGÉ : utilise le tableau dédupliqué + met à jour placeholder
 function selectMethod(id,el){
   selM=METHODS.find(m=>m.id===id)||METHODS[0];
   document.querySelectorAll('.method-opt').forEach(o=>o.classList.remove('selected'));
   el.classList.add('selected');
-
-  const inp=document.getElementById('acct-inp');
-  const hint=document.getElementById('acct-hint');
-  const lbl=document.getElementById('acct-lbl');
-
-  if(['wave','orange','mtn','moov'].includes(id)){
-    lbl.textContent='Numéro de téléphone';
-    inp.placeholder='+225 07 00 00 00 00';
-    hint.textContent='Entrez le numéro enregistré sur '+selM.name;
-  }else if(['visa','bank'].includes(id)){
-    lbl.textContent='IBAN / RIB ou numéro de carte';
-    inp.placeholder='FR76 3000 6000 0112 3456 7890 189';
-    hint.textContent='Numéro de compte bancaire complet';
-  }else if(['usdt','btc'].includes(id)){
-    lbl.textContent='Adresse de portefeuille';
-    inp.placeholder='TRC20: T... / BTC: 1...';
-    hint.textContent='⚠️ Vérifiez bien votre adresse — transaction irréversible';
-  }
 }
 
-// ✅ CORRIGÉ : validation via showToast, plus de #s1-err
 function goStep(n){
   const amount=Number(document.getElementById('amount-inp').value)||0;
   const acct=document.getElementById('acct-inp')?.value.trim()||'';
@@ -559,12 +523,16 @@ function goStep(n){
   const net=amount-frais;
 
   if(n===2){
-    if(amount<MIN){showToast('⚠️ Minimum '+fmt(MIN)+' FCFA requis',true);return;}
-    if(amount>userBalance){showToast('⚠️ Solde insuffisant ('+fmt(userBalance)+' FCFA)',true);return;}
+    validateStep1();
+    if(document.getElementById('btn-next1').disabled)return;
   }
   if(n===3){
-    if(!acct||acct.length<5){showToast('⚠️ Entrez un compte valide (min 5 caractères)',true);return;}
-    document.getElementById('c-ico').textContent=selM.ico;
+    if(!acct||acct.length<5){
+      const e=document.getElementById('s2-err');
+      if(e){e.style.display='block';e.textContent='Entrez un numéro de compte valide (min 5 caractères)';}
+      return;
+    }
+    // Résumé confirmation
     document.getElementById('c-name').textContent=selM.name;
     document.getElementById('c-sub').textContent=selM.sub||'';
     document.getElementById('c-brut').textContent=fmt(amount)+' FCFA';
@@ -575,7 +543,6 @@ function goStep(n){
     document.getElementById('submit-btn').disabled=false;
     document.getElementById('submit-btn').innerHTML='💸 Envoyer la demande';
   }
-
   document.querySelectorAll('.step-panel').forEach((p,i)=>p.classList.toggle('active',i===n-1));
   document.querySelectorAll('.step-tab').forEach((t,i)=>t.classList.toggle('active',i===n-1));
   window.scrollTo({top:0,behavior:'smooth'});
@@ -588,56 +555,55 @@ async function submitWithdraw(){
   const errBox=document.getElementById('err-box');
   errBox.style.display='none';
 
-  if(amount<MIN){errBox.style.display='block';errBox.textContent='Minimum '+fmt(MIN)+' FCFA';return;}
-  if(amount>userBalance){errBox.style.display='block';errBox.textContent='Solde insuffisant. Disponible : '+fmt(userBalance)+' FCFA';return;}
+  // ── Validations strictes côté client ──
+  if(amount<MIN){errBox.style.display='block';errBox.textContent=`Minimum ${fmt(MIN)} FCFA`;return;}
+  if(amount>userBalance){errBox.style.display='block';errBox.textContent=`Solde insuffisant. Disponible : ${fmt(userBalance)} FCFA`;return;}
   if(!acct||acct.length<5){errBox.style.display='block';errBox.textContent='Numéro de compte invalide';return;}
 
-  btn.disabled=true;
-  btn.innerHTML='<span class="ld"></span>Envoi en cours…';
+  btn.disabled=true;btn.innerHTML='<span class="ld"></span>Envoi en cours…';
 
   try{
+    // ── Function SQL sécurisée : vérifie solde + crée retrait + débit immédiat ──
     const{data,error}=await sb.rpc('demander_retrait',{
-      p_user_id   :cu.id,
-      p_montant   :amount,
-      p_methode   :selM.name,
-      p_numero    :acct,
-      p_frais_pct :FEE
+      p_user_id   : cu.id,
+      p_montant   : amount,
+      p_methode   : selM.name,
+      p_numero    : acct,
+      p_frais_pct : FEE
     });
 
-    if(error||!data?.success) throw new Error(data?.error||error?.message||'Erreur inconnue');
+    if(error||!data?.success){
+      throw new Error(data?.error||error?.message||'Erreur inconnue');
+    }
 
+    // ── Succès — solde déjà débité par la function ──
+    const frais=Math.round(amount*FEE);
     document.getElementById('suc-msg').textContent=
-      fmt(data.montant_net)+' FCFA vers '+acct+' via '+selM.name+
-      '. Frais : '+fmt(data.frais)+' FCFA. Solde restant : '+fmt(data.solde_restant)+' FCFA.';
+      `${fmt(data.montant_net)} FCFA vers ${acct} via ${selM.name}. Frais : ${fmt(data.frais)} FCFA. ` +
+      `Solde restant : ${fmt(data.solde_restant)} FCFA.`;
     document.getElementById('suc-ref').textContent='REF: SYLLA-'+data.retrait_id.toString().substring(0,8).toUpperCase();
     document.getElementById('suc-overlay').classList.add('show');
+
+    // Rafraîchir les données
     await Promise.allSettled([loadBalance(),loadHistory()]);
 
   }catch(err){
-    btn.disabled=false;
-    btn.innerHTML='💸 Envoyer la demande';
+    btn.disabled=false;btn.innerHTML='💸 Envoyer la demande';
     errBox.style.display='block';
     errBox.textContent='❌ '+(err.message||'Erreur. Réessayez.');
   }
 }
 
 function fmt(n){return Number(n).toLocaleString('fr-FR');}
-
-function showToast(msg,isErr=false){
-  const t=document.getElementById('toast');
+function pad(n){return String(n).padStart(2,'0');}
+let toastT2=null;
+function showToast(msg,err=false){
+  const t=document.getElementById('toast')||{classList:{add:()=>{},remove:()=>{}},textContent:''};
   t.textContent=msg;
-  t.style.background=isErr?'rgba(255,59,78,.92)':'rgba(0,209,102,.92)';
-  t.classList.add('show');
-  clearTimeout(toastT2);
-  toastT2=setTimeout(()=>t.classList.remove('show'),3500);
+  err?t.classList.add('err'):t.classList.remove('err');
+  t.classList.add('show');clearTimeout(toastT2);
+  toastT2=setTimeout(()=>t.classList.remove('show'),3000);
 }
-
-// Horloge live
-setInterval(()=>{
-  const n=new Date();
-  const el=document.getElementById('live-clock');
-  if(el)el.textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
-},1000);
 
 init();
 </script>
