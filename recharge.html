@@ -244,7 +244,13 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
         <div class="mo-ico">🟠</div><div class="mo-name">Orange Money</div><div class="mo-tag tag-i">Instantané</div>
       </div>
       <div class="method-opt" onclick="selectM('mtn',this,'💛','MTN MoMo','Cameroun')">
-        <div class="mo-ico">💛</div><div class="mo-name">MTN MoMo</div><div class="mo-tag tag-i">Instantané</div
+        <div class="mo-ico">💛</div><div class="mo-name">MTN MoMo</div><div class="mo-tag tag-i">Instantané</div>
+      </div>
+      <div class="method-opt" onclick="selectM('usdt',this,'💎','USDT BEP-20','BSC · Monde entier')">
+        <div class="mo-ico">💎</div><div class="mo-name">USDT BSC</div><div class="mo-tag" style="background:rgba(240,185,11,.15);color:#F0B90B;border-color:rgba(240,185,11,.3)">BEP-20</div>
+      </div>
+      <div class="method-opt" onclick="selectM('sol',this,'🟣','SOL / USDC','Solana · Monde entier')">
+        <div class="mo-ico">🟣</div><div class="mo-name">Solana</div><div class="mo-tag" style="background:rgba(153,69,255,.15);color:#9945FF;border-color:rgba(153,69,255,.3)">SOL</div
       </div>
       </div>
     </div>
@@ -339,6 +345,24 @@ const PAYMENT_INFO={
     {t:'Bénéficiaire : <strong>Jean Jacques Rousseau</strong>',d:''},
     {t:'Entrez le montant exact et confirmez avec votre PIN',d:''},
     {t:'Notez la <strong>référence de transaction</strong> reçue par SMS',d:'Vous en aurez besoin à l\'étape suivante'},
+  ]},
+  usdt:{number:'0x44C9170272c7eA2c99f5dC28d955AdFE8b4AA3CB',name:'SYLLA BSC Wallet',steps:[
+    {t:'⚠️ Réseau <strong>BSC (BEP-20)</strong> uniquement — pas ERC-20 !',d:'Tout envoi sur mauvais réseau sera perdu'},
+    {t:'Ouvrez votre wallet : Trust Wallet, MetaMask, Binance...',d:''},
+    {t:'Sélectionnez <strong>USDT réseau BEP-20 / BSC</strong>',d:''},
+    {t:'Envoyez vers l\'adresse SYLLA',d:'',copy:'0x44C9170272c7eA2c99f5dC28d955AdFE8b4AA3CB'},
+    {t:'Attendez <strong>1-3 confirmations</strong> réseau',d:'Généralement moins de 2 minutes'},
+    {t:'Copiez le <strong>hash de transaction (TXID)</strong>',d:'Visible dans votre wallet après envoi'},
+    {t:'Collez le TXID comme référence à l\'étape suivante',d:'Crédit converti en FCFA selon taux du jour'},
+  ]},
+  sol:{number:'JBe5kePCCj3tG5RciCaNCEaJjtziycdrtKwz64Csx2VJ',name:'SYLLA Solana Wallet',steps:[
+    {t:'⚠️ Réseau <strong>Solana</strong> uniquement',d:'Vérifiez bien le réseau avant d\'envoyer'},
+    {t:'Ouvrez votre wallet : Phantom, Solflare, Backpack...',d:''},
+    {t:'Sélectionnez <strong>SOL ou USDC</strong> sur réseau Solana',d:''},
+    {t:'Envoyez vers l\'adresse SYLLA Solana',d:'',copy:'JBe5kePCCj3tG5RciCaNCEaJjtziycdrtKwz64Csx2VJ'},
+    {t:'Attendez <strong>la confirmation</strong> réseau',d:'Solana confirme en quelques secondes'},
+    {t:'Copiez le <strong>hash de transaction (Signature)</strong>',d:'Visible dans votre wallet ou sur Solscan'},
+    {t:'Collez la signature comme référence à l\'étape suivante',d:'Crédit converti en FCFA selon taux du jour'},
   ]},
 };
 
