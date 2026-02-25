@@ -60,69 +60,28 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .plans-list{display:flex;flex-direction:column;gap:20px;}
 
 /* PLAN CARD */
-.plan-card{border-radius:24px;overflow:hidden;border:1.5px solid var(--pb);background:var(--bg2);transition:transform .25s,box-shadow .25s;animation:fadeUp .5s ease both;position:relative;}
+.plan-card{border-radius:24px;overflow:hidden;border:1.5px solid var(--pb);background:var(--bg2);transition:transform .25s,box-shadow .25s;animation:fadeUp .5s ease both;}
 .plan-card:nth-child(1){animation-delay:.05s;}
 .plan-card:nth-child(2){animation-delay:.12s;}
-
-/* ═══ SOON OVERLAY ═══ */
-.soon-overlay{
-  position:absolute;inset:0;z-index:10;
-  background:linear-gradient(160deg,rgba(10,8,8,.82) 0%,rgba(10,8,8,.92) 100%);
-  backdrop-filter:blur(3px);
-  border-radius:22px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:14px;
-  padding:20px;
-  text-align:center;
-}
-.soon-glow{
-  width:72px;height:72px;border-radius:50%;
-  background:linear-gradient(135deg,rgba(255,59,78,.15),rgba(255,122,53,.1));
-  border:1.5px solid rgba(255,122,53,.35);
-  display:flex;align-items:center;justify-content:center;
-  font-size:32px;
-  position:relative;
-  animation:soonglow 2.5s ease-in-out infinite;
-}
-@keyframes soonglow{
-  0%,100%{box-shadow:0 0 0 0 rgba(255,122,53,0);}
-  50%{box-shadow:0 0 0 16px rgba(255,122,53,.12),0 0 32px rgba(255,59,78,.18);}
-}
-.soon-label{
-  font-family:'Bebas Neue',cursive;
-  font-size:28px;letter-spacing:5px;
-  background:linear-gradient(135deg,#fff,var(--orange),var(--red));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.soon-sub{
-  font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;
-  letter-spacing:2px;text-transform:uppercase;
-  color:rgba(255,184,48,.65);
-}
-.soon-badge{
-  display:inline-flex;align-items:center;gap:7px;
-  background:rgba(255,184,48,.08);border:1px solid rgba(255,184,48,.25);
-  border-radius:100px;padding:7px 18px;
-  font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;
-  letter-spacing:2px;text-transform:uppercase;color:var(--amber);
-}
-.soon-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 10px var(--amber);animation:bk 1s ease-in-out infinite;}
-.soon-notify{
-  padding:11px 24px;border-radius:14px;
-  border:1.5px solid rgba(255,59,78,.3);
-  background:rgba(255,59,78,.06);
-  font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;
-  letter-spacing:2px;text-transform:uppercase;color:var(--red);
-  cursor:default;
-}
+.plan-card:hover{transform:translateY(-3px);box-shadow:0 20px 50px var(--ps);}
 
 /* Image */
 .plane-img-wrap{position:relative;height:200px;overflow:hidden;}
 .plane-img-wrap::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,8,8,0) 20%,rgba(10,8,8,.65) 65%,var(--bg2) 100%);}
-.plane-img{width:100%;height:100%;object-fit:cover;object-position:center 35%;}
+.plane-img{width:100%;height:100%;object-fit:cover;object-position:center 35%;transition:transform .5s;}
+.plan-card:hover .plane-img{transform:scale(1.05);}
+
 .plane-overlay-badge{position:absolute;top:14px;left:14px;z-index:2;display:flex;gap:8px;align-items:center;}
 .ob-plan{font-family:'Bebas Neue',cursive;font-size:13px;letter-spacing:3px;padding:5px 14px;border-radius:100px;color:#fff;}
 .ob-speed{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border-radius:100px;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.85);}
+
+/* URGENT COUNTDOWN on active cards */
+.urgent-bar{
+  background:rgba(255,59,78,.1);border-top:1px solid rgba(255,59,78,.2);
+  padding:10px 18px;display:flex;align-items:center;justify-content:space-between;
+}
+.ub-label{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red);}
+.ub-timer{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:3px;color:var(--orange);}
 
 /* Plan body */
 .plan-body{padding:0 18px 20px;}
@@ -130,23 +89,86 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .plan-sub{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:14px;}
 
 /* Big numbers */
-.plan-big-nums{display:grid;grid-template-columns:1fr 1px 1fr;background:rgba(0,0,0,.3);border-radius:18px;border:1px solid rgba(255,255,255,.06);overflow:hidden;margin-bottom:14px;}
+.plan-big-nums{
+  display:grid;grid-template-columns:1fr 1px 1fr;
+  background:rgba(0,0,0,.3);border-radius:18px;border:1px solid rgba(255,255,255,.06);
+  overflow:hidden;margin-bottom:14px;
+}
 .pbn-divider{background:rgba(255,255,255,.07);}
 .pbn-item{padding:16px 12px;text-align:center;}
 .pbn-val{font-family:'Bebas Neue',cursive;font-size:32px;letter-spacing:2px;line-height:1;}
 .pbn-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-top:4px;}
 
-/* Duration chip */
-.duration-chip{display:inline-flex;align-items:center;gap:8px;background:rgba(255,59,78,.12);border:1px solid rgba(255,59,78,.3);border-radius:100px;padding:8px 18px;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:14px;}
+/* 48h highlight */
+.duration-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,59,78,.12);border:1px solid rgba(255,59,78,.3);
+  border-radius:100px;padding:8px 18px;
+  font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--red);margin-bottom:14px;
+}
 .dc-ico{font-size:14px;}
 
-/* Profit box */
-.profit-box{background:linear-gradient(135deg,rgba(245,200,66,.08),rgba(255,122,53,.05));border:1px solid rgba(245,200,66,.2);border-radius:14px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
+/* Profit highlight box */
+.profit-box{
+  background:linear-gradient(135deg,rgba(245,200,66,.08),rgba(255,122,53,.05));
+  border:1px solid rgba(245,200,66,.2);border-radius:14px;
+  padding:12px 16px;margin-bottom:16px;
+  display:flex;align-items:center;justify-content:space-between;
+}
 .pb-lbl{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(245,200,66,.7);}
 .pb-val{font-family:'Bebas Neue',cursive;font-size:24px;letter-spacing:2px;color:var(--gold);}
 
-/* Invest btn (greyed out under overlay) */
-.invest-btn{width:100%;padding:15px;border:none;border-radius:14px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;position:relative;overflow:hidden;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:8px;opacity:.45;}
+/* Buttons */
+.invest-btn{width:100%;padding:15px;border:none;border-radius:14px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;position:relative;overflow:hidden;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.invest-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transition:left .5s;}
+.invest-btn:hover::before{left:100%;}
+.invest-btn:hover{transform:translateY(-2px);}
+.invest-btn:active{transform:scale(.98);}
+
+.withdraw-btn{width:100%;padding:14px;border:1.5px solid var(--c,rgba(74,222,128,.4));background:rgba(74,222,128,.08);border-radius:14px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#4ADE80;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;}
+.withdraw-btn:hover{background:rgba(74,222,128,.15);}
+.withdraw-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+.locked-msg{text-align:center;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px;}
+
+/* ═══ MODAL ═══ */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.88);backdrop-filter:blur(16px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s;}
+.modal-overlay.show{opacity:1;pointer-events:all;}
+.modal{width:100%;max-width:480px;background:linear-gradient(160deg,#180C0C 0%,#0D0808 100%);border:1.5px solid rgba(255,59,78,.2);border-radius:28px 28px 0 0;padding:10px 20px 36px;transform:translateY(100%);transition:transform .4s cubic-bezier(.34,1.4,.64,1);}
+.modal-overlay.show .modal{transform:translateY(0);}
+.modal-handle{width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);margin:14px auto 20px;}
+
+.modal-plane-img{width:100%;height:120px;border-radius:16px;overflow:hidden;margin-bottom:16px;border:1px solid rgba(255,255,255,.08);}
+.modal-plane-img img{width:100%;height:100%;object-fit:cover;object-position:center 35%;}
+
+.modal-plan-name{font-family:'Bebas Neue',cursive;font-size:30px;letter-spacing:4px;margin-bottom:4px;}
+.modal-sub{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:18px;}
+
+.modal-recap{background:rgba(0,0,0,.4);border-radius:16px;border:1px solid rgba(255,255,255,.06);overflow:hidden;margin-bottom:18px;}
+.recap-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.04);}
+.recap-row:last-child{border-bottom:none;}
+.recap-lbl{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
+.recap-val{font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:1px;}
+
+.modal-warn{display:flex;align-items:center;gap:10px;background:rgba(255,122,53,.08);border:1px solid rgba(255,122,53,.2);border-radius:12px;padding:12px 14px;margin-bottom:18px;font-size:12px;font-weight:300;color:rgba(255,200,120,.8);line-height:1.5;}
+.modal-err{display:none;background:rgba(255,59,78,.1);border:1px solid rgba(255,59,78,.3);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:#FF6B7A;}
+
+.modal-btns{display:grid;grid-template-columns:1fr 1.6fr;gap:10px;}
+.btn-cancel{padding:14px;border-radius:14px;border:1.5px solid rgba(255,255,255,.1);background:transparent;color:var(--text3);cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:all .2s;}
+.btn-cancel:hover{background:rgba(255,255,255,.05);}
+.btn-confirm-m{padding:14px;border-radius:14px;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#fff;position:relative;overflow:hidden;transition:all .3s;background:linear-gradient(135deg,var(--red),var(--orange));box-shadow:0 8px 24px rgba(255,59,78,.3);}
+.btn-confirm-m:hover{transform:translateY(-2px);}
+.btn-confirm-m:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+
+.modal-success{display:none;text-align:center;padding:20px 0;}
+.modal-success.show{display:block;}
+.ms-ico{font-size:56px;margin-bottom:14px;}
+.ms-title{font-family:'Bebas Neue',cursive;font-size:34px;letter-spacing:3px;color:var(--orange);}
+.ms-msg{font-size:14px;font-weight:300;color:var(--text2);margin-top:8px;line-height:1.5;}
+.ms-btn{margin-top:20px;padding:13px 32px;border-radius:14px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--red),var(--orange));font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#fff;box-shadow:0 8px 24px rgba(255,59,78,.3);}
+
+.ld{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
 
 /* BOTTOM NAV */
 .bot-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;height:var(--nav-h);background:rgba(10,8,8,.94);backdrop-filter:blur(24px);border-top:1px solid rgba(255,59,78,.12);display:grid;grid-template-columns:repeat(4,1fr);box-shadow:0 -8px 32px rgba(0,0,0,.5);}
@@ -171,6 +193,37 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 </div>
 
 <div class="bg-mesh"></div><div class="bg-grid"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div id="modal-main">
+      <div class="modal-plane-img"><img id="modal-img" src="" alt=""></div>
+      <div class="modal-plan-name" id="modal-plan-name"></div>
+      <div class="modal-sub" id="modal-plane-type"></div>
+      <div class="modal-recap">
+        <div class="recap-row"><div class="recap-lbl">Mise</div><div class="recap-val" id="m-cost" style="color:var(--orange)">—</div></div>
+        <div class="recap-row"><div class="recap-lbl">Gain après 48h</div><div class="recap-val" id="m-gain" style="color:var(--gold)">—</div></div>
+        <div class="recap-row"><div class="recap-lbl">Profit net</div><div class="recap-val" id="m-profit" style="color:#4ADE80">—</div></div>
+        <div class="recap-row"><div class="recap-lbl">Durée</div><div class="recap-val" id="m-dur" style="color:var(--text2)">48H CHRONO</div></div>
+        <div class="recap-row"><div class="recap-lbl">Votre solde</div><div class="recap-val" id="m-balance" style="color:var(--text)">—</div></div>
+      </div>
+      <div class="modal-warn">⚡ <span>Dès confirmation, le compte à rebours de <strong>48 heures</strong> démarre. Retrait disponible après l'échéance.</span></div>
+      <div class="modal-err" id="modal-err"></div>
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="closeModal()">Annuler</button>
+        <button class="btn-confirm-m" id="btn-confirm" onclick="confirmInvest()">⚡ Lancer le plan</button>
+      </div>
+    </div>
+    <div class="modal-success" id="modal-success">
+      <div class="ms-ico">✈️</div>
+      <div class="ms-title" id="ms-title">Plan Activé !</div>
+      <div class="ms-msg" id="ms-msg">Le compte à rebours de 48h a commencé. Vous pourrez retirer après l'échéance.</div>
+      <button class="ms-btn" onclick="window.location.href='dashboard.html'">Voir le Dashboard →</button>
+    </div>
+  </div>
+</div>
 
 <div class="page">
   <div class="topbar">
@@ -199,39 +252,43 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 const{createClient}=supabase;
 const sb=createClient('https://fqiotqrraobmsrcyewsi.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc');
 
-const PLANS_CT=[
+const PLANS_CT = [
   {
-    id:'ct1',name:'SPRINT FALCON',
+    id:'ct1', name:'SPRINT FALCON',
     plane:'Dassault Falcon 8X',
     planeDesc:'Jet privé ultra-rapide · Style & Performance',
     img:'https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=900&q=85',
-    cost:5000,gain:8000,
-    color:'#FF7A35',shadow:'rgba(255,122,53,.25)',border:'rgba(255,122,53,.35)',
-    gradFrom:'#FF3B4E',gradTo:'#FF7A35',
+    cost:5000, gain:8000,
+    color:'#FF7A35', shadow:'rgba(255,122,53,.25)', border:'rgba(255,122,53,.35)',
+    gradFrom:'#FF3B4E', gradTo:'#FF7A35',
     badgeBg:'linear-gradient(135deg,#CC1C2E,#FF3B4E)',
     tier:'EXPRESS ⚡',
   },
   {
-    id:'ct2',name:'TURBO GULFSTREAM',
+    id:'ct2', name:'TURBO GULFSTREAM',
     plane:'Gulfstream G700',
     planeDesc:'Le jet le plus luxueux du monde · Rendement maximal',
     img:'https://images.unsplash.com/photo-1474302770737-173ee21bab63?w=900&q=85',
-    cost:25000,gain:30000,
-    color:'#FFB830',shadow:'rgba(255,184,48,.25)',border:'rgba(255,184,48,.35)',
-    gradFrom:'#FF7A35',gradTo:'#FFB830',
+    cost:25000, gain:30000,
+    color:'#FFB830', shadow:'rgba(255,184,48,.25)', border:'rgba(255,184,48,.35)',
+    gradFrom:'#FF7A35', gradTo:'#FFB830',
     badgeBg:'linear-gradient(135deg,#CC5A10,#FF7A35)',
     tier:'PRESTIGE 🔥',
   },
 ];
 
-let currentUser=null,userBalance=0;
+let currentUser=null, userBalance=0, activeInvestments=[], selectedPlan=null;
+const timers={};
 
 async function init(){
   const{data:{session}}=await sb.auth.getSession();
   if(!session){window.location.href='index.html';return;}
   currentUser=session.user;
   await loadBalance();
+  await loadActiveInvestments();
+  await creditMaturedInvestments();
   renderPlans();
+  startAllTimers();
   document.getElementById('loader').classList.add('hide');
 }
 
@@ -243,54 +300,195 @@ async function loadBalance(){
   document.getElementById('bal-display').textContent=fmt(userBalance);
 }
 
+async function loadActiveInvestments(){
+  try{
+    const{data}=await sb.from('investments').select('*').eq('user_id',currentUser.id).eq('status','active').like('plan_id','ct%');
+    activeInvestments=data||[];
+  }catch(e){activeInvestments=[];}
+}
+
+async function creditMaturedInvestments(){
+  const now=new Date();
+  for(const inv of activeInvestments){
+    const start=new Date(inv.started_at);
+    const hoursElapsed=(now-start)/(1000*60*60);
+    if(hoursElapsed>=48 && inv.status==='active'){
+      try{
+        await sb.from('transactions').insert({user_id:currentUser.id,type:'gain',label:`Gain ${'Plan ' + inv.plan_id} (48h)`,amount:inv.daily_return,status:'credited',created_at:now.toISOString()});
+        await sb.from('investments').update({status:'completed'}).eq('id',inv.id);
+      }catch(e){}
+    }
+  }
+}
+
+function startAllTimers(){
+  activeInvestments.forEach(inv=>{
+    const timerId=`timer-${inv.plan_id}`;
+    const el=document.getElementById(timerId);
+    if(!el)return;
+    const start=new Date(inv.started_at);
+    const end=new Date(start.getTime()+48*60*60*1000);
+    function tick(){
+      const now=new Date();
+      const diff=end-now;
+      if(diff<=0){el.textContent='00:00:00';return;}
+      const h=Math.floor(diff/(1000*60*60));
+      const m=Math.floor((diff%(1000*60*60))/(1000*60));
+      const s=Math.floor((diff%(1000*60))/1000);
+      el.textContent=`${pad(h)}:${pad(m)}:${pad(s)}`;
+    }
+    tick();
+    timers[inv.plan_id]=setInterval(tick,1000);
+  });
+}
+
 function renderPlans(){
   const container=document.getElementById('plans-container');
   container.innerHTML=PLANS_CT.map(p=>{
+    const active=activeInvestments.find(i=>i.plan_id===p.id);
     const profit=p.gain-p.cost;
     const roiPct=Math.round((profit/p.cost)*100);
+
+    let actionHtml='';
+    if(active){
+      const start=new Date(active.started_at);
+      const end=new Date(start.getTime()+48*60*60*1000);
+      const isMatured=new Date()>=end;
+      actionHtml=`
+        <div class="urgent-bar">
+          <div class="ub-label">${isMatured?'✅ Prêt à retirer !':'⏱ Temps restant'}</div>
+          <div class="ub-timer" id="timer-${p.id}">${isMatured?'TERMINÉ':'--:--:--'}</div>
+        </div>
+        <div class="plan-body">
+          <div class="plan-name" style="color:${p.color}">${p.name}</div>
+          <div class="plan-sub">✈️ ${p.plane} · ${p.planeDesc}</div>
+          ${planStatsHtml(p,profit,roiPct)}
+          <button class="withdraw-btn" ${isMatured?'':'disabled'} onclick="withdrawCT('${active.id}','${p.id}',${p.gain})">
+            ${isMatured?'💸 Retirer '+fmt(p.gain)+' FCFA':'🔒 Retrait après 48h'}
+          </button>
+          ${!isMatured?`<div class="locked-msg">🔒 Retrait bloqué jusqu'à la fin du cycle</div>`:''}
+        </div>`;
+    }else{
+      actionHtml=`
+        <div class="plan-body">
+          <div class="plan-name" style="color:${p.color}">${p.name}</div>
+          <div class="plan-sub">✈️ ${p.plane} · ${p.planeDesc}</div>
+          ${planStatsHtml(p,profit,roiPct)}
+          <button class="invest-btn" style="background:linear-gradient(135deg,${p.gradFrom},${p.gradTo});box-shadow:0 8px 28px ${p.shadow};" onclick="openModal('${p.id}')">
+            ⚡ Investir ${fmt(p.cost)} FCFA
+          </button>
+        </div>`;
+    }
+
     return `
     <div class="plan-card" style="--pb:${p.border};--ps:${p.shadow};">
-
-      <!-- ══ SOON OVERLAY ══ -->
-      <div class="soon-overlay">
-        <div class="soon-glow">🛫</div>
-        <div class="soon-label">BIENTÔT<br>DISPONIBLE</div>
-        <div class="soon-sub">${p.name} · ${p.plane}</div>
-        <div class="soon-badge"><div class="soon-dot"></div>En cours de déploiement</div>
-        <div class="soon-notify">🔔 Vous serez notifié</div>
-      </div>
-
-      <!-- Card content (visible under overlay) -->
       <div class="plane-img-wrap">
-        <img class="plane-img" src="${p.img}" alt="${p.plane}" loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80'">
+        <img class="plane-img" src="${p.img}" alt="${p.plane}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80'">
         <div class="plane-overlay-badge">
           <div class="ob-plan" style="background:${p.badgeBg}">${p.tier}</div>
           <div class="ob-speed">${p.plane}</div>
         </div>
       </div>
-      <div class="plan-body">
-        <div class="plan-name" style="color:${p.color}">${p.name}</div>
-        <div class="plan-sub">✈️ ${p.plane} · ${p.planeDesc}</div>
-        <div class="plan-big-nums">
-          <div class="pbn-item"><div class="pbn-val" style="color:${p.color}">${fmt(p.cost)}</div><div class="pbn-lbl">Mise (F)</div></div>
-          <div class="pbn-divider"></div>
-          <div class="pbn-item"><div class="pbn-val" style="color:var(--gold)">${fmt(p.gain)}</div><div class="pbn-lbl">Retrait (F)</div></div>
-        </div>
-        <div class="duration-chip"><span class="dc-ico">⚡</span>48 HEURES SEULEMENT</div>
-        <div class="profit-box">
-          <div class="pb-lbl">Profit net (+${roiPct}% ROI)</div>
-          <div class="pb-val">+${fmt(profit)} FCFA</div>
-        </div>
-        <button class="invest-btn" style="background:linear-gradient(135deg,${p.gradFrom},${p.gradTo});box-shadow:0 8px 28px ${p.shadow};" disabled>
-          ⚡ Investir ${fmt(p.cost)} FCFA
-        </button>
-      </div>
+      ${actionHtml}
     </div>`;
   }).join('');
+
+  if(activeInvestments.length)startAllTimers();
+}
+
+function planStatsHtml(p,profit,roiPct){
+  return `
+    <div class="plan-big-nums">
+      <div class="pbn-item"><div class="pbn-val" style="color:${p.color}">${fmt(p.cost)}</div><div class="pbn-lbl">Mise (F)</div></div>
+      <div class="pbn-divider"></div>
+      <div class="pbn-item"><div class="pbn-val" style="color:var(--gold)">${fmt(p.gain)}</div><div class="pbn-lbl">Retrait (F)</div></div>
+    </div>
+    <div class="duration-chip"><span class="dc-ico">⚡</span>48 HEURES SEULEMENT</div>
+    <div class="profit-box">
+      <div class="pb-lbl">Profit net (+${roiPct}% ROI)</div>
+      <div class="pb-val">+${fmt(profit)} FCFA</div>
+    </div>`;
+}
+
+async function withdrawCT(invId, planId, amount){
+  if(!confirm('Confirmer le retrait de '+fmt(amount)+' FCFA ?'))return;
+  try{
+    await sb.from('transactions').insert({user_id:currentUser.id,type:'gain',label:`Retrait court terme — ${planId}`,amount:amount,status:'credited',created_at:new Date().toISOString()});
+    await sb.from('investments').update({status:'withdrawn'}).eq('id',invId);
+    alert('✅ '+fmt(amount)+' FCFA crédités sur votre compte !');
+    await loadBalance();await loadActiveInvestments();renderPlans();
+  }catch(e){alert('Erreur: '+e.message);}
+}
+
+function openModal(planId){
+  selectedPlan=PLANS_CT.find(p=>p.id===planId);
+  if(!selectedPlan)return;
+  const p=selectedPlan;
+  document.getElementById('modal-img').src=p.img;
+  document.getElementById('modal-plan-name').textContent=p.name;
+  document.getElementById('modal-plan-name').style.color=p.color;
+  document.getElementById('modal-plane-type').textContent='✈️ '+p.plane+' · '+p.planeDesc;
+  document.getElementById('m-cost').textContent=fmt(p.cost)+' FCFA';
+  document.getElementById('m-gain').textContent=fmt(p.gain)+' FCFA';
+  document.getElementById('m-profit').textContent='+'+fmt(p.gain-p.cost)+' FCFA';
+  document.getElementById('m-balance').textContent=fmt(userBalance)+' FCFA';
+  document.getElementById('modal-err').style.display='none';
+  document.getElementById('modal-main').style.display='block';
+  document.getElementById('modal-success').classList.remove('show');
+  document.getElementById('btn-confirm').disabled=false;
+  document.getElementById('btn-confirm').innerHTML='⚡ Lancer le plan';
+  document.getElementById('modal-overlay').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(e){
+  if(e&&e.target!==document.getElementById('modal-overlay'))return;
+  document.getElementById('modal-overlay').classList.remove('show');
+  document.body.style.overflow='';selectedPlan=null;
+}
+
+async function confirmInvest(){
+  if(!selectedPlan||!currentUser)return;
+  const p=selectedPlan;
+  const errEl=document.getElementById('modal-err');
+  errEl.style.display='none';
+  if(userBalance<p.cost){errEl.style.display='block';errEl.textContent='❌ Solde insuffisant. Vous avez '+fmt(userBalance)+' FCFA, il vous faut '+fmt(p.cost)+' FCFA.';return;}
+  const btn=document.getElementById('btn-confirm');
+  btn.disabled=true;btn.innerHTML='<span class="ld"></span>Activation…';
+  try{
+    const now=new Date().toISOString();
+        // Vérification solde temps réel
+    const{data:sc}=await sb.rpc('get_solde',{p_user_id:currentUser.id});
+    const sr=Number(sc)||0;
+    if(sr<p.cost)throw new Error(`Solde insuffisant. Disponible: ${fmt(sr)} FCFA`);
+
+    const{error:e1}=await sb.from('transactions').insert({user_id:currentUser.id,type:'investissement',label:'Investissement '+p.name,amount:p.cost,status:'credited',created_at:now});
+    if(e1)throw e1;
+    const{error:e2}=await sb.from('investments').insert({
+        user_id:currentUser.id, plan_id:p.id, amount:p.cost,
+        daily_return:p.gain, duration_days:2, gains_earned:0,
+        status:'active', started_at:now,
+        ends_at:new Date(new Date(now).getTime()+2*86400000).toISOString(),
+        created_at:now
+      });
+    if(e2)throw e2;
+    // Commission parrainage 10%
+    try{ await sb.rpc('commission_parrainage',{p_filleul_id:currentUser.id,p_montant:p.cost,p_plan_name:p.name}); }catch(e){}
+    document.getElementById('modal-main').style.display='none';
+    document.getElementById('modal-success').classList.add('show');
+    document.getElementById('ms-title').textContent=p.name+' — En vol ! ✈️';
+    document.getElementById('ms-msg').textContent='Votre '+p.plane+' est en route. Revenez dans 48h pour retirer '+fmt(p.gain)+' FCFA.';
+    userBalance-=p.cost;
+    document.getElementById('bal-display').textContent=fmt(userBalance);
+    await loadActiveInvestments();renderPlans();
+  }catch(err){
+    btn.disabled=false;btn.innerHTML='⚡ Lancer le plan';
+    errEl.style.display='block';errEl.textContent='❌ Erreur : '+(err.message||'Réessayez.');
+  }
 }
 
 function fmt(n){return Number(n).toLocaleString('fr-FR');}
+function pad(n){return String(n).padStart(2,'0');}
 init();
 </script>
 </body>
