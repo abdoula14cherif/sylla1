@@ -456,7 +456,7 @@ function copyText(txt){navigator.clipboard.writeText(txt).then(()=>showToast('âœ
 function goStep(n){
   if(n===3){
     const amount=Number(document.getElementById('amount-inp').value)||0;
-    if(amount<1000){showToast('Minimum 1 000 FCFA',true);return;}
+    if(amount<2000){showToast('Minimum 2 000 FCFA',true);return;}
     document.getElementById('payment-instr').innerHTML=buildPaymentInstr(amount);
     document.getElementById('c-amount').textContent=fmt(amount)+' FCFA';
     document.getElementById('c-method').textContent=selM.ico+' '+selM.name;
