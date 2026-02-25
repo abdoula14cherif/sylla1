@@ -220,10 +220,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
     <div class="card">
       <label class="field-lbl">Montant à recharger</label>
       <div class="amount-wrap">
-        <input class="amount-inp" type="number" id="amount-inp" placeholder="5 000" min="1000" oninput="validateAmt()">
+        <input class="amount-inp" type="number" id="amount-inp" placeholder="5 000" min="2000" oninput="validateAmt()">
         <span class="cur-tag">FCFA</span>
       </div>
-      <div class="min-hint">⚡ Minimum <strong style="color:var(--green)">1 000 FCFA</strong> · Aucun frais de dépôt</div>
+      <div class="min-hint">⚡ Minimum <strong style="color:var(--green)">2 000 FCFA</strong> · Aucun frais de dépôt</div>
       <div class="quick-row">
         <button class="qb" onclick="setAmt(2000)">2 000</button>
         <button class="qb" onclick="setAmt(5000)">5 000</button>
@@ -250,8 +250,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
         <div class="mo-ico">💎</div><div class="mo-name">USDT BSC</div><div class="mo-tag" style="background:rgba(240,185,11,.15);color:#F0B90B;border-color:rgba(240,185,11,.3)">BEP-20</div>
       </div>
       <div class="method-opt" onclick="selectM('sol',this,'🟣','SOL / USDC','Solana · Monde entier')">
-        <div class="mo-ico">🟣</div><div class="mo-name">Solana</div><div class="mo-tag" style="background:rgba(153,69,255,.15);color:#9945FF;border-color:rgba(153,69,255,.3)">SOL</div
-      </div>
+        <div class="mo-ico">🟣</div><div class="mo-name">Solana</div><div class="mo-tag" style="background:rgba(153,69,255,.15);color:#9945FF;border-color:rgba(153,69,255,.3)">SOL</div>
       </div>
     </div>
 
@@ -379,7 +378,6 @@ async function init(){
 
 async function loadBalance(){
   try{
-    // Utiliser la function SQL sécurisée pour le solde réel
     const{data,error}=await sb.rpc('get_solde',{p_user_id:cu.id});
     userBalance=error?0:Number(data)||0;
   }catch(e){userBalance=0;}
@@ -389,7 +387,6 @@ async function loadBalance(){
 async function loadHistory(){
   const list=document.getElementById('hist-list');
   try{
-    // Chercher dans la table recharges (plus précis que transactions)
     const{data:recs}=await sb.from('recharges')
       .select('*').eq('user_id',cu.id)
       .order('created_at',{ascending:false}).limit(15);
@@ -430,7 +427,7 @@ async function loadHistory(){
 function setAmt(v){document.getElementById('amount-inp').value=v;validateAmt();}
 function validateAmt(){
   const v=Number(document.getElementById('amount-inp').value)||0;
-  document.getElementById('btn-next1').disabled=v<1000;
+  document.getElementById('btn-next1').disabled=v<2000;
 }
 
 function selectM(id,el,ico,name,sub){
@@ -476,15 +473,13 @@ async function submitRecharge(){
   const errBox=document.getElementById('err-box');
   errBox.style.display='none';
 
-  // ── Validations strictes ──
-  if(amount<1000){errBox.style.display='block';errBox.textContent='Montant minimum 1 000 FCFA.';return;}
+  if(amount<2000){errBox.style.display='block';errBox.textContent='Montant minimum 2 000 FCFA.';return;}
   if(!ref||ref.length<3){errBox.style.display='block';errBox.textContent='Référence de paiement requise (minimum 3 caractères).';return;}
   if(!selM.id){errBox.style.display='block';errBox.textContent='Sélectionnez une méthode de paiement.';return;}
 
   btn.disabled=true;btn.innerHTML='<span class="ld"></span>Envoi en cours…';
 
   try{
-    // ── Appel via function sécurisée ──
     const{data,error}=await sb.rpc('demander_recharge',{
       p_user_id   : cu.id,
       p_montant   : amount,
@@ -496,7 +491,6 @@ async function submitRecharge(){
       throw new Error(data?.error||error?.message||'Erreur inconnue');
     }
 
-    // ── Succès ──
     document.getElementById('suc-msg').textContent=
       `Votre demande de ${fmt(amount)} FCFA via ${selM.name} a été enregistrée (Réf: ${ref}). ` +
       `Votre solde sera crédité après validation par notre équipe (délai max 2h).`;
