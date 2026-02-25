@@ -420,6 +420,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
   <a href="dashboard.html" class="nav-item"><span class="nav-ico">🏠</span><span class="nav-lbl">Accueil</span></a>
   <a href="plan.html" class="nav-item active"><span class="nav-ico">🚀</span><span class="nav-lbl">Plans</span></a>
   <a href="retrait.html" class="nav-item"><span class="nav-ico">💸</span><span class="nav-lbl">Retrait</span></a>
+  <a href="messages.html" class="nav-item"><span class="nav-ico">💬</span><span class="nav-lbl">Messages</span></a>
   <a href="profil.html" class="nav-item"><span class="nav-ico">👤</span><span class="nav-lbl">Profil</span></a>
 </nav>
 
@@ -574,32 +575,30 @@ async function creditPendingGains() {
   const now = new Date();
   for (const inv of activeInvestments) {
     try {
-      const start = new Date(inv.start_date);
-      const lastCredit = inv.last_credit_date ? new Date(inv.last_credit_date) : start;
-      const daysSinceCredit = Math.floor((now - lastCredit) / (1000 * 60 * 60 * 24));
-      const daysTotal = Math.floor((now - start) / (1000 * 60 * 60 * 24));
-      const daysLeft = inv.duration_days - daysTotal;
+      const start = new Date(inv.started_at);
+      const endsAt = inv.ends_at ? new Date(inv.ends_at) : null;
+      const daysSinceStart = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+      const alreadyCredited = Number(inv.gains_earned) || 0;
+      const daysToCredit = Math.max(0, Math.min(daysSinceStart, inv.duration_days) - alreadyCredited);
 
-      if (daysSinceCredit >= 1 && daysLeft > 0) {
-        const daysToCredit = Math.min(daysSinceCredit, daysLeft);
-        const gainAmount = inv.daily_gain * daysToCredit;
+      if (daysToCredit >= 1) {
+        const gainAmount = inv.daily_return * daysToCredit;
 
         await sb.from('transactions').insert({
           user_id: currentUser.id,
           type: 'gain',
-          label: `Gain quotidien — ${inv.plan_name} (${daysToCredit}j)`,
+          label: `Gain quotidien — Plan ${inv.plan_id} (${daysToCredit}j)`,
           amount: gainAmount,
           status: 'credited',
           created_at: new Date().toISOString()
         });
 
+        const newGains = alreadyCredited + daysToCredit;
         await sb.from('investments').update({
-          last_credit_date: now.toISOString(),
-          days_credited: (inv.days_credited || 0) + daysToCredit
+          gains_earned: newGains
         }).eq('id', inv.id);
 
-        // Close investment if finished
-        if (daysTotal >= inv.duration_days) {
+        if (newGains >= inv.duration_days) {
           await sb.from('investments').update({ status: 'completed' }).eq('id', inv.id);
         }
       }
@@ -741,31 +740,32 @@ async function confirmInvest() {
     if (txErr) throw txErr;
 
     // 2. Create investment record
+    // Calculer la date de fin
+    const endDate = new Date(now);
+    endDate.setDate(endDate.getDate() + p.days);
+
     const { error: invErr } = await sb.from('investments').insert({
       user_id: currentUser.id,
       plan_id: p.id,
-      plan_name: p.name,
-      plane_name: p.plane,
       amount: p.cost,
-      daily_gain: p.daily,
+      daily_return: p.daily,
       duration_days: p.days,
-      days_credited: 0,
+      gains_earned: 0,
       status: 'active',
-      start_date: now,
-      last_credit_date: now,
+      started_at: now,
+      ends_at: endDate.toISOString(),
       created_at: now
     });
     if (invErr) throw invErr;
 
     // 3. Commission parrainage (10% au parrain si filleul)
-    // Appel silencieux — ne bloque pas même en cas d'erreur
-    sb.rpc('commission_parrainage', {
-      p_filleul_id : currentUser.id,
-      p_montant    : p.cost,
-      p_plan_name  : p.name
-    }).then(r => {
-      if(r.data?.commission) console.log('[COMMISSION]', r.data.msg);
-    }).catch(() => {});
+    try {
+      await sb.rpc('commission_parrainage', {
+        p_filleul_id: currentUser.id,
+        p_montant: p.cost,
+        p_plan_name: p.name
+      });
+    } catch(e) {}
 
     // 4. Show success
     document.getElementById('modal-main').style.display = 'none';
