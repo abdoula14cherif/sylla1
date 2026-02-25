@@ -310,11 +310,11 @@ async function loadActiveInvestments(){
 async function creditMaturedInvestments(){
   const now=new Date();
   for(const inv of activeInvestments){
-    const start=new Date(inv.start_date);
+    const start=new Date(inv.started_at);
     const hoursElapsed=(now-start)/(1000*60*60);
     if(hoursElapsed>=48 && inv.status==='active'){
       try{
-        await sb.from('transactions').insert({user_id:currentUser.id,type:'gain',label:`Gain ${inv.plan_name} (48h)`,amount:inv.daily_gain,status:'credited',created_at:now.toISOString()});
+        await sb.from('transactions').insert({user_id:currentUser.id,type:'gain',label:`Gain ${'Plan ' + inv.plan_id} (48h)`,amount:inv.daily_return,status:'credited',created_at:now.toISOString()});
         await sb.from('investments').update({status:'completed'}).eq('id',inv.id);
       }catch(e){}
     }
@@ -326,7 +326,7 @@ function startAllTimers(){
     const timerId=`timer-${inv.plan_id}`;
     const el=document.getElementById(timerId);
     if(!el)return;
-    const start=new Date(inv.start_date);
+    const start=new Date(inv.started_at);
     const end=new Date(start.getTime()+48*60*60*1000);
     function tick(){
       const now=new Date();
@@ -351,7 +351,7 @@ function renderPlans(){
 
     let actionHtml='';
     if(active){
-      const start=new Date(active.start_date);
+      const start=new Date(active.started_at);
       const end=new Date(start.getTime()+48*60*60*1000);
       const isMatured=new Date()>=end;
       actionHtml=`
@@ -464,10 +464,16 @@ async function confirmInvest(){
 
     const{error:e1}=await sb.from('transactions').insert({user_id:currentUser.id,type:'investissement',label:'Investissement '+p.name,amount:p.cost,status:'credited',created_at:now});
     if(e1)throw e1;
-    const{error:e2}=await sb.from('investments').insert({user_id:currentUser.id,plan_id:p.id,plan_name:p.name,plane_name:p.plane,amount:p.cost,daily_gain:p.gain,duration_days:0,days_credited:0,status:'active',start_date:now,last_credit_date:now,created_at:now});
+    const{error:e2}=await sb.from('investments').insert({
+        user_id:currentUser.id, plan_id:p.id, amount:p.cost,
+        daily_return:p.gain, duration_days:2, gains_earned:0,
+        status:'active', started_at:now,
+        ends_at:new Date(new Date(now).getTime()+2*86400000).toISOString(),
+        created_at:now
+      });
     if(e2)throw e2;
     // Commission parrainage 10%
-    sb.rpc('commission_parrainage',{p_filleul_id:currentUser.id,p_montant:p.cost,p_plan_name:p.name}).catch(()=>{});
+    sb.rpc('commission_parrainage',{p_filleul_id:currentUser.id,p_montant:p.cost,p_}).catch(()=>{});
     document.getElementById('modal-main').style.display='none';
     document.getElementById('modal-success').classList.add('show');
     document.getElementById('ms-title').textContent=p.name+' — En vol ! ✈️';
