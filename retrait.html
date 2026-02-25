@@ -429,15 +429,7 @@ async function init(){
 }
 
 function renderBanner(){
-  const n=new Date(),h=n.getHours(),d=n.getDay();
-  const open=d>=1&&d<=5&&h>=8&&h<18;
-  let html;
-  if(open){
-    html=`<div class="window-banner wb-open"><div class="wb-row"><div class="wb-dot"></div><div><div class="wb-title">FENÊTRE OUVERTE — Retraits actifs</div><div class="wb-desc">Traitement sous 24h · Fermeture à 18h00</div></div></div></div>`;
-  }else{
-    const msg=d===0||d===6?'Rouvrira lundi à 08h00':h>=18?'Rouvrira demain à 08h00':'Ouverture à 08h00 aujourd\'hui';
-    html=`<div class="window-banner wb-closed"><div class="wb-row"><div class="wb-dot"></div><div><div class="wb-title">HORS FENÊTRE HORAIRE</div><div class="wb-desc">${msg}. Votre demande sera enregistrée et traitée à l'ouverture.</div></div></div></div>`;
-  }
+  const html=`<div class="window-banner wb-open"><div class="wb-row"><div class="wb-dot"></div><div><div class="wb-title">RETRAITS OUVERTS 24h/7j</div><div class="wb-desc">Traitement sous 24h après validation de votre demande</div></div></div></div>`;
   document.getElementById('window-banner').innerHTML=html;
 }
 
