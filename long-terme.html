@@ -340,16 +340,16 @@ async function creditAccumulatedGains(){
   const now=new Date();
   for(const inv of activeInvestments){
     try{
-      const lastCredit=inv.last_credit_date?new Date(inv.last_credit_date):new Date(inv.start_date);
+      const lastCredit=inv.started_at?new Date(inv.started_at):new Date(inv.started_at);
       const daysSince=Math.floor((now-lastCredit)/(1000*60*60*24));
-      const start=new Date(inv.start_date);
+      const start=new Date(inv.started_at);
       const totalDays=Math.floor((now-start)/(1000*60*60*24));
       const daysLeft=365-totalDays;
       if(daysSince>=1&&daysLeft>0){
         const daysToCredit=Math.min(daysSince,daysLeft);
-        const gain=inv.daily_gain*daysToCredit;
-        await sb.from('transactions').insert({user_id:currentUser.id,type:'gain',label:`Gain quotidien — ${inv.plan_name} (${daysToCredit}j)`,amount:gain,status:'credited',created_at:now.toISOString()});
-        await sb.from('investments').update({last_credit_date:now.toISOString(),days_credited:(inv.days_credited||0)+daysToCredit}).eq('id',inv.id);
+        const gain=inv.daily_return*daysToCredit;
+        await sb.from('transactions').insert({user_id:currentUser.id,type:'gain',label:`Gain quotidien — ${'Plan ' + inv.plan_id} (${daysToCredit}j)`,amount:gain,status:'credited',created_at:now.toISOString()});
+        await sb.from('investments').update({gains_earned:(inv.gains_earned||0)+daysToCredit}).eq('id',inv.id);
         if(totalDays>=365)await sb.from('investments').update({status:'completed'}).eq('id',inv.id);
       }
     }catch(e){}
@@ -368,12 +368,12 @@ function renderPlans(){
     let bodyHtml='';
 
     if(active){
-      const start=new Date(active.start_date);
+      const start=new Date(active.started_at);
       const now=new Date();
       const totalDays=Math.floor((now-start)/(1000*60*60*24));
       const progressPct=Math.min(Math.round((totalDays/365)*100),100);
-      const accumulated=(active.days_credited||0)*p.daily;
-      const lastCredit=active.last_credit_date?new Date(active.last_credit_date):start;
+      const accumulated=(active.gains_earned||0)*p.daily;
+      const lastCredit=active.started_at?new Date(active.started_at):start;
       const daysSinceWithdraw=Math.floor((now-lastCredit)/(1000*60*60*24));
       const canWithdraw=daysSinceWithdraw>=7;
       const daysUntilNext=Math.max(0,7-daysSinceWithdraw);
@@ -451,7 +451,7 @@ async function withdrawWeekly(invId,planId,amount,dailyGain){
   if(!confirm('Retirer '+fmt(amount)+' FCFA de gains hebdomadaires ?'))return;
   try{
     await sb.from('transactions').insert({user_id:currentUser.id,type:'gain',label:`Retrait hebdomadaire — ${planId}`,amount:amount,status:'credited',created_at:new Date().toISOString()});
-    await sb.from('investments').update({last_credit_date:new Date().toISOString()}).eq('id',invId);
+    // gains_earned updated separately
     alert('✅ '+fmt(amount)+' FCFA retirés avec succès !');
     await loadBalance();await loadActiveInvestments();renderPlans();
   }catch(e){alert('Erreur: '+e.message);}
@@ -503,10 +503,16 @@ async function confirmInvest(){
 
     const{error:e1}=await sb.from('transactions').insert({user_id:currentUser.id,type:'investissement',label:'Investissement LT — '+p.name,amount:p.cost,status:'credited',created_at:now});
     if(e1)throw e1;
-    const{error:e2}=await sb.from('investments').insert({user_id:currentUser.id,plan_id:p.id,plan_name:p.name,plane_name:p.plane,amount:p.cost,daily_gain:p.daily,duration_days:365,days_credited:0,status:'active',start_date:now,last_credit_date:now,created_at:now});
+    const{error:e2}=await sb.from('investments').insert({
+        user_id:currentUser.id, plan_id:p.id, amount:p.cost,
+        daily_return:p.daily, duration_days:365, gains_earned:0,
+        status:'active', started_at:now,
+        ends_at:new Date(new Date(now).getTime()+365*86400000).toISOString(),
+        created_at:now
+      });
     if(e2)throw e2;
     // Commission parrainage 10%
-    sb.rpc('commission_parrainage',{p_filleul_id:currentUser.id,p_montant:p.cost,p_plan_name:p.name}).catch(()=>{});
+    sb.rpc('commission_parrainage',{p_filleul_id:currentUser.id,p_montant:p.cost,p_}).catch(()=>{});
     document.getElementById('modal-main').style.display='none';
     document.getElementById('modal-success').classList.add('show');
     document.getElementById('ms-title').textContent=p.name+' Activé ! 🌿';
