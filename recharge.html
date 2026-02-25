@@ -31,7 +31,6 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 @keyframes bounceIn{0%{transform:scale(0);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
-@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
 
 .page{position:relative;z-index:2;padding:0 16px 20px;}
 
@@ -49,18 +48,6 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .hc-desc{font-size:13px;font-weight:300;color:var(--text2);margin-top:6px;line-height:1.6;}
 .hc-badges{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:14px;}
 .hb{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px;border-radius:8px;border:1px solid;}
-
-/* COUNTRY SELECTOR */
-.country-selector{margin-bottom:20px;animation:fadeUp .4s .02s ease both;}
-.cs-title{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-bottom:10px;}
-.cs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.cs-opt{background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.07);border-radius:16px;padding:14px 10px;cursor:pointer;text-align:center;transition:all .25s;}
-.cs-opt:hover{border-color:rgba(0,209,102,.3);background:rgba(0,209,102,.04);transform:translateY(-2px);}
-.cs-opt.selected{border-color:var(--green);background:rgba(0,209,102,.08);box-shadow:0 4px 20px rgba(0,209,102,.12);}
-.cs-opt.selected::after{content:'✓ Sélectionné';display:block;font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);margin-top:4px;}
-.cs-flag{font-size:26px;margin-bottom:6px;}
-.cs-name{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;color:var(--text);}
-.cs-sub{font-size:11px;font-weight:300;color:var(--text3);margin-top:2px;}
 
 /* STEPS */
 .steps-bar{display:flex;gap:0;background:rgba(0,0,0,.25);border-radius:14px;padding:4px;margin-bottom:20px;border:1px solid rgba(255,255,255,.05);animation:fadeUp .4s .05s ease both;}
@@ -107,11 +94,6 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .mo-tag{display:inline-block;margin-top:5px;font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:5px;}
 .tag-i{background:rgba(0,209,102,.1);color:var(--green);}
 .tag-c{background:rgba(160,100,255,.1);color:var(--purple);}
-.tag-d{background:rgba(255,184,48,.1);color:var(--amber);}
-
-/* AUTO PAY BUTTON */
-.auto-pay-btn{width:100%;padding:15px;border:1.5px solid rgba(255,184,48,.25);border-radius:14px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,184,48,.5);background:rgba(255,184,48,.04);cursor:not-allowed;transition:all .3s;position:relative;overflow:hidden;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:10px;}
-.auto-pay-badge{background:rgba(255,184,48,.15);border:1px solid rgba(255,184,48,.3);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--amber);text-transform:uppercase;}
 
 .row-btns{display:grid;grid-template-columns:1fr 1.6fr;gap:10px;margin-top:4px;}
 .back-step{padding:14px;border-radius:14px;border:1.5px solid rgba(255,255,255,.1);background:transparent;color:var(--text3);cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
@@ -120,21 +102,14 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .payment-instr{background:rgba(0,0,0,.3);border:1px solid rgba(0,209,102,.15);border-radius:18px;overflow:hidden;margin-bottom:16px;}
 .pi-header{background:linear-gradient(135deg,rgba(0,209,102,.12),rgba(0,201,192,.06));padding:16px 18px;border-bottom:1px solid rgba(0,209,102,.1);}
 .pi-method-name{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:2px;color:var(--green);}
-.pi-method-sub{font-size:11px;font-weight:300;color:var(--text3);margin-top:3px;}
 .pi-step{display:flex;align-items:flex-start;gap:12px;padding:13px 18px;border-bottom:1px solid rgba(255,255,255,.04);}
 .pi-step:last-child{border-bottom:none;}
 .pi-num{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--green-d),var(--green));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:13px;color:#fff;flex-shrink:0;margin-top:1px;}
-.pi-text{font-size:13px;font-weight:300;color:var(--text2);line-height:1.55;flex:1;}
+.pi-text{font-size:13px;font-weight:300;color:var(--text2);line-height:1.55;}
 .pi-text strong{color:var(--text);font-weight:600;}
 .pi-copy-row{display:flex;align-items:center;gap:8px;background:rgba(0,209,102,.06);border-radius:10px;padding:10px 14px;margin-top:6px;border:1px solid rgba(0,209,102,.15);}
-.pi-copy-val{font-family:'Bebas Neue',cursive;font-size:16px;letter-spacing:1px;color:var(--green);flex:1;word-break:break-all;}
-.pi-copy-btn{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);background:transparent;border:1px solid rgba(0,209,102,.3);border-radius:8px;padding:6px 12px;cursor:pointer;flex-shrink:0;}
-
-/* CRYPTO ALERT */
-.crypto-alert{background:rgba(160,100,255,.07);border:1px solid rgba(160,100,255,.2);border-radius:14px;padding:14px 16px;margin-bottom:14px;display:flex;gap:12px;align-items:flex-start;}
-.ca-ico{font-size:20px;flex-shrink:0;}
-.ca-text{font-size:12px;font-weight:300;color:rgba(192,160,255,.8);line-height:1.6;}
-.ca-text strong{color:var(--purple);}
+.pi-copy-val{font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:2px;color:var(--green);flex:1;}
+.pi-copy-btn{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);background:transparent;border:1px solid rgba(0,209,102,.3);border-radius:8px;padding:6px 12px;cursor:pointer;}
 
 /* CONFIRM FORM */
 .confirm-card{background:rgba(0,0,0,.3);border:1px solid rgba(0,209,102,.12);border-radius:20px;overflow:hidden;margin-bottom:16px;}
@@ -187,18 +162,13 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .toast.err{background:rgba(255,59,78,.9);}
 
-.bot-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;height:var(--nav-h);background:rgba(6,14,10,.96);backdrop-filter:blur(24px);border-top:1px solid rgba(0,209,102,.1);display:grid;grid-template-columns:repeat(5,1fr);box-shadow:0 -8px 32px rgba(0,0,0,.5);}
+.bot-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;height:var(--nav-h);background:rgba(6,14,10,.96);backdrop-filter:blur(24px);border-top:1px solid rgba(0,209,102,.1);display:grid;grid-template-columns:repeat(4,1fr);box-shadow:0 -8px 32px rgba(0,0,0,.5);}
 .nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;text-decoration:none;padding:8px 4px;position:relative;}
 .nav-item::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,var(--green),var(--teal));transform:scaleX(0);transition:transform .3s;}
 .nav-item.active::before{transform:scaleX(1);}
 .nav-item.active .nav-ico,.nav-item.active .nav-lbl{color:var(--green);}
 .nav-ico{font-size:20px;color:var(--text3);}
 .nav-lbl{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
-
-/* DEV banner */
-.dev-coming{background:rgba(255,184,48,.06);border:1px dashed rgba(255,184,48,.25);border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
-.dev-coming-text{font-size:12px;font-weight:300;color:rgba(255,184,48,.65);}
-.dev-coming-text strong{color:var(--amber);}
 </style>
 </head>
 <body>
@@ -232,26 +202,9 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
     <div class="hc-title">RECHARGER MON COMPTE</div>
     <div class="hc-desc">Déposez des fonds pour commencer à investir. Votre solde est crédité en moins de <strong>2 heures</strong> après confirmation du paiement.</div>
     <div class="hc-badges">
-      <div class="hb" style="border-color:rgba(255,140,0,.3);color:#FF8C00;background:rgba(255,140,0,.08)">🇨🇲 Orange Money CM</div>
-      <div class="hb" style="border-color:rgba(255,204,0,.3);color:var(--gold);background:rgba(255,204,0,.08)">🇨🇲 MTN MoMo CM</div>
-      <div class="hb" style="border-color:rgba(160,100,255,.3);color:var(--purple);background:rgba(160,100,255,.08)">₮ USDT International</div>
-    </div>
-  </div>
-
-  <!-- COUNTRY SELECTOR -->
-  <div class="country-selector">
-    <div class="cs-title">🌍 Sélectionnez votre pays</div>
-    <div class="cs-grid">
-      <div class="cs-opt selected" id="cs-cm" onclick="selectCountry('cm',this)">
-        <div class="cs-flag">🇨🇲</div>
-        <div class="cs-name">Cameroun</div>
-        <div class="cs-sub">Orange Money · MTN</div>
-      </div>
-      <div class="cs-opt" id="cs-intl" onclick="selectCountry('intl',this)">
-        <div class="cs-flag">🌍</div>
-        <div class="cs-name">Autres pays</div>
-        <div class="cs-sub">USDT · Crypto</div>
-      </div>
+      <div class="hb" style="border-color:rgba(0,209,102,.3);color:var(--green);background:rgba(0,209,102,.08)">📱 Mobile Money</div>
+      <div class="hb" style="border-color:rgba(255,184,48,.3);color:var(--amber);background:rgba(255,184,48,.08)">💳 Carte bancaire</div>
+      <div class="hb" style="border-color:rgba(160,100,255,.3);color:var(--purple);background:rgba(160,100,255,.08)">₿ Crypto</div>
     </div>
   </div>
 
@@ -268,10 +221,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
       <label class="field-lbl">Montant à recharger</label>
       <div class="amount-wrap">
         <input class="amount-inp" type="number" id="amount-inp" placeholder="5 000" min="1000" oninput="validateAmt()">
-        <span class="cur-tag" id="cur-tag">FCFA</span>
+        <span class="cur-tag">FCFA</span>
       </div>
-      <div class="min-hint" id="min-hint">⚡ Minimum <strong style="color:var(--green)">1 000 FCFA</strong> · Aucun frais de dépôt</div>
-      <div class="quick-row" id="quick-btns">
+      <div class="min-hint">⚡ Minimum <strong style="color:var(--green)">1 000 FCFA</strong> · Aucun frais de dépôt</div>
+      <div class="quick-row">
         <button class="qb" onclick="setAmt(2000)">2 000</button>
         <button class="qb" onclick="setAmt(5000)">5 000</button>
         <button class="qb" onclick="setAmt(10000)">10 000</button>
@@ -284,61 +237,27 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 
   <!-- ══ STEP 2 — METHOD ══ -->
   <div class="step-panel" id="panel-2">
-    <div id="methods-cm">
-      <div class="cat-title"><span>📱</span> Mobile Money — Cameroun</div>
-      <div class="method-grid">
-        <div class="method-opt selected" id="mo-orange" onclick="selectM('orange_cm',this,'🟠','Orange Money CM','658 033 690 — Alirou Moun')">
-          <div class="mo-ico">🟠</div>
-          <div class="mo-name">Orange Money</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:2px">Cameroun 🇨🇲</div>
-          <div class="mo-tag tag-i">Instantané</div>
-        </div>
-        <div class="method-opt" id="mo-mtn" onclick="selectM('mtn_cm',this,'💛','MTN MoMo CM','651 461 777 — Jean Jacques')">
-          <div class="mo-ico">💛</div>
-          <div class="mo-name">MTN MoMo</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:2px">Cameroun 🇨🇲</div>
-          <div class="mo-tag tag-i">Instantané</div>
-        </div>
-      </div>
 
-      <!-- AUTO PAY -->
-      <div style="margin-top:14px">
-        <div class="cat-title"><span>⚡</span> Paiement automatique</div>
-        <button class="auto-pay-btn" disabled title="Bientôt disponible">
-          <span style="font-size:18px">🤖</span>
-          <span>Paiement Automatique</span>
-          <span class="auto-pay-badge">⚙️ En développement</span>
-        </button>
-        <div style="font-size:11px;font-weight:300;color:var(--text3);text-align:center;margin-top:8px">Paiement instantané sans manipulation — disponible très prochainement</div>
+    <div class="cat-title"><span>📱</span> Mobile Money</div>
+    <div class="method-grid">
+      <div class="method-opt selected" onclick="selectM('orange',this,'🟠','Orange Money','Cameroun')">
+        <div class="mo-ico">🟠</div><div class="mo-name">Orange Money</div><div class="mo-tag tag-i">Instantané</div>
+      </div>
+      <div class="method-opt" onclick="selectM('mtn',this,'💛','MTN MoMo','Cameroun')">
+        <div class="mo-ico">💛</div><div class="mo-name">MTN MoMo</div><div class="mo-tag tag-i">Instantané</div
+      </div>
       </div>
     </div>
 
-    <div id="methods-intl" style="display:none">
-      <div class="cat-title"><span>₮</span> Crypto-monnaie — International</div>
-      <div class="method-grid">
-        <div class="method-opt selected" id="mo-sol" onclick="selectM('sol_usdt',this,'🔵','USDT Solana (SOL)','Réseau Solana · SPL')">
-          <div class="mo-ico">🔵</div>
-          <div class="mo-name">USDT — SOL</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:2px">Réseau Solana</div>
-          <div class="mo-tag tag-c">Crypto</div>
-        </div>
-        <div class="method-opt" id="mo-bsc" onclick="selectM('bsc_usdt',this,'🟡','USDT BEP-20 (BSC)','Réseau BNB Smart Chain')">
-          <div class="mo-ico">🟡</div>
-          <div class="mo-name">USDT — BSC</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:2px">BNB Smart Chain</div>
-          <div class="mo-tag tag-c">Crypto</div>
-        </div>
+    <div class="cat-title" style="margin-top:14px"><span>💳</span> Carte Bancaire</div>
+    <div class="method-grid">
       </div>
+      </div>
+    </div>
 
-      <!-- AUTO PAY INTL -->
-      <div style="margin-top:14px">
-        <div class="cat-title"><span>⚡</span> Paiement automatique</div>
-        <button class="auto-pay-btn" disabled title="Bientôt disponible">
-          <span style="font-size:18px">🤖</span>
-          <span>Paiement Automatique</span>
-          <span class="auto-pay-badge">⚙️ En développement</span>
-        </button>
-        <div style="font-size:11px;font-weight:300;color:var(--text3);text-align:center;margin-top:8px">Connexion wallet automatique — disponible très prochainement</div>
+    <div class="cat-title" style="margin-top:14px"><span>₿</span> Crypto-monnaie</div>
+    <div class="method-grid">
+      </div>
       </div>
     </div>
 
@@ -356,13 +275,13 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 
     <!-- Confirm form -->
     <div class="card">
-      <label class="field-lbl">Référence / Numéro de transaction</label>
-      <input class="ref-inp" type="text" id="payment-ref" placeholder="Ex: TXN123456789 ou hash de transaction">
-      <div style="font-size:11px;font-weight:300;color:var(--text3);margin-bottom:16px">Entrez la référence reçue après votre paiement (SMS ou wallet)</div>
+      <label class="field-lbl">Numéro / Référence du paiement effectué</label>
+      <input class="ref-inp" type="text" id="payment-ref" placeholder="Ex: TXN123456 ou numéro d'envoi">
+      <div style="font-size:11px;font-weight:300;color:var(--text3);margin-bottom:16px">Entrez la référence de transaction reçue après votre paiement</div>
     </div>
 
     <div class="confirm-card">
-      <div class="conf-row"><div class="conf-lbl">Montant</div><div class="conf-val" style="color:var(--green)" id="c-amount">—</div></div>
+      <div class="conf-row"><div class="conf-lbl">Montant rechargé</div><div class="conf-val" style="color:var(--green)" id="c-amount">—</div></div>
       <div class="conf-row"><div class="conf-lbl">Méthode</div><div class="conf-val" style="color:var(--teal)" id="c-method">—</div></div>
       <div class="conf-row"><div class="conf-lbl">Frais de dépôt</div><div class="conf-val" style="color:var(--green-l)">GRATUIT 🎉</div></div>
       <div class="conf-row"><div class="conf-lbl">Délai de crédit</div><div class="conf-val" style="color:var(--amber);font-size:18px">MOINS DE 2H</div></div>
@@ -404,53 +323,26 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 const{createClient}=supabase;
 const sb=createClient('https://fqiotqrraobmsrcyewsi.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc');
 
-// ══════════════════════════════════════════
-// PAYMENT INFO — Cameroun + International
-// ══════════════════════════════════════════
-const PAYMENT_INFO = {
-  orange_cm: {
-    steps: [
-      {t:'Ouvrez votre application <strong>Orange Money</strong> ou composez <strong>#150#</strong>', d:''},
-      {t:'Sélectionnez <strong>Transfert d\'argent → Vers un numéro Orange</strong>', d:''},
-      {t:'Numéro destinataire SYLLA', d:'Nom : Alirou Moun', copy:'658 033 690'},
-      {t:'Entrez le montant : <strong>AMOUNT_PLACEHOLDER</strong>', d:''},
-      {t:'Validez avec votre <strong>code PIN Orange Money</strong>', d:''},
-      {t:'Notez la <strong>référence de transaction</strong> reçue par SMS', d:'Vous en aurez besoin à l\'étape suivante'},
-    ]
-  },
-  mtn_cm: {
-    steps: [
-      {t:'Ouvrez <strong>MTN MoMo</strong> ou composez <strong>*126#</strong>', d:''},
-      {t:'Sélectionnez <strong>Transférer de l\'argent</strong>', d:''},
-      {t:'Numéro destinataire SYLLA', d:'Nom : Jean Jacques Rousseau', copy:'651 461 777'},
-      {t:'Entrez le montant : <strong>AMOUNT_PLACEHOLDER</strong>', d:''},
-      {t:'Confirmez avec votre <strong>code PIN MTN MoMo</strong>', d:''},
-      {t:'Notez la <strong>référence de transaction</strong> envoyée par SMS', d:''},
-    ]
-  },
-  sol_usdt: {
-    steps: [
-      {t:'Ouvrez votre wallet compatible <strong>Solana</strong>', d:'Phantom, Solflare, Trust Wallet, Binance, etc.'},
-      {t:'Sélectionnez <strong>USDT sur le réseau Solana (SPL)</strong>', d:'⚠️ Vérifiez bien le réseau : SOL-1 / SPL'},
-      {t:'Envoyez à l\'adresse SYLLA <strong>Solana</strong>', d:'Adresse SOL-1 officielle', copy:'JBe5kePCCj3tG5RciCaNCEaJjtziycdrtKwz64Csx2VJ'},
-      {t:'Attendez la <strong>confirmation réseau</strong> (1-3 confirmations)', d:''},
-      {t:'Copiez le <strong>hash / TXID</strong> de la transaction', d:'Visible dans l\'historique de votre wallet'},
-    ]
-  },
-  bsc_usdt: {
-    steps: [
-      {t:'Ouvrez votre wallet compatible <strong>BNB Smart Chain (BEP-20)</strong>', d:'Trust Wallet, MetaMask, Binance, etc.'},
-      {t:'Sélectionnez <strong>USDT sur le réseau BSC / BEP-20</strong>', d:'⚠️ Ne pas utiliser ERC-20 ou TRC-20 !'},
-      {t:'Envoyez à l\'adresse SYLLA <strong>BSC</strong>', d:'Adresse BSC-1 officielle', copy:'0x44C9170272c7eA2c99f5dC28d955AdFE8b4AA3CB'},
-      {t:'Attendez la <strong>confirmation réseau BSC</strong>', d:'Généralement rapide (quelques secondes)'},
-      {t:'Copiez le <strong>hash / TXID</strong> de la transaction', d:'Visible sur BscScan ou dans votre wallet'},
-    ]
-  }
+const PAYMENT_INFO={
+  orange:{number:'658033690',name:'Alirou Moun',steps:[
+    {t:'Ouvrez <strong>Orange Money</strong> ou composez <strong>#150#</strong>',d:''},
+    {t:'Sélectionnez <strong>Transfert d\'argent</strong>',d:''},
+    {t:'Entrez le numéro Orange Money SYLLA',d:'',copy:'658033690'},
+    {t:'Bénéficiaire : <strong>Alirou Moun</strong>',d:''},
+    {t:'Entrez le montant exact et confirmez avec votre PIN',d:''},
+    {t:'Notez la <strong>référence de transaction</strong> reçue par SMS',d:'Vous en aurez besoin à l\'étape suivante'},
+  ]},
+  mtn:{number:'651461777',name:'Jean Jacques Rousseau',steps:[
+    {t:'Ouvrez <strong>MTN Mobile Money</strong> ou composez <strong>*126#</strong>',d:''},
+    {t:'Sélectionnez <strong>Transfert d\'argent</strong>',d:''},
+    {t:'Entrez le numéro MTN MoMo SYLLA',d:'',copy:'651461777'},
+    {t:'Bénéficiaire : <strong>Jean Jacques Rousseau</strong>',d:''},
+    {t:'Entrez le montant exact et confirmez avec votre PIN',d:''},
+    {t:'Notez la <strong>référence de transaction</strong> reçue par SMS',d:'Vous en aurez besoin à l\'étape suivante'},
+  ]},
 };
 
-let cu=null, userBalance=0;
-let selCountry='cm';
-let selM={id:'orange_cm', ico:'🟠', name:'Orange Money CM', sub:'658 033 690 — Alirou Moun'};
+let cu=null,userBalance=0,selM={id:'orange',ico:'🟠',name:'Orange Money'};
 let toastT=null;
 
 async function init(){
@@ -463,6 +355,7 @@ async function init(){
 
 async function loadBalance(){
   try{
+    // Utiliser la function SQL sécurisée pour le solde réel
     const{data,error}=await sb.rpc('get_solde',{p_user_id:cu.id});
     userBalance=error?0:Number(data)||0;
   }catch(e){userBalance=0;}
@@ -472,9 +365,11 @@ async function loadBalance(){
 async function loadHistory(){
   const list=document.getElementById('hist-list');
   try{
+    // Chercher dans la table recharges (plus précis que transactions)
     const{data:recs}=await sb.from('recharges')
       .select('*').eq('user_id',cu.id)
       .order('created_at',{ascending:false}).limit(15);
+
     if(!recs?.length){
       list.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">💳 Aucune recharge effectuée</div>';
       return;
@@ -482,7 +377,11 @@ async function loadHistory(){
     list.innerHTML=recs.map(r=>{
       const d=new Date(r.created_at);
       const ds=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-      const stMap={'en_attente':'⏳ En vérification','valide':'✅ Crédité','rejete':'❌ Rejeté'};
+      const stMap={
+        'en_attente':'⏳ En vérification',
+        'valide':'✅ Crédité',
+        'rejete':'❌ Rejeté'
+      };
       const stCls=r.statut==='valide'?'st-ok':r.statut==='rejete'?'st-rej':'st-pend';
       const stTxt=stMap[r.statut]||r.statut;
       const refTxt=r.reference_paiement?` — Réf: ${r.reference_paiement}`:'';
@@ -504,114 +403,38 @@ async function loadHistory(){
   }
 }
 
-function selectCountry(code, el){
-  selCountry=code;
-  document.querySelectorAll('.cs-opt').forEach(o=>o.classList.remove('selected'));
-  el.classList.add('selected');
-
-  if(code==='cm'){
-    document.getElementById('methods-cm').style.display='block';
-    document.getElementById('methods-intl').style.display='none';
-    document.getElementById('cur-tag').textContent='FCFA';
-    document.getElementById('min-hint').innerHTML='⚡ Minimum <strong style="color:var(--green)">1 000 FCFA</strong> · Aucun frais de dépôt';
-    document.getElementById('quick-btns').innerHTML=`
-      <button class="qb" onclick="setAmt(2000)">2 000</button>
-      <button class="qb" onclick="setAmt(5000)">5 000</button>
-      <button class="qb" onclick="setAmt(10000)">10 000</button>
-      <button class="qb" onclick="setAmt(25000)">25 000</button>
-      <button class="qb" onclick="setAmt(50000)">50 000</button>`;
-    // Default selection
-    selectM('orange_cm', document.getElementById('mo-orange'), '🟠','Orange Money CM','658 033 690 — Alirou Moun');
-    document.getElementById('mo-orange').classList.add('selected');
-    document.getElementById('mo-mtn') && document.getElementById('mo-mtn').classList.remove('selected');
-  } else {
-    document.getElementById('methods-cm').style.display='none';
-    document.getElementById('methods-intl').style.display='block';
-    document.getElementById('cur-tag').textContent='USDT';
-    document.getElementById('min-hint').innerHTML='⚡ Minimum <strong style="color:var(--green)">5 USDT</strong> · Vérifiez le bon réseau';
-    document.getElementById('quick-btns').innerHTML=`
-      <button class="qb" onclick="setAmt(10)">10 $</button>
-      <button class="qb" onclick="setAmt(25)">25 $</button>
-      <button class="qb" onclick="setAmt(50)">50 $</button>
-      <button class="qb" onclick="setAmt(100)">100 $</button>
-      <button class="qb" onclick="setAmt(200)">200 $</button>`;
-    // Default selection
-    selectM('sol_usdt', document.getElementById('mo-sol'), '🔵','USDT Solana','JBe5ke...x2VJ');
-    document.getElementById('mo-sol').classList.add('selected');
-    document.getElementById('mo-bsc') && document.getElementById('mo-bsc').classList.remove('selected');
-  }
-  // Reset amount
-  document.getElementById('amount-inp').value='';
-  document.getElementById('btn-next1').disabled=true;
-}
-
 function setAmt(v){document.getElementById('amount-inp').value=v;validateAmt();}
-
 function validateAmt(){
   const v=Number(document.getElementById('amount-inp').value)||0;
-  const min=selCountry==='cm'?1000:5;
-  document.getElementById('btn-next1').disabled=v<min;
+  document.getElementById('btn-next1').disabled=v<1000;
 }
 
-function selectM(id, el, ico, name, sub){
-  selM={id, ico, name, sub: sub||''};
+function selectM(id,el,ico,name,sub){
+  selM={id,ico,name,sub};
   document.querySelectorAll('.method-opt').forEach(o=>o.classList.remove('selected'));
   el.classList.add('selected');
 }
 
 function buildPaymentInstr(amount){
-  const info=PAYMENT_INFO[selM.id]||PAYMENT_INFO.orange_cm;
-  const isCrypto=selM.id==='sol_usdt'||selM.id==='bsc_usdt';
-  const amtStr=isCrypto?amount+' USDT':fmt(amount)+' FCFA';
-
-  let cryptoWarn='';
-  if(isCrypto){
-    cryptoWarn=`<div class="crypto-alert" style="margin:12px 18px 0;">
-      <div class="ca-ico">⚠️</div>
-      <div class="ca-text">
-        <strong>Attention !</strong> Envoyez uniquement sur le bon réseau.<br>
-        ${selM.id==='sol_usdt'?'Réseau : <strong>Solana (SOL-1 / SPL)</strong>':'Réseau : <strong>BNB Smart Chain (BEP-20)</strong>'}
-        <br>Tout envoi sur un mauvais réseau est <strong>irrécupérable</strong>.
-      </div>
-    </div>`;
-  }
-
+  const info=PAYMENT_INFO[selM.id]||PAYMENT_INFO.orange;
   const stepsHtml=info.steps.map((s,i)=>{
-    let html=`<div class="pi-step"><div class="pi-num">${i+1}</div><div class="pi-text">`;
-    html+=`<span>${s.t.replace('AMOUNT_PLACEHOLDER',amtStr)}</span>`;
-    if(s.d) html+=`<br><span style="font-size:11px;color:var(--text3)">${s.d}</span>`;
-    if(s.copy) html+=`<div class="pi-copy-row"><div class="pi-copy-val">${s.copy}</div><button class="pi-copy-btn" onclick="copyText('${s.copy}')">📋 Copier</button></div>`;
+    let html=`<div class="pi-step"><div class="pi-num">${i+1}</div><div class="pi-text"><span>${s.t.replace('—',fmt(amount)+' FCFA')}</span>`;
+    if(s.d)html+=`<br><span style="font-size:11px;color:var(--text3)">${s.d}</span>`;
+    if(s.copy)html+=`<div class="pi-copy-row"><div class="pi-copy-val">${s.copy}</div><button class="pi-copy-btn" onclick="copyText('${s.copy}')">📋 Copier</button></div>`;
     html+=`</div></div>`;
     return html;
   }).join('');
-
-  return `
-    <div class="pi-header">
-      <div class="pi-method-name">${selM.ico} ${selM.name}</div>
-      <div class="pi-method-sub">${selM.sub||''}</div>
-    </div>
-    ${cryptoWarn}
-    ${stepsHtml}`;
+  return `<div class="pi-header"><div class="pi-method-name">${selM.ico} ${selM.name}</div></div>${stepsHtml}`;
 }
 
-function copyText(txt){
-  navigator.clipboard.writeText(txt.replace(/\s/g,'')||txt)
-    .then(()=>showToast('✓ Copié !')).catch(()=>{
-      // Fallback
-      const ta=document.createElement('textarea');
-      ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
-      showToast('✓ Copié !');
-    });
-}
+function copyText(txt){navigator.clipboard.writeText(txt).then(()=>showToast('✓ Copié !'));}
 
 function goStep(n){
   if(n===3){
     const amount=Number(document.getElementById('amount-inp').value)||0;
-    const min=selCountry==='cm'?1000:5;
-    if(amount<min){showToast(`Minimum ${selCountry==='cm'?'1 000 FCFA':'5 USDT'}`,true);return;}
+    if(amount<1000){showToast('Minimum 1 000 FCFA',true);return;}
     document.getElementById('payment-instr').innerHTML=buildPaymentInstr(amount);
-    const isCrypto=selM.id==='sol_usdt'||selM.id==='bsc_usdt';
-    document.getElementById('c-amount').textContent=isCrypto?amount+' USDT':fmt(amount)+' FCFA';
+    document.getElementById('c-amount').textContent=fmt(amount)+' FCFA';
     document.getElementById('c-method').textContent=selM.ico+' '+selM.name;
     document.getElementById('err-box').style.display='none';
     document.getElementById('submit-btn').disabled=false;
@@ -628,15 +451,16 @@ async function submitRecharge(){
   const btn=document.getElementById('submit-btn');
   const errBox=document.getElementById('err-box');
   errBox.style.display='none';
-  const min=selCountry==='cm'?1000:5;
 
-  if(amount<min){errBox.style.display='block';errBox.textContent=`Montant minimum ${selCountry==='cm'?'1 000 FCFA':'5 USDT'}.`;return;}
-  if(!ref||ref.length<3){errBox.style.display='block';errBox.textContent='Référence de transaction requise (minimum 3 caractères).';return;}
+  // ── Validations strictes ──
+  if(amount<1000){errBox.style.display='block';errBox.textContent='Montant minimum 1 000 FCFA.';return;}
+  if(!ref||ref.length<3){errBox.style.display='block';errBox.textContent='Référence de paiement requise (minimum 3 caractères).';return;}
   if(!selM.id){errBox.style.display='block';errBox.textContent='Sélectionnez une méthode de paiement.';return;}
 
   btn.disabled=true;btn.innerHTML='<span class="ld"></span>Envoi en cours…';
 
   try{
+    // ── Appel via function sécurisée ──
     const{data,error}=await sb.rpc('demander_recharge',{
       p_user_id   : cu.id,
       p_montant   : amount,
@@ -648,10 +472,9 @@ async function submitRecharge(){
       throw new Error(data?.error||error?.message||'Erreur inconnue');
     }
 
-    const isCrypto=selM.id==='sol_usdt'||selM.id==='bsc_usdt';
-    const amtStr=isCrypto?amount+' USDT':fmt(amount)+' FCFA';
+    // ── Succès ──
     document.getElementById('suc-msg').textContent=
-      `Votre demande de ${amtStr} via ${selM.name} a été enregistrée (Réf: ${ref}). `+
+      `Votre demande de ${fmt(amount)} FCFA via ${selM.name} a été enregistrée (Réf: ${ref}). ` +
       `Votre solde sera crédité après validation par notre équipe (délai max 2h).`;
     document.getElementById('suc-overlay').classList.add('show');
     await loadHistory();
