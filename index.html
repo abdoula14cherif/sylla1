@@ -3,725 +3,539 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SYLLA Agence — Plateforme d'Affiliation</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <title>SYLLA Agence — Connexion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-    :root {
-      --gold: #C9A84C;
-      --gold-light: #E8C96A;
-      --gold-dark: #8B6914;
-      --bg: #0A0A0A;
-      --bg2: #111111;
-      --bg3: #1A1A1A;
-      --text: #F0EAD6;
-      --text-muted: #888877;
-      --border: rgba(201,168,76,0.2);
+    :root{
+      --gold:#D4AF37;
+      --gold-l:#F5D976;
+      --gold-d:#A07C10;
+      --gold-bg:#FFFBEF;
+      --red:#C0392B;
+      --red-l:#E74C3C;
+      --blue:#1A3A6B;
+      --blue-l:#2657A8;
+      --blue-ll:#EEF3FF;
+      --white:#FFFFFF;
+      --off:#F8F6F0;
+      --text:#1A1A2E;
+      --muted:#7A7A9A;
+      --border:#E8DDB5;
+      --radius:18px;
+      --shadow:0 8px 40px rgba(26,58,107,0.10);
+      --shadow-gold:0 8px 32px rgba(212,175,55,0.22);
     }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
+    body{
+      background: linear-gradient(135deg, #0D1B3E 0%, #1A3A6B 40%, #7B1D1D 100%);
+      min-height:100vh;
+      font-family:'Nunito',sans-serif;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      position:relative;
+      overflow:hidden;
     }
 
-    /* HERO SECTION */
-    .hero {
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      position: relative;
-      overflow: hidden;
+    /* Orbs décoratifs */
+    body::before{
+      content:'';
+      position:fixed;
+      top:-120px;right:-120px;
+      width:480px;height:480px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(212,175,55,0.18) 0%, transparent 70%);
+      pointer-events:none;
+    }
+    body::after{
+      content:'';
+      position:fixed;
+      bottom:-100px;left:-80px;
+      width:380px;height:380px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(192,57,43,0.15) 0%, transparent 70%);
+      pointer-events:none;
     }
 
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: 
-        radial-gradient(ellipse 60% 80% at 20% 50%, rgba(201,168,76,0.08) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 60% at 80% 20%, rgba(201,168,76,0.05) 0%, transparent 60%);
-      pointer-events: none;
+    .container{
+      width:100%;max-width:480px;
+      position:relative;z-index:2;
     }
 
-    /* Pattern africain subtil */
-    .hero::after {
-      content: '';
-      position: absolute;
-      top: 0; right: 0;
-      width: 50%;
-      height: 100%;
-      background-image: 
-        repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(201,168,76,0.03) 40px, rgba(201,168,76,0.03) 41px),
-        repeating-linear-gradient(-45deg, transparent, transparent 40px, rgba(201,168,76,0.03) 40px, rgba(201,168,76,0.03) 41px);
-      pointer-events: none;
+    /* LOGO */
+    .logo-wrap{
+      text-align:center;
+      margin-bottom:28px;
+      animation:fadeDown 0.7s ease both;
     }
 
-    .hero-left {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 60px 60px 60px 80px;
-      position: relative;
-      z-index: 2;
+    .logo-badge{
+      display:inline-flex;align-items:center;gap:12px;
+      background:rgba(255,255,255,0.08);
+      backdrop-filter:blur(12px);
+      border:1px solid rgba(212,175,55,0.35);
+      border-radius:50px;
+      padding:10px 24px;
+      margin-bottom:12px;
     }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 80px;
+    .logo-icon{
+      width:42px;height:42px;
+      background:linear-gradient(135deg, var(--gold-l), var(--gold), var(--gold-d));
+      border-radius:12px;
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Playfair Display',serif;
+      font-size:22px;font-weight:800;color:#1A1A2E;
+      box-shadow:0 4px 16px rgba(212,175,55,0.4);
     }
 
-    .logo-icon {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 24px;
-      font-weight: 700;
-      color: #0A0A0A;
-      box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+    .logo-name{
+      font-family:'Playfair Display',serif;
+      font-size:20px;font-weight:700;
+      background:linear-gradient(135deg, var(--gold-l), var(--gold));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      letter-spacing:2px;
     }
 
-    .logo-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--gold-light);
+    .logo-sub{
+      font-size:12px;font-weight:600;letter-spacing:3px;text-transform:uppercase;
+      color:rgba(255,255,255,0.55);
     }
 
-    .hero-eyebrow {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 20px;
-      opacity: 0;
-      animation: fadeUp 0.8s 0.2s forwards;
+    /* CARD */
+    .card{
+      background:var(--white);
+      border-radius:28px;
+      box-shadow:var(--shadow), 0 0 0 1px rgba(212,175,55,0.12);
+      overflow:hidden;
+      animation:popUp 0.65s cubic-bezier(.22,1,.36,1) 0.1s both;
     }
 
-    .hero-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(42px, 5vw, 72px);
-      font-weight: 700;
-      line-height: 1.05;
-      margin-bottom: 28px;
-      opacity: 0;
-      animation: fadeUp 0.8s 0.4s forwards;
+    /* TABS */
+    .tabs{
+      display:grid;grid-template-columns:1fr 1fr;
+      background:var(--off);
+      border-bottom:2px solid var(--border);
     }
 
-    .hero-title em {
-      font-style: italic;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .tab{
+      padding:17px;text-align:center;
+      font-size:14px;font-weight:700;letter-spacing:0.5px;
+      cursor:pointer;transition:all 0.3s;
+      color:var(--muted);
+      border-bottom:3px solid transparent;
+      margin-bottom:-2px;
     }
 
-    .hero-desc {
-      font-size: 16px;
-      line-height: 1.7;
-      color: var(--text-muted);
-      max-width: 440px;
-      margin-bottom: 48px;
-      opacity: 0;
-      animation: fadeUp 0.8s 0.6s forwards;
+    .tab.active{
+      background:var(--white);
+      color:var(--blue);
+      border-bottom-color:var(--gold);
     }
 
-    /* Commission cards */
-    .commission-grid {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 48px;
-      opacity: 0;
-      animation: fadeUp 0.8s 0.8s forwards;
+    /* FORM AREA */
+    .form-area{padding:32px 36px 36px;}
+
+    .form-title{
+      font-family:'Playfair Display',serif;
+      font-size:26px;font-weight:700;
+      color:var(--text);margin-bottom:4px;
     }
 
-    .comm-card {
-      flex: 1;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
-      text-align: center;
+    .form-title span{color:var(--gold-d);}
+
+    .form-sub{font-size:13px;color:var(--muted);margin-bottom:24px;}
+
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+    .field{margin-bottom:16px;}
+
+    .field label{
+      display:block;font-size:11px;font-weight:700;
+      letter-spacing:1.5px;text-transform:uppercase;
+      color:var(--blue);margin-bottom:7px;
     }
 
-    .comm-label {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 8px;
+    .input-wrap{position:relative;}
+
+    .input-wrap .ico{
+      position:absolute;left:14px;top:50%;transform:translateY(-50%);
+      font-size:16px;pointer-events:none;
     }
 
-    .comm-amount {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--gold);
+    .field input,.field select{
+      width:100%;
+      padding:13px 14px 13px 42px;
+      background:var(--off);
+      border:1.5px solid var(--border);
+      border-radius:12px;
+      font-family:'Nunito',sans-serif;
+      font-size:14px;font-weight:500;
+      color:var(--text);
+      outline:none;
+      transition:all 0.25s;
+      appearance:none;
     }
 
-    .comm-sub {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
+    .field input::placeholder{color:#C0BFB0;}
+
+    .field input:focus,.field select:focus{
+      border-color:var(--gold);
+      background:var(--gold-bg);
+      box-shadow:0 0 0 4px rgba(212,175,55,0.12);
     }
 
-    .cta-row {
-      display: flex;
-      gap: 14px;
-      opacity: 0;
-      animation: fadeUp 0.8s 1s forwards;
+    .field select{
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A7A9A' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;
+      background-position:right 14px center;
+      padding-right:36px;
     }
 
-    .btn-primary {
-      padding: 16px 32px;
-      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-      color: #0A0A0A;
-      border: none;
-      border-radius: 10px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 4px 20px rgba(201,168,76,0.25);
+    .field select option{background:#fff;color:var(--text);}
+
+    /* ACTIVATION BANNER */
+    .activation-box{
+      background:linear-gradient(135deg, #FFF8E1, #FFFBEF);
+      border:1.5px solid var(--gold);
+      border-radius:14px;
+      padding:16px 18px;
+      margin-bottom:20px;
+      display:flex;align-items:center;gap:14px;
     }
 
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(201,168,76,0.4);
+    .activation-box .tag{
+      background:linear-gradient(135deg, var(--gold), var(--gold-d));
+      color:#fff;font-size:11px;font-weight:800;
+      padding:4px 10px;border-radius:8px;letter-spacing:1px;
+      white-space:nowrap;
     }
 
-    .btn-outline {
-      padding: 16px 32px;
-      background: transparent;
-      color: var(--gold);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s;
+    .activation-box p{
+      font-size:12px;font-weight:600;color:var(--text);line-height:1.5;
     }
 
-    .btn-outline:hover {
-      border-color: var(--gold);
-      background: rgba(201,168,76,0.05);
+    .activation-box strong{color:var(--gold-d);font-size:15px;}
+
+    /* BTN */
+    .btn{
+      width:100%;padding:16px;
+      border:none;border-radius:14px;
+      font-family:'Nunito',sans-serif;
+      font-size:15px;font-weight:800;
+      letter-spacing:0.5px;
+      cursor:pointer;transition:all 0.3s;
+      position:relative;overflow:hidden;
     }
 
-    /* RIGHT — AUTH FORM */
-    .hero-right {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 60px;
-      position: relative;
-      z-index: 2;
+    .btn-main{
+      background:linear-gradient(135deg, var(--blue) 0%, var(--blue-l) 50%, var(--gold-d) 100%);
+      color:#fff;
+      box-shadow:0 6px 24px rgba(26,58,107,0.3);
     }
 
-    .auth-card {
-      width: 100%;
-      max-width: 440px;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 44px;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,168,76,0.1);
-      opacity: 0;
-      animation: fadeLeft 0.8s 0.3s forwards;
+    .btn-main::after{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(135deg, rgba(245,217,118,0.2), transparent);
+      opacity:0;transition:opacity 0.3s;
     }
 
-    .auth-tabs {
-      display: flex;
-      gap: 0;
-      margin-bottom: 36px;
-      background: var(--bg3);
-      border-radius: 10px;
-      padding: 4px;
+    .btn-main:hover::after{opacity:1;}
+    .btn-main:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(26,58,107,0.38);}
+    .btn-main:disabled{opacity:0.65;cursor:not-allowed;transform:none;}
+
+    .divider{
+      display:flex;align-items:center;gap:12px;
+      margin:20px 0;color:var(--muted);font-size:12px;
+    }
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+    .link-btn{
+      background:none;border:none;
+      font-family:'Nunito',sans-serif;
+      font-size:13px;font-weight:600;color:var(--blue-l);
+      cursor:pointer;text-decoration:underline;
     }
 
-    .auth-tab {
-      flex: 1;
-      padding: 10px;
-      text-align: center;
-      font-size: 13px;
-      font-weight: 500;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s;
-      color: var(--text-muted);
+    /* TOAST */
+    .toast{
+      position:fixed;top:20px;right:20px;
+      padding:14px 20px;border-radius:14px;
+      font-size:13px;font-weight:600;
+      z-index:9999;
+      transform:translateY(-16px);opacity:0;
+      transition:all 0.35s cubic-bezier(.22,1,.36,1);
+      display:flex;align-items:center;gap:10px;
+      box-shadow:0 8px 32px rgba(0,0,0,0.15);
+      max-width:320px;
+    }
+    .toast.show{transform:translateY(0);opacity:1;}
+    .toast.success{background:#fff;border-left:4px solid #27AE60;color:#145A32;}
+    .toast.error{background:#fff;border-left:4px solid var(--red);color:var(--red);}
+    .toast.info{background:#fff;border-left:4px solid var(--blue);color:var(--blue);}
+
+    /* Spinner */
+    .spin{
+      display:inline-block;width:16px;height:16px;
+      border:2px solid rgba(255,255,255,0.4);
+      border-top-color:#fff;border-radius:50%;
+      animation:spin 0.7s linear infinite;
+      vertical-align:middle;margin-right:6px;
     }
 
-    .auth-tab.active {
-      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-      color: #0A0A0A;
-      font-weight: 600;
-    }
+    @keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes popUp{from{opacity:0;transform:translateY(28px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+    @keyframes spin{to{transform:rotate(360deg)}}
 
-    .auth-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
+    #form-register{display:none;}
+    #form-login{display:block;}
 
-    .auth-sub {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 28px;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .field {
-      margin-bottom: 16px;
-    }
-
-    .field label {
-      display: block;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-    }
-
-    .field input, .field select {
-      width: 100%;
-      padding: 13px 16px;
-      background: var(--bg3);
-      border: 1px solid rgba(201,168,76,0.15);
-      border-radius: 10px;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      transition: border-color 0.3s, box-shadow 0.3s;
-      outline: none;
-    }
-
-    .field input::placeholder { color: var(--text-muted); opacity: 0.6; }
-
-    .field input:focus, .field select:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
-    }
-
-    .field select option { background: var(--bg3); }
-
-    .activation-notice {
-      background: linear-gradient(135deg, rgba(201,168,76,0.1), rgba(201,168,76,0.05));
-      border: 1px solid rgba(201,168,76,0.25);
-      border-radius: 10px;
-      padding: 14px 16px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .activation-notice .icon { font-size: 20px; }
-
-    .activation-notice p {
-      font-size: 12px;
-      line-height: 1.5;
-      color: var(--text-muted);
-    }
-
-    .activation-notice strong {
-      color: var(--gold);
-      font-size: 15px;
-    }
-
-    .btn-form {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-      color: #0A0A0A;
-      border: none;
-      border-radius: 10px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      transition: all 0.3s;
-      margin-top: 8px;
-      box-shadow: 0 4px 20px rgba(201,168,76,0.25);
-    }
-
-    .btn-form:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(201,168,76,0.4);
-    }
-
-    .btn-form:disabled { opacity: 0.6; cursor: not-allowed; }
-
-    .toast {
-      position: fixed;
-      top: 24px;
-      right: 24px;
-      padding: 16px 24px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 500;
-      z-index: 9999;
-      transform: translateY(-20px);
-      opacity: 0;
-      transition: all 0.4s;
-      max-width: 320px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .toast.show { transform: translateY(0); opacity: 1; }
-    .toast.success { background: #1a2e1a; border: 1px solid #2d5a2d; color: #7dff7d; }
-    .toast.error { background: #2e1a1a; border: 1px solid #5a2d2d; color: #ff7d7d; }
-    .toast.info { background: #1a1a2e; border: 1px solid #2d2d5a; color: var(--gold-light); }
-
-    /* Animations */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeLeft {
-      from { opacity: 0; transform: translateX(24px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    /* Forms toggles */
-    #form-connexion, #form-inscription { display: none; }
-    #form-connexion.active, #form-inscription.active { display: block; }
-
-    /* Error inline */
-    .err-msg {
-      font-size: 12px;
-      color: #ff6b6b;
-      margin-top: 4px;
-    }
-
-    @media (max-width: 900px) {
-      .hero { grid-template-columns: 1fr; }
-      .hero-left { padding: 40px 24px 20px; }
-      .hero-right { padding: 20px 24px 60px; }
-      .commission-grid { flex-direction: row; }
+    @media(max-width:500px){
+      .form-area{padding:24px 20px 28px;}
+      .row2{grid-template-columns:1fr;}
     }
   </style>
 </head>
 <body>
 
-<div class="hero">
-  <!-- GAUCHE: Présentation -->
-  <div class="hero-left">
-    <div class="logo">
+<div class="container">
+  <div class="logo-wrap">
+    <div class="logo-badge">
       <div class="logo-icon">S</div>
-      <div class="logo-text">SYLLA Agence</div>
+      <div class="logo-name">SYLLA AGENCE</div>
     </div>
-
-    <div class="hero-eyebrow">Plateforme d'Affiliation</div>
-    <h1 class="hero-title">
-      Gagnez de l'argent<br>
-      en <em>parrainant</em><br>
-      votre réseau
-    </h1>
-    <p class="hero-desc">
-      Rejoignez SYLLA Agence et construisez un réseau rentable sur 3 niveaux. 
-      Chaque personne que vous parrainez vous rapporte des commissions immédiates.
-    </p>
-
-    <div class="commission-grid">
-      <div class="comm-card">
-        <div class="comm-label">Niveau 1</div>
-        <div class="comm-amount">1 250</div>
-        <div class="comm-sub">F par filleul direct</div>
-      </div>
-      <div class="comm-card">
-        <div class="comm-label">Niveau 2</div>
-        <div class="comm-amount">600</div>
-        <div class="comm-sub">F filleul indirect</div>
-      </div>
-      <div class="comm-card">
-        <div class="comm-label">Niveau 3</div>
-        <div class="comm-amount">300</div>
-        <div class="comm-sub">F niveau profond</div>
-      </div>
-    </div>
-
-    <div class="cta-row">
-      <button class="btn-primary" onclick="switchTab('inscription')">Commencer — 2 500F</button>
-      <button class="btn-outline" onclick="switchTab('connexion')">Se connecter</button>
-    </div>
+    <div class="logo-sub">Plateforme d'Affiliation</div>
   </div>
 
-  <!-- DROITE: Formulaire Auth -->
-  <div class="hero-right">
-    <div class="auth-card">
-      <div class="auth-tabs">
-        <div class="auth-tab" id="tab-connexion" onclick="switchTab('connexion')">Connexion</div>
-        <div class="auth-tab" id="tab-inscription" onclick="switchTab('inscription')">Inscription</div>
-      </div>
+  <div class="card">
+    <div class="tabs">
+      <div class="tab active" id="tab-login" onclick="switchTab('login')">Connexion</div>
+      <div class="tab" id="tab-register" onclick="switchTab('register')">Inscription</div>
+    </div>
 
-      <!-- CONNEXION -->
-      <div id="form-connexion">
-        <h2 class="auth-title">Bon retour</h2>
-        <p class="auth-sub">Connectez-vous à votre compte</p>
+    <div class="form-area">
+
+      <!-- ===== CONNEXION ===== -->
+      <div id="form-login">
+        <div class="form-title">Bon retour <span>👋</span></div>
+        <div class="form-sub">Connectez-vous à votre espace membre</div>
 
         <div class="field">
           <label>Email ou Téléphone</label>
-          <input type="text" id="login-id" placeholder="ex: 0700000000 ou email@..." />
+          <div class="input-wrap">
+            <span class="ico">📧</span>
+            <input type="text" id="l-id" placeholder="email ou numéro de téléphone" />
+          </div>
         </div>
+
         <div class="field">
           <label>Mot de passe</label>
-          <input type="password" id="login-password" placeholder="Votre mot de passe" />
+          <div class="input-wrap">
+            <span class="ico">🔒</span>
+            <input type="password" id="l-pwd" placeholder="Votre mot de passe" />
+          </div>
         </div>
 
-        <button class="btn-form" id="btn-login" onclick="handleLogin()">Se connecter</button>
+        <button class="btn btn-main" id="btn-login" onclick="doLogin()">Se connecter</button>
+
+        <div class="divider">ou</div>
+        <div style="text-align:center;">
+          <span style="font-size:13px;color:var(--muted);">Pas encore membre ? </span>
+          <button class="link-btn" onclick="switchTab('register')">Créer un compte</button>
+        </div>
       </div>
 
-      <!-- INSCRIPTION -->
-      <div id="form-inscription">
-        <h2 class="auth-title">Rejoindre SYLLA</h2>
-        <p class="auth-sub">Créez votre compte et commencez à gagner</p>
+      <!-- ===== INSCRIPTION ===== -->
+      <div id="form-register">
+        <div class="form-title">Créer un compte</div>
+        <div class="form-sub">Tous les champs sont obligatoires</div>
 
-        <div class="form-row">
+        <div class="row2">
           <div class="field">
             <label>Nom</label>
-            <input type="text" id="reg-nom" placeholder="Sylla" />
+            <div class="input-wrap">
+              <span class="ico">👤</span>
+              <input type="text" id="r-nom" placeholder="Sylla" />
+            </div>
           </div>
           <div class="field">
             <label>Prénom</label>
-            <input type="text" id="reg-prenom" placeholder="Mamadou" />
+            <div class="input-wrap">
+              <span class="ico">👤</span>
+              <input type="text" id="r-prenom" placeholder="Mamadou" />
+            </div>
           </div>
         </div>
 
         <div class="field">
           <label>Email</label>
-          <input type="email" id="reg-email" placeholder="vous@email.com" />
+          <div class="input-wrap">
+            <span class="ico">📧</span>
+            <input type="email" id="r-email" placeholder="vous@email.com" />
+          </div>
         </div>
 
-        <div class="field">
-          <label>Téléphone</label>
-          <input type="tel" id="reg-tel" placeholder="0700000000" />
+        <div class="row2">
+          <div class="field">
+            <label>Téléphone</label>
+            <div class="input-wrap">
+              <span class="ico">📱</span>
+              <input type="tel" id="r-tel" placeholder="0700000000" />
+            </div>
+          </div>
+          <div class="field">
+            <label>Pays</label>
+            <div class="input-wrap">
+              <span class="ico">🌍</span>
+              <select id="r-pays">
+                <option value="">-- Pays --</option>
+                <option>Afghanistan</option><option>Afrique du Sud</option><option>Albanie</option><option>Algérie</option><option>Allemagne</option><option>Angola</option><option>Arabie Saoudite</option><option>Argentine</option><option>Arménie</option><option>Australie</option><option>Autriche</option><option>Azerbaïdjan</option><option>Bahreïn</option><option>Bangladesh</option><option>Belgique</option><option>Bénin</option><option>Bolivie</option><option>Bosnie-Herzégovine</option><option>Botswana</option><option>Brésil</option><option>Bulgarie</option><option>Burkina Faso</option><option>Burundi</option><option>Cambodge</option><option>Cameroun</option><option>Canada</option><option>Centrafrique</option><option>Chili</option><option>Chine</option><option>Chypre</option><option>Colombie</option><option>Comores</option><option>Congo (Brazzaville)</option><option>Congo (RDC)</option><option>Corée du Sud</option><option>Costa Rica</option><option>Côte d'Ivoire</option><option>Croatie</option><option>Cuba</option><option>Danemark</option><option>Djibouti</option><option>Égypte</option><option>Émirats Arabes Unis</option><option>Équateur</option><option>Érythrée</option><option>Espagne</option><option>Estonie</option><option>Éthiopie</option><option>Finlande</option><option>France</option><option>Gabon</option><option>Gambie</option><option>Ghana</option><option>Grèce</option><option>Guatemala</option><option>Guinée</option><option>Guinée-Bissau</option><option>Guinée Équatoriale</option><option>Haïti</option><option>Honduras</option><option>Hongrie</option><option>Inde</option><option>Indonésie</option><option>Irak</option><option>Iran</option><option>Irlande</option><option>Islande</option><option>Israël</option><option>Italie</option><option>Jamaïque</option><option>Japon</option><option>Jordanie</option><option>Kazakhstan</option><option>Kenya</option><option>Kosovo</option><option>Koweït</option><option>Laos</option><option>Liban</option><option>Libéria</option><option>Libye</option><option>Lituanie</option><option>Luxembourg</option><option>Madagascar</option><option>Malawi</option><option>Mali</option><option>Malte</option><option>Maroc</option><option>Mauritanie</option><option>Maurice</option><option>Mexique</option><option>Moldavie</option><option>Mongolie</option><option>Mozambique</option><option>Myanmar</option><option>Namibie</option><option>Népal</option><option>Nicaragua</option><option>Niger</option><option>Nigeria</option><option>Norvège</option><option>Nouvelle-Zélande</option><option>Oman</option><option>Ouganda</option><option>Pakistan</option><option>Panama</option><option>Paraguay</option><option>Pays-Bas</option><option>Pérou</option><option>Philippines</option><option>Pologne</option><option>Portugal</option><option>Qatar</option><option>République Dominicaine</option><option>Roumanie</option><option>Royaume-Uni</option><option>Russie</option><option>Rwanda</option><option>Salvador</option><option>Sénégal</option><option>Serbie</option><option>Sierra Leone</option><option>Singapour</option><option>Slovaquie</option><option>Slovénie</option><option>Somalie</option><option>Soudan</option><option>Sri Lanka</option><option>Suède</option><option>Suisse</option><option>Syrie</option><option>Tanzanie</option><option>Tchad</option><option>Thaïlande</option><option>Togo</option><option>Tunisie</option><option>Turquie</option><option>Ukraine</option><option>Uruguay</option><option>Venezuela</option><option>Vietnam</option><option>Yémen</option><option>Zambie</option><option>Zimbabwe</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         <div class="field">
           <label>Mot de passe</label>
-          <input type="password" id="reg-password" placeholder="Min. 6 caractères" />
+          <div class="input-wrap">
+            <span class="ico">🔒</span>
+            <input type="password" id="r-pwd" placeholder="Minimum 6 caractères" />
+          </div>
         </div>
 
         <div class="field">
-          <label>Code parrain (optionnel)</label>
-          <input type="text" id="reg-parrain" placeholder="Code de parrainage" />
+          <label>Code de parrainage (si vous en avez un)</label>
+          <div class="input-wrap">
+            <span class="ico">🔗</span>
+            <input type="text" id="r-parrain" placeholder="ex: SYLLA-ABC-XY12" style="text-transform:uppercase;" />
+          </div>
         </div>
 
-        <div class="activation-notice">
-          <span class="icon">💳</span>
-          <p>Activation du compte : <strong>2 500 F</strong><br>
-          À régler après inscription — l'admin validera votre activation.</p>
+        <div class="activation-box">
+          <div class="tag">2 500 F</div>
+          <p>Activation requise après inscription.<br><strong>L'admin activera votre compte</strong> dès réception.</p>
         </div>
 
-        <button class="btn-form" id="btn-register" onclick="handleRegister()">Créer mon compte</button>
+        <button class="btn btn-main" id="btn-register" onclick="doRegister()">Créer mon compte</button>
+
+        <div class="divider">ou</div>
+        <div style="text-align:center;">
+          <span style="font-size:13px;color:var(--muted);">Déjà membre ? </span>
+          <button class="link-btn" onclick="switchTab('login')">Se connecter</button>
+        </div>
       </div>
+
     </div>
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-  // ============ SUPABASE CONFIG ============
-  const SUPABASE_URL = 'https://fqiotqrraobmsrcyewsi.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc';
+const SB = 'https://fqiotqrraobmsrcyewsi.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc';
 
-  const sb = (path, opts = {}) => fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': `Bearer ${SUPABASE_KEY}`,
-      'Content-Type': 'application/json',
-      'Prefer': opts.prefer || '',
-      ...opts.headers
-    },
-    ...opts
+const api = (path, o={}) => fetch(`${SB}/rest/v1/${path}`, {
+  headers:{'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json','Prefer':o.prefer||'',...o.headers},
+  ...o
+});
+
+// Redirect si déjà connecté
+const su = localStorage.getItem('sylla_user');
+if(su){ const u=JSON.parse(su); location.href = u.role==='admin'?'admin.html':'dashboard.html'; }
+
+// Code parrain depuis URL
+const ref = new URLSearchParams(location.search).get('ref');
+if(ref){ document.getElementById('r-parrain').value = ref; switchTab('register'); }
+
+function switchTab(t){
+  ['login','register'].forEach(x=>{
+    document.getElementById('tab-'+x).classList.toggle('active',x===t);
+    document.getElementById('form-'+x).style.display = x===t?'block':'none';
   });
+}
 
-  // ============ UI HELPERS ============
-  function switchTab(tab) {
-    document.getElementById('tab-connexion').classList.toggle('active', tab === 'connexion');
-    document.getElementById('tab-inscription').classList.toggle('active', tab === 'inscription');
-    document.getElementById('form-connexion').classList.toggle('active', tab === 'connexion');
-    document.getElementById('form-inscription').classList.toggle('active', tab === 'inscription');
-  }
+function toast(msg,type='info'){
+  const el=document.getElementById('toast');
+  const ic={success:'✅',error:'❌',info:'ℹ️'};
+  el.innerHTML=`${ic[type]} ${msg}`;
+  el.className=`toast ${type} show`;
+  setTimeout(()=>el.classList.remove('show'),4500);
+}
 
-  function showToast(msg, type = 'info') {
-    const t = document.getElementById('toast');
-    const icons = { success: '✅', error: '❌', info: 'ℹ️' };
-    t.innerHTML = `<span>${icons[type]}</span> ${msg}`;
-    t.className = `toast ${type} show`;
-    setTimeout(() => t.classList.remove('show'), 4000);
-  }
+function val(id){ return document.getElementById(id).value.trim(); }
 
-  // Check URL params pour code parrain
-  const urlParams = new URLSearchParams(window.location.search);
-  const refCode = urlParams.get('ref');
-  if (refCode) {
-    document.getElementById('reg-parrain').value = refCode;
-    switchTab('inscription');
-  }
+async function doLogin(){
+  const id=val('l-id'), pwd=val('l-pwd');
+  if(!id||!pwd) return toast('Tous les champs sont requis.','error');
+  const btn=document.getElementById('btn-login');
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span>Connexion...';
+  try{
+    const isEmail = id.includes('@');
+    const filter = isEmail ? `email=eq.${encodeURIComponent(id)}` : `telephone=eq.${encodeURIComponent(id)}`;
+    const r = await api(`sylla_users?${filter}&select=*`);
+    const data = await r.json();
+    if(!data||!data.length) return toast('Compte introuvable.','error');
+    const u=data[0];
+    if(u.password_hash!==pwd) return toast('Mot de passe incorrect.','error');
+    localStorage.setItem('sylla_user',JSON.stringify(u));
+    toast('Connexion réussie !','success');
+    setTimeout(()=>{ location.href = u.role==='admin'?'admin.html':'dashboard.html'; },900);
+  }catch(e){ toast(e.message||'Erreur serveur','error'); }
+  finally{ btn.disabled=false; btn.textContent='Se connecter'; }
+}
 
-  // Check si déjà connecté
-  const storedUser = localStorage.getItem('sylla_user');
-  if (storedUser) {
-    const u = JSON.parse(storedUser);
-    window.location.href = u.role === 'admin' ? 'admin.html' : 'dashboard.html';
-  } else {
-    switchTab('connexion');
-  }
+function genCode(nom,prenom){
+  const b=(nom.substring(0,3)+prenom.substring(0,2)).toUpperCase().replace(/[^A-Z]/g,'');
+  const r=Math.random().toString(36).substring(2,6).toUpperCase();
+  return `SYLLA-${b}-${r}`;
+}
 
-  // ============ GÉNÉRATION CODE PARRAINAGE ============
-  function genCode(nom, prenom) {
-    const base = (nom.substring(0,3) + prenom.substring(0,2)).toUpperCase().replace(/[^A-Z]/g, '');
-    const rand = Math.random().toString(36).substring(2,6).toUpperCase();
-    return `SYLLA-${base}-${rand}`;
-  }
+async function doRegister(){
+  const nom=val('r-nom'),prenom=val('r-prenom'),email=val('r-email'),
+        tel=val('r-tel'),pays=val('r-pays'),pwd=val('r-pwd'),
+        parrainCode=document.getElementById('r-parrain').value.trim().toUpperCase();
 
-  // ============ INSCRIPTION ============
-  async function handleRegister() {
-    const nom = document.getElementById('reg-nom').value.trim();
-    const prenom = document.getElementById('reg-prenom').value.trim();
-    const email = document.getElementById('reg-email').value.trim().toLowerCase();
-    const tel = document.getElementById('reg-tel').value.trim();
-    const pwd = document.getElementById('reg-password').value;
-    const parrainCode = document.getElementById('reg-parrain').value.trim().toUpperCase();
+  if(!nom||!prenom||!email||!tel||!pays||!pwd)
+    return toast('Tous les champs obligatoires doivent être remplis.','error');
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+    return toast('Email invalide.','error');
+  if(pwd.length<6) return toast('Mot de passe : minimum 6 caractères.','error');
 
-    if (!nom || !prenom || !email || !tel || !pwd) {
-      return showToast('Veuillez remplir tous les champs obligatoires.', 'error');
+  const btn=document.getElementById('btn-register');
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span>Création...';
+
+  try{
+    let parrainId=null;
+    if(parrainCode){
+      const rp=await api(`sylla_users?code_parrainage=eq.${parrainCode}&select=id`);
+      const dp=await rp.json();
+      if(!dp||!dp.length){ btn.disabled=false; btn.textContent='Créer mon compte'; return toast('Code parrain invalide.','error'); }
+      parrainId=dp[0].id;
     }
-    if (pwd.length < 6) return showToast('Mot de passe trop court (min. 6 caractères).', 'error');
 
-    const btn = document.getElementById('btn-register');
-    btn.disabled = true; btn.textContent = 'Création...';
-
-    try {
-      // Chercher parrain si code fourni
-      let parrainId = null;
-      if (parrainCode) {
-        const res = await sb(`sylla_users?code_parrainage=eq.${parrainCode}&select=id`);
-        const data = await res.json();
-        if (data && data.length > 0) {
-          parrainId = data[0].id;
-        } else {
-          btn.disabled = false; btn.textContent = 'Créer mon compte';
-          return showToast('Code de parrainage invalide.', 'error');
-        }
-      }
-
-      const code = genCode(nom, prenom);
-      const payload = {
-        nom, prenom, email, telephone: tel,
-        password_hash: pwd,
-        parrain_id: parrainId,
-        code_parrainage: code,
-        statut: 'inactif',
-        role: 'user',
-        solde: 0
-      };
-
-      const res = await sb('sylla_users', {
-        method: 'POST',
-        prefer: 'return=representation',
-        body: JSON.stringify(payload)
-      });
-
-      const result = await res.json();
-
-      if (!res.ok) {
-        if (result.code === '23505') {
-          return showToast('Email ou téléphone déjà utilisé.', 'error');
-        }
-        throw new Error(result.message || 'Erreur inscription');
-      }
-
-      showToast('Compte créé ! En attente d\'activation par l\'admin.', 'success');
-      setTimeout(() => switchTab('connexion'), 2500);
-
-    } catch (e) {
-      showToast(e.message || 'Erreur lors de l\'inscription', 'error');
-    } finally {
-      btn.disabled = false; btn.textContent = 'Créer mon compte';
+    const code=genCode(nom,prenom);
+    const res=await api('sylla_users',{
+      method:'POST', prefer:'return=representation',
+      body:JSON.stringify({nom,prenom,email,telephone:tel,pays,password_hash:pwd,parrain_id:parrainId,code_parrainage:code,statut:'inactif',role:'user',solde:0})
+    });
+    const result=await res.json();
+    if(!res.ok){
+      if(result.code==='23505') return toast('Email ou téléphone déjà utilisé.','error');
+      throw new Error(result.message||'Erreur inscription');
     }
-  }
 
-  // ============ CONNEXION ============
-  async function handleLogin() {
-    const loginId = document.getElementById('login-id').value.trim();
-    const pwd = document.getElementById('login-password').value;
+    localStorage.setItem('sylla_new_user', JSON.stringify(result[0]||result));
+    toast('Compte créé avec succès !','success');
+    setTimeout(()=>{ location.href='activation.html'; },1200);
+  }catch(e){ toast(e.message||'Erreur serveur','error'); }
+  finally{ btn.disabled=false; btn.textContent='Créer mon compte'; }
+}
 
-    if (!loginId || !pwd) return showToast('Veuillez remplir tous les champs.', 'error');
-
-    const btn = document.getElementById('btn-login');
-    btn.disabled = true; btn.textContent = 'Connexion...';
-
-    try {
-      const isEmail = loginId.includes('@');
-      const filter = isEmail
-        ? `email=eq.${encodeURIComponent(loginId)}`
-        : `telephone=eq.${loginId}`;
-
-      const res = await sb(`sylla_users?${filter}&select=*`);
-      const users = await res.json();
-
-      if (!users || users.length === 0) {
-        return showToast('Compte introuvable.', 'error');
-      }
-
-      const user = users[0];
-      if (user.password_hash !== pwd) {
-        return showToast('Mot de passe incorrect.', 'error');
-      }
-
-      localStorage.setItem('sylla_user', JSON.stringify(user));
-      showToast('Connexion réussie !', 'success');
-
-      setTimeout(() => {
-        window.location.href = user.role === 'admin' ? 'admin.html' : 'dashboard.html';
-      }, 1000);
-
-    } catch (e) {
-      showToast(e.message || 'Erreur connexion', 'error');
-    } finally {
-      btn.disabled = false; btn.textContent = 'Se connecter';
-    }
-  }
-
-  // Enter key support
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      if (document.getElementById('form-connexion').classList.contains('active')) handleLogin();
-      else handleRegister();
-    }
-  });
+document.addEventListener('keydown',e=>{ if(e.key==='Enter'){ if(document.getElementById('form-login').style.display!=='none') doLogin(); else doRegister(); } });
 </script>
 </body>
 </html>
