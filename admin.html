@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SYLLA Agence — Administration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --gold:#D4AF37;--gold-l:#F5D976;--gold-d:#A07C10;--gold-bg:#FFFBEF;
+      --red:#C0392B;--red-l:#E74C3C;
+      --blue:#1A3A6B;--blue-l:#2657A8;--blue-ll:#EEF3FF;
+      --white:#FFFFFF;--off:#F8F7F2;--bg:#F2F0EA;
+      --text:#1A1A2E;--muted:#7A7A9A;--border:#E2DCC8;
+      --success:#27AE60;--danger:#E74C3C;--warn:#F39C12;
+      --r:16px;--shadow:0 4px 24px rgba(26,58,107,0.09);
+    }
+    body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;display:flex;min-height:100vh;}
+
+    /* SIDEBAR */
+    .sidebar{width:260px;min-height:100vh;background:linear-gradient(180deg,#0D1B3E 0%,var(--blue) 60%,#8B1C1C 100%);display:flex;flex-direction:column;padding:28px 20px;position:fixed;top:0;left:0;bottom:0;box-shadow:4px 0 28px rgba(13,27,62,0.25);}
+    .sb-logo{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+    .sb-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--gold-l),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:800;color:#1A1A2E;box-shadow:0 4px 12px rgba(212,175,55,0.35);}
+    .sb-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:linear-gradient(135deg,var(--gold-l),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:1.5px;}
+    .admin-tag{display:inline-block;font-size:9px;font-weight:800;letter-spacing:2px;padding:4px 10px;border-radius:20px;background:rgba(192,57,43,0.25);color:#FF9F9F;border:1px solid rgba(192,57,43,0.35);margin-bottom:28px;}
+    .sb-section{font-size:9px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin:16px 0 8px 8px;}
+    .sb-item{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:12px;cursor:pointer;font-size:14px;font-weight:600;color:rgba(255,255,255,0.6);transition:all 0.22s;margin-bottom:2px;position:relative;}
+    .sb-item:hover{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.9);}
+    .sb-item.active{background:rgba(212,175,55,0.18);color:var(--gold-l);border:1px solid rgba(212,175,55,0.25);}
+    .sb-item .ico{font-size:18px;width:22px;text-align:center;}
+    .sb-cnt{position:absolute;right:10px;background:var(--red-l);color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px;}
+    .sb-bottom{margin-top:auto;}
+    .sb-btn-logout{width:100%;padding:11px;border:1px solid rgba(255,255,255,0.2);border-radius:12px;background:transparent;color:rgba(255,255,255,0.5);font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+    .sb-btn-logout:hover{border-color:var(--red-l);color:var(--red-l);}
+
+    /* MAIN */
+    .main{margin-left:260px;flex:1;padding:36px 32px;}
+    .page{display:none;}.page.active{display:block;}
+    .pg-title{font-family:'Playfair Display',serif;font-size:32px;font-weight:800;color:var(--text);margin-bottom:4px;}
+    .pg-sub{font-size:13px;color:var(--muted);margin-bottom:28px;}
+
+    /* STATS */
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+    .stat{background:var(--white);border-radius:var(--r);padding:20px;border:1px solid var(--border);box-shadow:var(--shadow);}
+    .stat-lbl{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+    .stat-val{font-family:'Playfair Display',serif;font-size:36px;font-weight:800;color:var(--gold-d);}
+    .stat-val.blue{color:var(--blue-l);}
+    .stat-val.ok{color:var(--success);}
+    .stat-val.ko{color:var(--danger);}
+    .stat-val.warn{color:var(--warn);}
+
+    /* CARD */
+    .card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:22px;box-shadow:var(--shadow);margin-bottom:22px;}
+    .card-ttl{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--text);margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+
+    /* TABLE */
+    .tbl-wrap{overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;}
+    th{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 14px;border-bottom:2px solid var(--border);}
+    td{padding:13px 14px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle;}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:rgba(212,175,55,0.04);}
+
+    .uc{display:flex;align-items:center;gap:10px;}
+    .uav{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--blue-l));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;}
+    .un{font-size:13px;font-weight:700;}
+    .us{font-size:11px;color:var(--muted);margin-top:1px;}
+
+    .badge{font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;}
+    .badge-actif{background:#EEF9F2;color:var(--success);}
+    .badge-inactif{background:#FEF0F0;color:var(--danger);}
+    .badge-att{background:#FFF8E1;color:var(--warn);}
+    .badge-ok{background:#EEF9F2;color:var(--success);}
+    .badge-ko{background:#FEF0F0;color:var(--danger);}
+    .badge-admin{background:var(--gold-bg);color:var(--gold-d);}
+
+    .actions{display:flex;gap:7px;}
+    .btn-sm{padding:6px 14px;border-radius:8px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;}
+    .btn-act{background:#EEF9F2;color:var(--success);border:1px solid rgba(39,174,96,0.3);}
+    .btn-act:hover{background:rgba(39,174,96,0.2);}
+    .btn-del{background:#FEF0F0;color:var(--danger);border:1px solid rgba(231,76,60,0.25);}
+    .btn-del:hover{background:rgba(231,76,60,0.15);}
+    .btn-trait{background:linear-gradient(135deg,var(--blue),var(--blue-l));color:#fff;}
+    .btn-trait:hover{transform:scale(1.04);}
+
+    /* SEARCH BAR */
+    .filter-row{display:flex;gap:10px;margin-bottom:16px;}
+    .search-inp{padding:10px 14px;background:var(--off);border:1.5px solid var(--border);border-radius:10px;font-family:'Nunito',sans-serif;font-size:13px;color:var(--text);outline:none;width:240px;transition:all 0.2s;}
+    .search-inp:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,175,55,0.1);}
+    .filter-sel{padding:10px 14px;background:var(--off);border:1.5px solid var(--border);border-radius:10px;font-family:'Nunito',sans-serif;font-size:13px;color:var(--text);outline:none;appearance:none;}
+
+    /* MODAL */
+    .overlay{display:none;position:fixed;inset:0;background:rgba(13,27,62,0.55);z-index:999;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+    .overlay.open{display:flex;}
+    .modal{background:var(--white);border-radius:24px;padding:36px;width:500px;max-width:95vw;box-shadow:0 24px 60px rgba(0,0,0,0.2);animation:popIn 0.3s cubic-bezier(.22,1,.36,1);}
+    @keyframes popIn{from{opacity:0;transform:scale(0.94)}to{opacity:1;transform:scale(1)}}
+    .modal-ttl{font-family:'Playfair Display',serif;font-size:24px;font-weight:800;color:var(--text);margin-bottom:6px;}
+    .modal-sub{font-size:13px;color:var(--muted);margin-bottom:22px;}
+    .comm-box{background:var(--off);border:1.5px solid var(--border);border-radius:14px;padding:16px;margin-bottom:20px;}
+    .comm-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);}
+    .comm-row:last-child{border-bottom:none;}
+    .comm-row .lbl{font-size:13px;font-weight:600;}
+    .comm-row .sub{font-size:11px;color:var(--muted);margin-top:2px;}
+    .comm-row .amt{font-family:'Playfair Display',serif;font-size:20px;font-weight:800;color:var(--gold-d);}
+    .modal-btns{display:flex;gap:12px;margin-top:20px;}
+    .btn-cancel{flex:0 0 auto;padding:14px 20px;background:transparent;border:1.5px solid var(--border);border-radius:12px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:var(--muted);cursor:pointer;transition:all 0.2s;}
+    .btn-cancel:hover{border-color:var(--muted);color:var(--text);}
+    .btn-confirm{flex:1;padding:14px;background:linear-gradient(135deg,var(--blue),var(--blue-l),var(--gold-d));color:#fff;border:none;border-radius:12px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all 0.3s;box-shadow:0 6px 22px rgba(26,58,107,0.25);}
+    .btn-confirm:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(26,58,107,0.35);}
+    .btn-confirm:disabled{opacity:0.65;cursor:not-allowed;transform:none;}
+    .btn-reject-m{flex:1;padding:14px;background:linear-gradient(135deg,var(--red),var(--red-l));color:#fff;border:none;border-radius:12px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all 0.3s;}
+    .btn-reject-m:hover{transform:translateY(-2px);}
+    .btn-reject-m:disabled{opacity:0.65;cursor:not-allowed;transform:none;}
+
+    /* note input */
+    .note-inp{width:100%;padding:12px 14px;background:var(--off);border:1.5px solid var(--border);border-radius:12px;font-family:'Nunito',sans-serif;font-size:13px;color:var(--text);outline:none;transition:all 0.25s;margin-top:12px;}
+    .note-inp:focus{border-color:var(--gold);}
+    .note-lbl{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-top:16px;display:block;}
+
+    .retrait-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:var(--off);border-radius:14px;padding:16px;margin-bottom:4px;}
+    .rdi .rl{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+    .rdi .rv{font-size:16px;font-weight:800;color:var(--text);}
+    .rdi .rv.gold{color:var(--gold-d);font-family:'Playfair Display',serif;font-size:24px;}
+
+    /* spin */
+    .spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px;}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    .empty{text-align:center;padding:36px;color:var(--muted);}
+    .empty .ico{font-size:36px;margin-bottom:10px;}
+    .empty p{font-size:13px;}
+
+    .toast{position:fixed;top:20px;right:20px;padding:14px 20px;border-radius:14px;font-size:13px;font-weight:600;z-index:9999;transform:translateY(-16px);opacity:0;transition:all 0.35s;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,0.12);background:#fff;max-width:340px;}
+    .toast.show{transform:translateY(0);opacity:1;}
+    .toast.success{border-left:4px solid var(--success);color:#145A32;}
+    .toast.error{border-left:4px solid var(--danger);color:var(--red);}
+    .toast.info{border-left:4px solid var(--blue);color:var(--blue);}
+
+    @media(max-width:900px){.sidebar{display:none;}.main{margin-left:0;padding:20px;}.stats-row{grid-template-columns:1fr 1fr;}}
+  </style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-icon">S</div>
+    <div class="sb-name">SYLLA AGENCE</div>
+  </div>
+  <div class="admin-tag">🔑 ADMINISTRATEUR</div>
+
+  <div class="sb-section">Gestion</div>
+  <div class="sb-item active" onclick="goPage('dash',this)"><span class="ico">📊</span>Vue d'ensemble</div>
+  <div class="sb-item" onclick="goPage('users',this)"><span class="ico">👥</span>Membres<span class="sb-cnt" id="cnt-inactif">0</span></div>
+  <div class="sb-item" onclick="goPage('retraits',this)"><span class="ico">💸</span>Retraits<span class="sb-cnt" id="cnt-ret">0</span></div>
+  <div class="sb-item" onclick="goPage('transactions',this)"><span class="ico">📋</span>Transactions</div>
+
+  <div class="sb-bottom">
+    <button class="sb-btn-logout" onclick="logout()">🚪 Se déconnecter</button>
+  </div>
+</nav>
+
+<main class="main">
+
+  <!-- DASH -->
+  <div class="page active" id="page-dash">
+    <div class="pg-title">Vue d'ensemble</div>
+    <div class="pg-sub">Statistiques globales de SYLLA Agence</div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-lbl">Membres totaux</div><div class="stat-val blue" id="d-total">—</div></div>
+      <div class="stat"><div class="stat-lbl">Comptes actifs</div><div class="stat-val ok" id="d-actifs">—</div></div>
+      <div class="stat"><div class="stat-lbl">En attente</div><div class="stat-val ko" id="d-inactifs">—</div></div>
+      <div class="stat"><div class="stat-lbl">Retraits en attente</div><div class="stat-val warn" id="d-ratt">—</div></div>
+    </div>
+    <div class="card">
+      <div class="card-ttl">⚡ Activations en attente</div>
+      <div id="d-pending"><div class="empty"><span class="ico">⏳</span><p>Chargement...</p></div></div>
+    </div>
+  </div>
+
+  <!-- USERS -->
+  <div class="page" id="page-users">
+    <div class="pg-title">Membres</div>
+    <div class="pg-sub">Gestion de tous les utilisateurs</div>
+    <div class="card">
+      <div class="card-ttl">
+        Tous les membres
+        <div class="filter-row" style="margin:0;">
+          <input class="search-inp" id="u-search" placeholder="🔍 Nom, email, téléphone..." oninput="renderUsers()" />
+          <select class="filter-sel" id="u-filter" onchange="renderUsers()">
+            <option value="">Tous</option><option value="inactif">Inactifs</option><option value="actif">Actifs</option>
+          </select>
+        </div>
+      </div>
+      <div class="tbl-wrap" id="users-tbl"><div class="empty"><span class="ico">⏳</span></div></div>
+    </div>
+  </div>
+
+  <!-- RETRAITS -->
+  <div class="page" id="page-retraits">
+    <div class="pg-title">Retraits</div>
+    <div class="pg-sub">Traitement des demandes de retrait</div>
+    <div class="card">
+      <div class="card-ttl">
+        Demandes
+        <select class="filter-sel" id="r-filter" onchange="renderRetraits()">
+          <option value="">Toutes</option><option value="en_attente">En attente</option><option value="approuve">Approuvées</option><option value="rejete">Rejetées</option>
+        </select>
+      </div>
+      <div class="tbl-wrap" id="retraits-tbl"><div class="empty"><span class="ico">⏳</span></div></div>
+    </div>
+  </div>
+
+  <!-- TRANSACTIONS -->
+  <div class="page" id="page-transactions">
+    <div class="pg-title">Transactions</div>
+    <div class="pg-sub">Historique complet des commissions distribuées</div>
+    <div class="card">
+      <div class="tbl-wrap" id="tx-tbl"><div class="empty"><span class="ico">⏳</span></div></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- MODAL ACTIVATION -->
+<div class="overlay" id="ov-act">
+  <div class="modal">
+    <div class="modal-ttl">Activer le compte</div>
+    <div class="modal-sub" id="act-sub">Confirmation et distribution automatique des commissions.</div>
+    <div class="comm-box" id="act-comm"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeOv('act')">Annuler</button>
+      <button class="btn-confirm" id="btn-act-ok" onclick="confirmAct()">✅ Activer & Créditer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RETRAIT -->
+<div class="overlay" id="ov-ret">
+  <div class="modal">
+    <div class="modal-ttl" id="ret-m-ttl">Traiter le retrait</div>
+    <div class="modal-sub" id="ret-m-sub"></div>
+    <div class="retrait-detail-grid" id="ret-m-detail"></div>
+    <label class="note-lbl">Note (optionnel)</label>
+    <input class="note-inp" id="ret-note" placeholder="Message au membre..." />
+    <div class="modal-btns" style="margin-top:16px;">
+      <button class="btn-cancel" onclick="closeOv('ret')">Annuler</button>
+      <button class="btn-reject-m" id="btn-ret-ko" onclick="procRetrait('rejete')">❌ Rejeter</button>
+      <button class="btn-confirm" id="btn-ret-ok" onclick="procRetrait('approuve')">✅ Approuver</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SB='https://fqiotqrraobmsrcyewsi.supabase.co';
+const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc';
+
+const api=(p,o={})=>fetch(`${SB}/rest/v1/${p}`,{
+  headers:{'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json','Prefer':o.prefer||'',...o.headers},...o
+});
+
+let users=[], retraits=[], txs=[];
+let pendActId=null, pendActComm=[], pendRetId=null;
+
+async function init(){
+  const s=localStorage.getItem('sylla_user');
+  if(!s) return location.href='index.html';
+  const u=JSON.parse(s);
+  if(u.role!=='admin') return location.href='dashboard.html';
+  await loadAll();
+}
+
+async function loadAll(){
+  const [ru,rr,rt]=await Promise.all([
+    api('sylla_users?order=created_at.desc&select=*'),
+    api('sylla_retraits?order=created_at.desc&select=*'),
+    api('sylla_transactions?order=created_at.desc&select=*&limit=300')
+  ]);
+  users=await ru.json()||[];
+  retraits=await rr.json()||[];
+  txs=await rt.json()||[];
+  updateBadges();renderDash();renderUsers();renderRetraits();renderTx();
+}
+
+function updateBadges(){
+  const ni=users.filter(u=>u.statut==='inactif'&&u.role!=='admin').length;
+  const nr=retraits.filter(r=>r.statut==='en_attente').length;
+  document.getElementById('cnt-inactif').textContent=ni;
+  document.getElementById('cnt-ret').textContent=nr;
+}
+
+function renderDash(){
+  const uu=users.filter(u=>u.role!=='admin');
+  document.getElementById('d-total').textContent=uu.length;
+  document.getElementById('d-actifs').textContent=uu.filter(u=>u.statut==='actif').length;
+  const inact=uu.filter(u=>u.statut==='inactif');
+  document.getElementById('d-inactifs').textContent=inact.length;
+  document.getElementById('d-ratt').textContent=retraits.filter(r=>r.statut==='en_attente').length;
+
+  const el=document.getElementById('d-pending');
+  if(!inact.length){el.innerHTML='<div class="empty"><span class="ico">🎉</span><p>Aucune activation en attente</p></div>';return;}
+  el.innerHTML=`<div class="tbl-wrap"><table>
+    <thead><tr><th>Membre</th><th>Pays</th><th>Téléphone</th><th>Code</th><th>Date</th><th>Action</th></tr></thead>
+    <tbody>${inact.map(u=>`<tr>
+      <td><div class="uc"><div class="uav">${u.prenom.charAt(0)}${u.nom.charAt(0)}</div><div><div class="un">${u.prenom} ${u.nom}</div><div class="us">${u.email}</div></div></div></td>
+      <td>🌍 ${u.pays||'—'}</td>
+      <td>${u.telephone}</td>
+      <td><span style="font-size:11px;font-weight:800;color:var(--gold-d);background:var(--gold-bg);padding:2px 8px;border-radius:6px;">${u.code_parrainage}</span></td>
+      <td style="color:var(--muted);font-size:12px;">${new Date(u.created_at).toLocaleDateString('fr-FR')}</td>
+      <td><div class="actions"><button class="btn-sm btn-act" onclick="openAct('${u.id}')">✅ Activer</button><button class="btn-sm btn-del" onclick="delUser('${u.id}','${u.prenom} ${u.nom}')">🗑</button></div></td>
+    </tr>`).join('')}</tbody>
+  </table></div>`;
+}
+
+function renderUsers(){
+  const q=(document.getElementById('u-search')?.value||'').toLowerCase();
+  const f=document.getElementById('u-filter')?.value||'';
+  const um={};users.forEach(u=>um[u.id]=u);
+  let arr=users.filter(u=>{
+    const ok=!q||`${u.nom} ${u.prenom} ${u.email} ${u.telephone}`.toLowerCase().includes(q);
+    const sf=!f||u.statut===f;
+    return ok&&sf;
+  });
+  const el=document.getElementById('users-tbl');
+  if(!arr.length){el.innerHTML='<div class="empty"><span class="ico">👤</span><p>Aucun résultat</p></div>';return;}
+  el.innerHTML=`<table>
+    <thead><tr><th>Membre</th><th>Pays</th><th>Téléphone</th><th>Parrain</th><th>Solde</th><th>Statut</th><th>Actions</th></tr></thead>
+    <tbody>${arr.map(u=>`<tr>
+      <td><div class="uc"><div class="uav">${u.prenom.charAt(0)}${u.nom.charAt(0)}</div><div><div class="un">${u.prenom} ${u.nom}</div><div class="us">${u.email}</div></div></div></td>
+      <td style="font-size:12px;">🌍 ${u.pays||'—'}</td>
+      <td>${u.telephone}</td>
+      <td style="font-size:12px;color:var(--muted);">${u.parrain_id?(um[u.parrain_id]?`${um[u.parrain_id].prenom} ${um[u.parrain_id].nom}`:'—'):'—'}</td>
+      <td style="font-family:'Playfair Display',serif;font-size:18px;font-weight:800;color:var(--gold-d);">${(u.solde||0).toLocaleString('fr-FR')} F</td>
+      <td><span class="badge ${u.role==='admin'?'badge-admin':u.statut==='actif'?'badge-actif':'badge-inactif'}">${u.role==='admin'?'Admin':u.statut}</span></td>
+      <td><div class="actions">
+        ${u.role!=='admin'&&u.statut==='inactif'?`<button class="btn-sm btn-act" onclick="openAct('${u.id}')">✅</button>`:''}
+        ${u.role!=='admin'?`<button class="btn-sm btn-del" onclick="delUser('${u.id}','${u.prenom} ${u.nom}')">🗑</button>`:''}
+      </div></td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+function renderRetraits(){
+  const f=document.getElementById('r-filter')?.value||'';
+  const um={};users.forEach(u=>um[u.id]=u);
+  let arr=retraits;
+  if(f) arr=arr.filter(r=>r.statut===f);
+  const el=document.getElementById('retraits-tbl');
+  if(!arr.length){el.innerHTML='<div class="empty"><span class="ico">📭</span><p>Aucune demande</p></div>';return;}
+  el.innerHTML=`<table>
+    <thead><tr><th>Membre</th><th>Montant</th><th>Moyen</th><th>Numéro</th><th>Statut</th><th>Date</th><th>Action</th></tr></thead>
+    <tbody>${arr.map(r=>{
+      const u=um[r.user_id]||{};
+      const ini=u.prenom?(u.prenom.charAt(0)+u.nom.charAt(0)):'?';
+      return `<tr>
+        <td><div class="uc"><div class="uav">${ini}</div><div><div class="un">${u.prenom||'?'} ${u.nom||''}</div><div class="us">${u.telephone||''}</div></div></div></td>
+        <td style="font-family:'Playfair Display',serif;font-size:20px;font-weight:800;color:var(--gold-d);">${r.montant.toLocaleString('fr-FR')} F</td>
+        <td>${r.moyen_paiement}</td>
+        <td style="font-weight:700;">${r.numero}</td>
+        <td><span class="badge badge-${r.statut==='en_attente'?'att':r.statut==='approuve'?'ok':'ko'}">${r.statut.replace('_',' ')}</span></td>
+        <td style="font-size:12px;color:var(--muted);">${new Date(r.created_at).toLocaleDateString('fr-FR')}</td>
+        <td>${r.statut==='en_attente'?`<button class="btn-sm btn-trait" onclick="openRet('${r.id}')">Traiter</button>`:`<span style="font-size:11px;color:var(--muted);">${r.note_admin||'—'}</span>`}</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+function renderTx(){
+  const um={};users.forEach(u=>um[u.id]=`${u.prenom} ${u.nom}`);
+  const el=document.getElementById('tx-tbl');
+  if(!txs.length){el.innerHTML='<div class="empty"><span class="ico">📭</span><p>Aucune transaction</p></div>';return;}
+  const icons={commission_n1:'🥇',commission_n2:'🥈',commission_n3:'🥉',retrait:'💸'};
+  el.innerHTML=`<table>
+    <thead><tr><th>Bénéficiaire</th><th>Type</th><th>Montant</th><th>Description</th><th>Date</th></tr></thead>
+    <tbody>${txs.map(t=>`<tr>
+      <td>${um[t.user_id]||'—'}</td>
+      <td>${icons[t.type]||'💰'} <span style="font-size:11px;color:var(--muted);">${t.type}</span></td>
+      <td style="font-family:'Playfair Display',serif;font-size:18px;font-weight:800;color:${t.montant>0?'var(--success)':'var(--danger)'};">${t.montant>0?'+':''}${t.montant.toLocaleString('fr-FR')} F</td>
+      <td style="font-size:12px;color:var(--muted);">${t.description||'—'}</td>
+      <td style="font-size:12px;color:var(--muted);">${new Date(t.created_at).toLocaleDateString('fr-FR')}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+// ACTIVATION
+function openAct(uid){
+  pendActId=uid; pendActComm=[];
+  const u=users.find(x=>x.id===uid);
+  if(!u) return;
+  document.getElementById('act-sub').textContent=`${u.prenom} ${u.nom} — ${u.telephone} — ${u.pays||''}`;
+  const comms=[];
+  let cur=u;
+  for(let lv=1;lv<=3;lv++){
+    if(!cur.parrain_id) break;
+    const p=users.find(x=>x.id===cur.parrain_id);
+    if(!p) break;
+    comms.push({lv,p,amt:lv===1?1250:lv===2?600:300});
+    cur=p;
+  }
+  pendActComm=comms;
+  const box=document.getElementById('act-comm');
+  if(!comms.length){box.innerHTML=`<div style="text-align:center;padding:12px;color:var(--muted);font-size:13px;">Aucun parrain — les 2 500 F restent dans la plateforme.</div>`;}
+  else{
+    const tot=comms.reduce((s,c)=>s+c.amt,0);
+    box.innerHTML=comms.map(c=>`<div class="comm-row"><div><div class="lbl">Niveau ${c.lv} — ${c.p.prenom} ${c.p.nom}</div><div class="sub">${c.p.telephone}</div></div><div class="amt">+${c.amt.toLocaleString('fr-FR')} F</div></div>`).join('')+
+    `<div class="comm-row" style="margin-top:4px;"><div class="lbl" style="color:var(--muted);">Reste plateforme</div><div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--muted);">${(2500-tot).toLocaleString('fr-FR')} F</div></div>`;
+  }
+  document.getElementById('ov-act').classList.add('open');
+}
+
+async function confirmAct(){
+  if(!pendActId) return;
+  const btn=document.getElementById('btn-act-ok');
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span>Traitement...';
+  try{
+    await api(`sylla_users?id=eq.${pendActId}`,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({statut:'actif'})});
+    const u=users.find(x=>x.id===pendActId);
+    for(const c of pendActComm){
+      const ns=(c.p.solde||0)+c.amt;
+      await api(`sylla_users?id=eq.${c.p.id}`,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({solde:ns})});
+      await api('sylla_transactions',{method:'POST',prefer:'return=minimal',body:JSON.stringify({user_id:c.p.id,type:`commission_n${c.lv}`,montant:c.amt,description:`Commission N${c.lv} — ${u?u.prenom+' '+u.nom:'nouveau'}`,source_user_id:pendActId})});
+      c.p.solde=ns;
+    }
+    if(u) u.statut='actif';
+    toast('Compte activé et commissions distribuées !','success');
+    closeOv('act');
+    await loadAll();
+  }catch(e){toast(e.message||'Erreur','error');}
+  finally{btn.disabled=false;btn.textContent='✅ Activer & Créditer';}
+}
+
+async function delUser(uid,name){
+  if(!confirm(`Supprimer ${name} ? Action irréversible.`)) return;
+  try{
+    await api(`sylla_transactions?user_id=eq.${uid}`,{method:'DELETE'});
+    await api(`sylla_retraits?user_id=eq.${uid}`,{method:'DELETE'});
+    await api(`sylla_users?id=eq.${uid}`,{method:'DELETE'});
+    toast(`${name} supprimé.`,'info');
+    await loadAll();
+  }catch(e){toast('Erreur suppression','error');}
+}
+
+// RETRAIT
+function openRet(rid){
+  pendRetId=rid;
+  const r=retraits.find(x=>x.id===rid);
+  const u=users.find(x=>x.id===r?.user_id)||{};
+  if(!r) return;
+  document.getElementById('ret-m-ttl').textContent=`Retrait — ${u.prenom||'?'} ${u.nom||''}`;
+  document.getElementById('ret-m-sub').textContent=`Soumis le ${new Date(r.created_at).toLocaleDateString('fr-FR')}`;
+  document.getElementById('ret-m-detail').innerHTML=`
+    <div class="rdi"><div class="rl">Montant</div><div class="rv gold">${r.montant.toLocaleString('fr-FR')} F</div></div>
+    <div class="rdi"><div class="rl">Solde membre</div><div class="rv">${(u.solde||0).toLocaleString('fr-FR')} F</div></div>
+    <div class="rdi"><div class="rl">Moyen</div><div class="rv">${r.moyen_paiement}</div></div>
+    <div class="rdi"><div class="rl">Numéro</div><div class="rv">${r.numero}</div></div>
+  `;
+  document.getElementById('ret-note').value='';
+  document.getElementById('ov-ret').classList.add('open');
+}
+
+async function procRetrait(decision){
+  const r=retraits.find(x=>x.id===pendRetId);
+  if(!r) return;
+  const note=document.getElementById('ret-note').value;
+  const ba=document.getElementById('btn-ret-ok'), br=document.getElementById('btn-ret-ko');
+  ba.disabled=br.disabled=true;
+  try{
+    if(decision==='approuve'){
+      const u=users.find(x=>x.id===r.user_id);
+      if(u){
+        const ns=Math.max(0,(u.solde||0)-r.montant);
+        await api(`sylla_users?id=eq.${u.id}`,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({solde:ns})});
+        await api('sylla_transactions',{method:'POST',prefer:'return=minimal',body:JSON.stringify({user_id:u.id,type:'retrait',montant:-r.montant,description:`Retrait via ${r.moyen_paiement} — ${r.numero}`})});
+        u.solde=ns;
+      }
+    }
+    await api(`sylla_retraits?id=eq.${pendRetId}`,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({statut:decision,note_admin:note||null})});
+    toast(decision==='approuve'?'Retrait approuvé !':'Retrait rejeté.','success');
+    closeOv('ret');await loadAll();
+  }catch(e){toast(e.message||'Erreur','error');}
+  finally{ba.disabled=br.disabled=false;}
+}
+
+function closeOv(name){
+  document.getElementById('ov-'+name).classList.remove('open');
+  pendActId=null;pendActComm=[];pendRetId=null;
+}
+
+document.querySelectorAll('.overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o) o.classList.remove('open');});});
+
+function goPage(name,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(el) el.classList.add('active');
+}
+
+function logout(){localStorage.removeItem('sylla_user');location.href='index.html';}
+
+function toast(msg,type='info'){
+  const t=document.getElementById('toast');
+  const ic={success:'✅',error:'❌',info:'ℹ️'};
+  t.innerHTML=`${ic[type]} ${msg}`;t.className=`toast ${type} show`;
+  setTimeout(()=>t.classList.remove('show'),4500);
+}
+
+init();
+</script>
+</body>
+</html>
