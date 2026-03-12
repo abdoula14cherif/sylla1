@@ -249,11 +249,28 @@ body::before{
 var API = 'https://fqiotqrraobmsrcyewsi.supabase.co/rest/v1';
 var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc';
 
-// Guard
+// Guard — vérifie le statut FRAIS depuis Supabase (évite redirect erronée après activation admin)
 var CU = null;
 try { CU = JSON.parse(localStorage.getItem('sylla_user') || 'null'); } catch(e) {}
-if (!CU || !CU.id) { location.href = 'index.html'; }
-else if (CU.statut === 'actif') { location.href = CU.role === 'admin' ? 'admin.html' : 'dashboard.html'; }
+if (!CU || !CU.id) {
+  location.href = 'index.html';
+} else {
+  fetch(API + '/sylla_users?select=*&id=eq.' + CU.id, {
+    headers: { apikey: KEY, Authorization: 'Bearer ' + KEY }
+  }).then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (!data || !data.length) { localStorage.removeItem('sylla_user'); location.href = 'index.html'; return; }
+      CU = data[0];
+      localStorage.setItem('sylla_user', JSON.stringify(CU));
+      if (CU.statut === 'actif') {
+        location.href = CU.role === 'admin' ? 'admin.html' : 'dashboard.html';
+      }
+      // sinon : compte toujours inactif, on reste sur cette page
+    })
+    .catch(function() {
+      if (CU && CU.statut === 'actif') location.href = CU.role === 'admin' ? 'admin.html' : 'dashboard.html';
+    });
+}
 
 var selOpName = '', selNum = '';
 
