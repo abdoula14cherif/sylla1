@@ -7,223 +7,275 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:auto}
+html,body{min-height:100%;overflow-x:hidden}
 body{
-  min-height:100vh;font-family:'Inter',sans-serif;
-  background:#0B1628;
+  font-family:'Inter',sans-serif;background:#0B1628;
   display:flex;align-items:flex-start;justify-content:center;
-  padding:32px 16px 48px;
+  padding:40px 16px 60px;position:relative;
 }
 body::before{
-  content:'';position:fixed;inset:0;
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(ellipse 70% 50% at 15% 0%,rgba(212,175,55,0.12) 0%,transparent 60%),
-    radial-gradient(ellipse 60% 70% at 90% 100%,rgba(160,40,30,0.18) 0%,transparent 60%);
-  pointer-events:none;z-index:0;
+    radial-gradient(ellipse 70% 55% at 15% 0%,rgba(212,175,55,.13) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 60% at 88% 100%,rgba(160,40,30,.18) 0%,transparent 60%);
 }
-.wrap{width:100%;max-width:520px;position:relative;z-index:1;}
 
-/* HEADER CARD */
-.hd{
-  background:linear-gradient(135deg,#1A3A6B 0%,#2657A8 50%,#7B1D1D 100%);
-  border-radius:24px 24px 0 0;
-  padding:36px 36px 48px;
-  text-align:center;
-  position:relative;
+.wrap{width:100%;max-width:500px;position:relative;z-index:1;}
+
+/* LOGO */
+.logo-area{text-align:center;margin-bottom:24px;}
+.logo-ring{display:inline-flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);border:1px solid rgba(212,175,55,.3);border-radius:50px;padding:9px 24px;margin-bottom:8px;backdrop-filter:blur(10px);}
+.logo-sq{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#F5D976,#D4AF37,#8B6914);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:800;font-size:18px;color:#0B1628;}
+.logo-txt{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;letter-spacing:2px;background:linear-gradient(135deg,#F5D976,#D4AF37);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-sub{font-size:11px;letter-spacing:3px;color:rgba(255,255,255,.35);text-transform:uppercase;}
+
+/* CARD */
+.card{background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.42),0 0 0 1px rgba(212,175,55,.12);}
+
+/* CARD HEADER */
+.c-head{
+  background:linear-gradient(135deg,#1A3A6B 0%,#2657A8 55%,#8B1A1A 100%);
+  padding:28px 32px 32px;text-align:center;position:relative;
 }
-.hd::after{
-  content:'';position:absolute;bottom:-1px;left:0;right:0;
-  height:28px;background:#fff;border-radius:24px 24px 0 0;
-}
-.logo-row{
-  display:inline-flex;align-items:center;gap:10px;
-  background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);
-  border-radius:50px;padding:8px 20px;margin-bottom:24px;
-}
-.logo-sq{
-  width:34px;height:34px;border-radius:9px;
-  background:linear-gradient(135deg,#F5D976,#D4AF37,#8B6914);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Playfair Display',serif;font-size:17px;font-weight:800;color:#0B1628;
-}
-.logo-nm{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#fff;letter-spacing:2px;}
-.hd-emoji{font-size:56px;display:block;margin-bottom:12px;}
-.hd-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;color:#fff;margin-bottom:6px;}
-.hd-sub{font-size:13px;color:rgba(255,255,255,0.65);}
+.c-head::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:22px;background:#fff;border-radius:22px 22px 0 0;}
+.head-step{font-size:48px;display:block;margin-bottom:10px;}
+.head-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:#fff;margin-bottom:4px;}
+.head-sub{font-size:13px;color:rgba(255,255,255,.65);}
 
 /* BODY */
-.bd{
-  background:#fff;border-radius:0 0 24px 24px;
-  padding:36px;
-  box-shadow:0 32px 80px rgba(0,0,0,0.4);
-}
-
-/* USER BOX */
-.u-box{
-  background:linear-gradient(135deg,#FFFBEF,#FFF8DC);
-  border:1.5px solid #D4AF37;border-radius:14px;
-  padding:16px 18px;margin-bottom:28px;
-  display:flex;align-items:center;gap:14px;
-}
-.u-av{
-  width:48px;height:48px;border-radius:12px;flex-shrink:0;
-  background:linear-gradient(135deg,#D4AF37,#8B6914);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Playfair Display',serif;font-size:18px;font-weight:800;color:#fff;
-}
-.u-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#111827;}
-.u-code-row{display:flex;align-items:center;gap:8px;margin-top:4px;}
-.u-code-lbl{font-size:11px;color:#9CA3AF;}
-.u-code-val{
-  font-size:13px;font-weight:700;color:#8B6914;
-  background:rgba(212,175,55,0.12);padding:2px 8px;border-radius:6px;letter-spacing:1px;
-}
-.btn-copy-code{
-  background:none;border:none;font-size:13px;cursor:pointer;
-  color:#2657A8;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;
-  padding:2px 6px;border-radius:5px;transition:.2s;
-}
-.btn-copy-code:hover{background:#EEF3FF;}
-
-/* STEPS */
-.sec-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#1A3A6B;margin-bottom:14px;}
-
-.steps{margin-bottom:24px;}
-.step{
-  display:flex;align-items:flex-start;gap:14px;
-  padding:14px 0;border-bottom:1px solid #F3F4F6;
-}
-.step:last-child{border-bottom:none;}
-.step-n{
-  width:34px;height:34px;border-radius:9px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;font-weight:800;
-}
-.s1 .step-n{background:linear-gradient(135deg,#F5D976,#D4AF37);color:#0B1628;}
-.s2 .step-n{background:linear-gradient(135deg,#BFDBFE,#2657A8);color:#fff;}
-.s3 .step-n{background:linear-gradient(135deg,#FECACA,#C0392B);color:#fff;}
-.step-t{font-size:14px;font-weight:600;color:#111827;margin-bottom:3px;}
-.step-d{font-size:12px;color:#6B7280;line-height:1.5;}
+.c-body{padding:28px 32px 32px;}
 
 /* AMOUNT */
-.amount-box{
+.amount-banner{
   background:linear-gradient(135deg,#1A3A6B,#2657A8);
-  border-radius:14px;padding:20px 24px;margin-bottom:20px;
+  border-radius:14px;padding:18px 22px;
   display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:24px;
 }
-.am-lbl{font-size:12px;color:rgba(255,255,255,.7);font-weight:500;margin-bottom:2px;}
-.am-sub{font-size:11px;color:rgba(255,255,255,.4);}
-.am-val{
-  font-family:'Playfair Display',serif;font-size:38px;font-weight:800;
-  background:linear-gradient(135deg,#F5D976,#D4AF37);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
+.ab-left .lbl{font-size:11px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.5px;margin-bottom:3px;}
+.ab-left .sub{font-size:11px;color:rgba(255,255,255,.38);}
+.ab-right{font-family:'Playfair Display',serif;font-size:36px;font-weight:800;background:linear-gradient(135deg,#F5D976,#D4AF37);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 
-/* PAYMENT */
-.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
-.pay-card{
-  background:#F8F7F2;border:1.5px solid #E5E7EB;
-  border-radius:11px;padding:12px 14px;
-  display:flex;align-items:center;gap:9px;
-  font-size:13px;font-weight:600;color:#374151;
+/* STEP LABEL */
+.step-lbl{
+  font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:#1A3A6B;margin-bottom:12px;display:flex;align-items:center;gap:8px;
 }
-.pay-card .ic{font-size:18px;}
+.step-lbl::after{content:'';flex:1;height:1px;background:#F3F4F6;}
 
-/* BTNS */
-.btn-row{display:flex;gap:10px;}
-.btn{
-  flex:1;padding:14px;border:none;border-radius:12px;
-  font-family:'Inter',sans-serif;font-size:14px;font-weight:700;
-  cursor:pointer;transition:all .3s;
+/* OPERATOR GRID */
+.op-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
+.op-card{
+  border:2px solid #E5E7EB;border-radius:14px;padding:14px;
+  cursor:pointer;transition:all .22s;text-align:center;
+  background:#FAFAFA;position:relative;overflow:hidden;
 }
-.btn-main{
-  background:linear-gradient(135deg,#1A3A6B,#2657A8,#8B6914);
-  color:#fff;box-shadow:0 6px 22px rgba(26,58,107,0.28);
-}
-.btn-main:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(26,58,107,.38);}
-.btn-ghost{background:#F3F4F6;color:#6B7280;border:1.5px solid #E5E7EB;}
-.btn-ghost:hover{color:#374151;border-color:#D1D5DB;}
+.op-card:hover{border-color:#D4AF37;background:#FFFBEF;transform:translateY(-2px);box-shadow:0 6px 20px rgba(212,175,55,.15);}
+.op-card.selected{border-color:#D4AF37;background:#FFFBEF;box-shadow:0 0 0 3px rgba(212,175,55,.18);}
+.op-card.selected::after{content:'✓';position:absolute;top:8px;right:10px;font-size:13px;font-weight:800;color:#D4AF37;}
+.op-emoji{font-size:28px;margin-bottom:6px;display:block;}
+.op-name{font-size:13px;font-weight:700;color:#111827;margin-bottom:2px;}
+.op-num{font-size:11px;color:#9CA3AF;}
 
-.toast{
-  position:fixed;top:20px;right:20px;z-index:9999;
-  padding:13px 18px;border-radius:12px;font-size:13px;font-weight:600;
-  display:flex;align-items:center;gap:8px;
-  background:#fff;box-shadow:0 8px 32px rgba(0,0,0,.15);
-  transform:translateX(120%);transition:transform .35s cubic-bezier(.22,1,.36,1);
+/* COPY NUMBER BOX */
+.copy-box{
+  background:#F8F7F2;border:1.5px solid #E5E7EB;border-radius:12px;
+  padding:14px 16px;margin-bottom:22px;
+  display:none;align-items:center;justify-content:space-between;gap:12px;
 }
+.copy-box.show{display:flex;}
+.copy-box .cb-info .lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#9CA3AF;margin-bottom:4px;}
+.copy-box .cb-info .num{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:#1A3A6B;letter-spacing:2px;}
+.copy-box .cb-info .op-tag{font-size:11px;color:#9CA3AF;margin-top:2px;}
+.btn-copy-num{
+  background:linear-gradient(135deg,#D4AF37,#8B6914);color:#fff;border:none;
+  border-radius:10px;padding:10px 16px;font-family:'Inter',sans-serif;
+  font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.25s;
+  box-shadow:0 3px 10px rgba(212,175,55,.3);flex-shrink:0;
+}
+.btn-copy-num:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(212,175,55,.4);}
+
+/* FORM */
+.fld{margin-bottom:14px;}
+.fld label{display:block;font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#1A3A6B;margin-bottom:6px;}
+.inp-w{position:relative;}
+.inp-w .ic{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;}
+.fld input{
+  width:100%;padding:12px 12px 12px 40px;
+  border:1.5px solid #E5E7EB;border-radius:11px;
+  font-family:'Inter',sans-serif;font-size:14px;color:#111827;
+  background:#FAFAFA;outline:none;transition:all .2s;
+}
+.fld input::placeholder{color:#C8C8C8;}
+.fld input:focus{border-color:#D4AF37;background:#FFFBEF;box-shadow:0 0 0 3px rgba(212,175,55,.14);}
+
+/* SUBMIT BTN */
+.btn-submit{
+  width:100%;padding:15px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,#1A3A6B 0%,#2657A8 55%,#8B6914 100%);
+  color:#fff;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;
+  cursor:pointer;transition:all .3s;box-shadow:0 6px 24px rgba(26,58,107,.3);
+  margin-top:4px;
+}
+.btn-submit:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 32px rgba(26,58,107,.42);}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+
+/* SUCCESS STATE */
+.success-state{
+  display:none;text-align:center;padding:16px 0 8px;
+}
+.success-state.show{display:block;}
+.success-icon{font-size:56px;display:block;margin-bottom:14px;}
+.success-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:#111827;margin-bottom:8px;}
+.success-sub{font-size:14px;color:#6B7280;line-height:1.7;margin-bottom:20px;}
+.wait-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:#FFF8E1;border:1.5px solid #F59E0B;border-radius:12px;
+  padding:12px 18px;font-size:13px;font-weight:600;color:#92400E;
+}
+.pulse{width:10px;height:10px;border-radius:50%;background:#F59E0B;animation:pulse 1.4s ease infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.35);opacity:.7}}
+
+.form-state{display:block;}
+
+/* SPINNER */
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* TOAST */
+.toast{position:fixed;top:20px;right:20px;z-index:9999;padding:13px 18px;border-radius:12px;font-size:13px;font-weight:600;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,.16);transform:translateX(120%);transition:transform .35s cubic-bezier(.22,1,.36,1);max-width:300px;display:flex;align-items:center;gap:8px;}
 .toast.on{transform:translateX(0);}
 .toast.ok{border-left:4px solid #22C55E;color:#166534;}
+.toast.er{border-left:4px solid #EF4444;color:#991B1B;}
+.toast.nfo{border-left:4px solid #2657A8;color:#1A3A6B;}
+
+@media(max-width:480px){
+  .c-body{padding:22px 20px 28px;}
+  .op-grid{grid-template-columns:1fr 1fr;}
+  .ab-right{font-size:28px;}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="hd">
-    <div class="logo-row">
+
+  <div class="logo-area">
+    <div class="logo-ring">
       <div class="logo-sq">S</div>
-      <div class="logo-nm">SYLLA AGENCE</div>
+      <div class="logo-txt">SYLLA AGENCE</div>
     </div>
-    <span class="hd-emoji">🎉</span>
-    <div class="hd-title">Compte créé avec succès !</div>
-    <div class="hd-sub">Activez votre compte pour commencer à gagner</div>
+    <div class="logo-sub">Activation du compte</div>
   </div>
 
-  <div class="bd">
-    <div class="u-box">
-      <div class="u-av" id="u-av">?</div>
-      <div>
-        <div class="u-name" id="u-name">Chargement...</div>
-        <div class="u-code-row">
-          <span class="u-code-lbl">Votre code :</span>
-          <span class="u-code-val" id="u-code">—</span>
-          <button class="btn-copy-code" onclick="copyCode()">📋 Copier</button>
-        </div>
-      </div>
+  <div class="card">
+    <div class="c-head">
+      <span class="head-step">💳</span>
+      <div class="head-title">Activez votre compte</div>
+      <div class="head-sub">Suivez les étapes pour activer et accéder à la plateforme</div>
     </div>
 
-    <div class="sec-lbl">Étapes d'activation</div>
-    <div class="steps">
-      <div class="step s1">
-        <div class="step-n">1</div>
-        <div>
-          <div class="step-t">Effectuez le paiement</div>
-          <div class="step-d">Envoyez 2 500 F via votre mobile money au numéro de l'administrateur.</div>
+    <div class="c-body">
+
+      <!-- MONTANT -->
+      <div class="amount-banner">
+        <div class="ab-left">
+          <div class="lbl">Montant d'activation</div>
+          <div class="sub">Paiement unique · Non remboursable</div>
+        </div>
+        <div class="ab-right">2 500 F</div>
+      </div>
+
+      <!-- FORM STATE -->
+      <div class="form-state" id="form-state">
+
+        <!-- ÉTAPE 1 : CHOISIR OPÉRATEUR -->
+        <div class="step-lbl">Étape 1 — Choisissez votre opérateur</div>
+        <div class="op-grid">
+          <div class="op-card" onclick="selectOp(this,'Orange Money','📱','07 00 00 00 00')">
+            <span class="op-emoji">📱</span>
+            <div class="op-name">Orange Money</div>
+            <div class="op-num">Cliquer pour voir le numéro</div>
+          </div>
+          <div class="op-card" onclick="selectOp(this,'Wave','💳','07 11 11 11 11')">
+            <span class="op-emoji">💳</span>
+            <div class="op-name">Wave</div>
+            <div class="op-num">Cliquer pour voir le numéro</div>
+          </div>
+          <div class="op-card" onclick="selectOp(this,'MTN Mobile Money','📲','05 22 22 22 22')">
+            <span class="op-emoji">📲</span>
+            <div class="op-name">MTN Mobile Money</div>
+            <div class="op-num">Cliquer pour voir le numéro</div>
+          </div>
+          <div class="op-card" onclick="selectOp(this,'Moov Money','💰','01 33 33 33 33')">
+            <span class="op-emoji">💰</span>
+            <div class="op-name">Moov Money</div>
+            <div class="op-num">Cliquer pour voir le numéro</div>
+          </div>
+        </div>
+
+        <!-- NUMÉRO À COPIER -->
+        <div class="copy-box" id="copy-box">
+          <div class="cb-info">
+            <div class="lbl">Numéro de paiement</div>
+            <div class="num" id="pay-num">—</div>
+            <div class="op-tag" id="pay-op">—</div>
+          </div>
+          <button class="btn-copy-num" onclick="copyPayNum()">📋 Copier</button>
+        </div>
+
+        <!-- ÉTAPE 2 : INFOS ENVOYÉES -->
+        <div class="step-lbl">Étape 2 — Soumettez votre paiement</div>
+
+        <div class="fld">
+          <label>Votre nom complet</label>
+          <div class="inp-w">
+            <span class="ic">👤</span>
+            <input type="text" id="f-nom" placeholder="Tel qu'il apparaît sur votre compte">
+          </div>
+        </div>
+
+        <div class="fld">
+          <label>Votre numéro de téléphone</label>
+          <div class="inp-w">
+            <span class="ic">📱</span>
+            <input type="tel" id="f-tel" placeholder="0700000000">
+          </div>
+        </div>
+
+        <div class="fld">
+          <label>Référence du paiement</label>
+          <div class="inp-w">
+            <span class="ic">🔖</span>
+            <input type="text" id="f-ref" placeholder="Ex: TXN123456789">
+          </div>
+        </div>
+
+        <button class="btn-submit" id="btn-send" onclick="doSend()">
+          Envoyer ma demande d'activation
+        </button>
+
+      </div>
+
+      <!-- SUCCESS STATE -->
+      <div class="success-state" id="success-state">
+        <span class="success-icon">⏳</span>
+        <div class="success-title">Demande envoyée !</div>
+        <div class="success-sub">
+          Votre demande d'activation a bien été reçue.<br>
+          L'administrateur vérifiera votre paiement et activera votre compte.<br>
+          Vous serez notifié dès que votre compte est actif.
+        </div>
+        <div class="wait-badge">
+          <span class="pulse"></span>
+          En attente de validation par l'admin
+        </div>
+        <div style="margin-top:22px;">
+          <button onclick="location.href='index.html'" style="background:none;border:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#9CA3AF;cursor:pointer;text-decoration:underline;">
+            ← Retour à la connexion
+          </button>
         </div>
       </div>
-      <div class="step s2">
-        <div class="step-n">2</div>
-        <div>
-          <div class="step-t">Envoyez la preuve à l'admin</div>
-          <div class="step-d">Partagez votre capture de paiement et votre code de parrainage ci-dessus.</div>
-        </div>
-      </div>
-      <div class="step s3">
-        <div class="step-n">3</div>
-        <div>
-          <div class="step-t">Accès débloqué</div>
-          <div class="step-d">L'admin active votre compte. Vos commissions commencent immédiatement.</div>
-        </div>
-      </div>
-    </div>
 
-    <div class="amount-box">
-      <div>
-        <div class="am-lbl">Montant d'activation</div>
-        <div class="am-sub">Paiement unique · Non remboursable</div>
-      </div>
-      <div class="am-val">2 500 F</div>
-    </div>
-
-    <div class="sec-lbl" style="margin-bottom:12px;">Moyens de paiement acceptés</div>
-    <div class="pay-grid">
-      <div class="pay-card"><span class="ic">📱</span>Orange Money</div>
-      <div class="pay-card"><span class="ic">💳</span>Wave</div>
-      <div class="pay-card"><span class="ic">📲</span>MTN Money</div>
-      <div class="pay-card"><span class="ic">💰</span>Moov Money</div>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn btn-ghost" onclick="location.href='index.html'">← Retour</button>
-      <button class="btn btn-main" onclick="location.href='index.html'">Se connecter</button>
     </div>
   </div>
 </div>
@@ -231,21 +283,77 @@ body::before{
 <div class="toast" id="toast"></div>
 
 <script>
-const s=localStorage.getItem('sylla_new_user');
-if(s){
-  const u=JSON.parse(s);
-  const av=(u.prenom||'?').charAt(0).toUpperCase()+(u.nom||'?').charAt(0).toUpperCase();
-  document.getElementById('u-av').textContent=av;
-  document.getElementById('u-name').textContent=(u.prenom||'')+' '+(u.nom||'');
-  document.getElementById('u-code').textContent=u.code_parrainage||'—';
+const SB='https://fqiotqrraobmsrcyewsi.supabase.co';
+const AK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc';
+const rq=(p,o={})=>fetch(`${SB}/rest/v1/${p}`,{headers:{'apikey':AK,'Authorization':'Bearer '+AK,'Content-Type':'application/json','Prefer':o.prefer||'',...(o.headers||{})},...o});
+
+// Vérifier qu'un utilisateur pending existe
+const pending=localStorage.getItem('sylla_pending');
+const loggedIn=localStorage.getItem('sylla_user');
+if(loggedIn){const u=JSON.parse(loggedIn);if(u.statut==='actif')location.href=u.role==='admin'?'admin.html':'dashboard.html';}
+if(!pending&&!loggedIn)location.href='index.html';
+
+let selectedOp='';
+let selectedNum='';
+
+function selectOp(el,name,emoji,num){
+  // Désélectionner tous
+  document.querySelectorAll('.op-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedOp=name;
+  selectedNum=num.replace(/\s/g,'');
+  // Afficher la box de copie
+  document.getElementById('pay-num').textContent=num;
+  document.getElementById('pay-op').textContent='Via '+name;
+  document.getElementById('copy-box').classList.add('show');
 }
-function copyCode(){
-  const c=document.getElementById('u-code').textContent;
-  navigator.clipboard.writeText(c).then(()=>{
-    const t=document.getElementById('toast');
-    t.textContent='✅ Code copié : '+c;t.className='toast ok on';
-    setTimeout(()=>t.classList.remove('on'),3000);
-  });
+
+function copyPayNum(){
+  navigator.clipboard.writeText(selectedNum).then(()=>toast('Numéro copié : '+selectedNum,'ok'));
+}
+
+function toast(msg,type='nfo'){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className='toast '+type+' on';
+  clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),5000);
+}
+
+function g(id){return document.getElementById(id).value.trim();}
+
+async function doSend(){
+  if(!selectedOp)return toast('Sélectionnez d\'abord votre opérateur de paiement.','er');
+  const nom=g('f-nom'),tel=g('f-tel'),ref=g('f-ref');
+  if(!nom)return toast('Entrez votre nom complet.','er');
+  if(!tel)return toast('Entrez votre numéro de téléphone.','er');
+  if(!ref)return toast('Entrez la référence de votre paiement.','er');
+
+  const btn=document.getElementById('btn-send');
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span>Envoi en cours...';
+
+  try{
+    // Récupérer l'utilisateur en attente
+    const user=pending?JSON.parse(pending):(loggedIn?JSON.parse(loggedIn):null);
+    if(!user)throw new Error('Session expirée, reconnectez-vous.');
+
+    // Enregistrer la demande d'activation dans les transactions (comme note)
+    await rq('sylla_transactions',{
+      method:'POST',prefer:'return=minimal',
+      body:JSON.stringify({
+        user_id:user.id,
+        type:'demande_activation',
+        montant:2500,
+        description:'Activation · '+selectedOp+' · Nom: '+nom+' · Tél: '+tel+' · Réf: '+ref
+      })
+    });
+
+    // Afficher le succès
+    document.getElementById('form-state').style.display='none';
+    document.getElementById('success-state').classList.add('show');
+
+  }catch(e){
+    toast(e.message||'Erreur lors de l\'envoi.','er');
+    btn.disabled=false;btn.textContent='Envoyer ma demande d\'activation';
+  }
 }
 </script>
 </body>
