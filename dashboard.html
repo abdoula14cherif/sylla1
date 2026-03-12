@@ -387,9 +387,9 @@ tr:last-child td{border-bottom:none}
         <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#DCFCE7,#BBF7D0);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">💬</div>
         <div><div style="font-size:13px;font-weight:700;color:var(--txt)">WhatsApp</div><div style="font-size:11px;color:var(--txt3)">Réponse rapide garantie</div></div>
       </a>
-      <a href="mailto:abdoula13cherif@gmail.com" style="display:flex;align-items:center;gap:10px;padding:13px;background:var(--cream);border-radius:13px;text-decoration:none">
+      <a href="/cdn-cgi/l/email-protection#86e7e4e2e9f3eae7b7b5e5eee3f4efe0c6e1ebe7efeaa8e5e9eb" style="display:flex;align-items:center;gap:10px;padding:13px;background:var(--cream);border-radius:13px;text-decoration:none">
         <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#DBEAFE,#BFDBFE);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📧</div>
-        <div><div style="font-size:13px;font-weight:700;color:var(--txt)">Email Admin</div><div style="font-size:11px;color:var(--txt3)">abdoula13cherif@gmail.com</div></div>
+        <div><div style="font-size:13px;font-weight:700;color:var(--txt)">Email Admin</div><div style="font-size:11px;color:var(--txt3)"><span class="__cf_email__" data-cfemail="d3b2b1b7bca6bfb2e2e0b0bbb6a1bab593b4beb2babffdb0bcbe">[email&#160;protected]</span></div></div>
       </a>
     </div>
     <div class="card">
@@ -491,7 +491,7 @@ tr:last-child td{border-bottom:none}
 
 <div class="toast" id="toast"></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 'use strict';
 var API = 'https://fqiotqrraobmsrcyewsi.supabase.co/rest/v1';
 var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc';
@@ -519,14 +519,40 @@ var CU = null, N1 = [], N2 = [], N3 = [], TX = [];
 var prevPg = 'pg-home', dataLoaded = false;
 
 // ── INIT ───────────────────────────────────────────────────────
+// IMPORTANT : on vérifie TOUJOURS le statut depuis Supabase (pas le localStorage)
+// pour éviter les redirections erronées après activation par l'admin.
 (function init() {
   try { CU = JSON.parse(localStorage.getItem('sylla_user') || 'null'); } catch(e) {}
   if (!CU || !CU.id) { location.href = 'index.html'; return; }
   if (CU.role === 'admin') { location.href = 'admin.html'; return; }
-  if (CU.statut !== 'actif') { location.href = 'activation.html'; return; }
-  applyUser();
-  buildFAQ();
-  loadData();
+
+  // Toujours récupérer le statut frais depuis Supabase avant de décider
+  get('sylla_users', 'select=*&id=eq.' + CU.id)
+    .then(function(data) {
+      if (!data || !data.length) {
+        // Compte introuvable en base → déconnexion
+        localStorage.removeItem('sylla_user');
+        location.href = 'index.html';
+        return;
+      }
+      CU = data[0];
+      localStorage.setItem('sylla_user', JSON.stringify(CU)); // Sync local
+
+      if (CU.role === 'admin') { location.href = 'admin.html'; return; }
+      if (CU.statut !== 'actif') { location.href = 'activation.html'; return; }
+
+      // Compte actif confirmé → afficher le dashboard
+      applyUser();
+      buildFAQ();
+      loadData();
+    })
+    .catch(function() {
+      // En cas d'erreur réseau, on fait confiance au localStorage
+      if (CU.statut !== 'actif') { location.href = 'activation.html'; return; }
+      applyUser();
+      buildFAQ();
+      loadData();
+    });
 })();
 
 function applyUser() {
@@ -725,7 +751,11 @@ function buildFAQ() {
 function toggleFaq(el, i) {
   var a = document.getElementById('fa' + i), ic = document.getElementById('fi' + i);
   var open = a.style.display === 'block';
-  document.querySelectorAll('.faq-a').forEach(function(x, j) { x.style.display = 'none'; var ic2 = document.getElementById('fi' + j); if (ic2) ic2.textContent = '+'; });
+  document.querySelectorAll('.faq-a').forEach(function(x, j) {
+    x.style.display = 'none';
+    var ic2 = document.getElementById('fi' + j);
+    if (ic2) ic2.textContent = '+';
+  });
   if (!open) { a.style.display = 'block'; ic.textContent = '−'; }
 }
 </script>
