@@ -2,238 +2,322 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>SYLLA Agence — Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --navy:#0F2144;--blue:#1A3A6B;--blue2:#2657A8;
+  --gold:#D4AF37;--goldl:#F5D976;--goldd:#8B6914;
+  --red:#8B1A1A;--cream:#F5F3EE;--cream2:#EDE9DF;
+  --white:#fff;--txt:#111827;--txt2:#4B5563;--txt3:#9CA3AF;
+  --green:#16A34A;--orange:#D97706;--red2:#DC2626
+}
 html{height:100%}
-body{height:100%;font-family:'Inter',sans-serif;background:#F0EEE8;color:#111827;display:flex;overflow:hidden;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--txt);height:100%;display:flex;flex-direction:column;overflow:hidden}
 
-/* SIDEBAR */
-.sb{width:240px;flex-shrink:0;background:linear-gradient(180deg,#0D1B3E 0%,#1A3A6B 55%,#7B1515 100%);display:flex;flex-direction:column;height:100vh;overflow-y:auto;position:fixed;top:0;left:0;bottom:0;}
-.sb-in{padding:22px 16px;display:flex;flex-direction:column;min-height:100%;}
-.sb-logo{display:flex;align-items:center;gap:10px;margin-bottom:6px;padding:0 4px;}
-.sb-sq{width:38px;height:38px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#F5D976,#D4AF37,#8B6914);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:19px;font-weight:800;color:#0D1B3E;}
-.sb-nm{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:#F5D976;letter-spacing:1.5px;}
-.adm-tag{display:inline-block;font-size:9px;font-weight:700;letter-spacing:2px;padding:3px 10px;border-radius:20px;background:rgba(239,68,68,.2);color:#FCA5A5;border:1px solid rgba(239,68,68,.25);margin-bottom:24px;}
-.sb-sec{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.3);padding:0 6px;margin:14px 0 6px;}
-.sb-lnk{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;color:rgba(255,255,255,.55);transition:all .2s;margin-bottom:2px;position:relative;}
-.sb-lnk:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.9);}
-.sb-lnk.on{background:rgba(212,175,55,.15);color:#F5D976;border:1px solid rgba(212,175,55,.2);}
-.sb-lnk .i{font-size:16px;width:20px;text-align:center;flex-shrink:0;}
-.sb-cnt{position:absolute;right:10px;background:#DC2626;color:#fff;font-size:10px;font-weight:800;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center;}
-.sb-foot{margin-top:auto;padding-top:20px;}
-.sb-logout{width:100%;padding:10px;border:1px solid rgba(255,255,255,.15);border-radius:10px;background:none;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.45);cursor:pointer;transition:.2s;}
-.sb-logout:hover{border-color:rgba(239,68,68,.5);color:#FCA5A5;}
+/* TOPBAR */
+.topbar{flex-shrink:0;height:56px;background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 55%,var(--red) 100%);display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:60;box-shadow:0 2px 14px rgba(15,33,68,.3)}
+.tb-left{display:flex;align-items:center;gap:9px}
+.tb-sq{width:33px;height:33px;border-radius:9px;background:linear-gradient(135deg,var(--goldl),var(--gold),var(--goldd));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:800;font-size:16px;color:var(--navy)}
+.tb-info{line-height:1.2}
+.tb-wm{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;letter-spacing:1.5px;background:linear-gradient(135deg,var(--goldl),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.tb-role{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:1px}
+.tb-logout{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:9px;padding:7px 12px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:.18s}
+.tb-logout:active{background:rgba(255,255,255,.2)}
 
-/* MAIN */
-.main{margin-left:240px;flex:1;height:100vh;overflow-y:auto;padding:32px;}
+/* SCROLL */
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:68px}
+.scroll::-webkit-scrollbar{display:none}
 
-.pg{display:none;}.pg.on{display:block;}
-.pg-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:800;color:#111827;margin-bottom:2px;}
-.pg-sub{font-size:13px;color:#9CA3AF;margin-bottom:24px;}
+/* STATS BAR */
+.stats-bar{background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 55%,var(--red) 100%);padding:16px 16px 22px;margin-bottom:-6px}
+.stats-bar-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:10px}
+.sb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.sb-card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 8px;text-align:center}
+.sb-card.hi{background:rgba(212,175,55,.14);border-color:rgba(212,175,55,.22)}
+.sbc-v{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--goldl);line-height:1}
+.sbc-l{font-size:9px;color:rgba(255,255,255,.45);margin-top:3px;line-height:1.2}
+.arc{background:var(--cream);border-radius:18px 18px 0 0;height:18px;margin-top:-1px}
 
-/* STATS */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
-.sc{background:#fff;border-radius:13px;padding:18px;border:1px solid #E5E7EB;box-shadow:0 2px 10px rgba(0,0,0,.04);}
-.s-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#9CA3AF;margin-bottom:8px;}
-.s-val{font-family:'Playfair Display',serif;font-size:32px;font-weight:800;}
-.sv-blue{color:#2657A8;}.sv-green{color:#16A34A;}.sv-red{color:#DC2626;}.sv-gold{color:#D4AF37;}.sv-warn{color:#D97706;}
+/* TAB NAV */
+.tab-nav{display:flex;background:var(--white);border-bottom:2px solid var(--cream2);overflow-x:auto;padding:0 8px;flex-shrink:0}
+.tab-nav::-webkit-scrollbar{display:none}
+.tn{flex-shrink:0;padding:13px 12px 11px;font-size:13px;font-weight:600;color:var(--txt3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s;white-space:nowrap}
+.tn.on{color:var(--blue);border-bottom-color:var(--gold)}
 
-/* CARD */
-.card{background:#fff;border-radius:14px;padding:20px;border:1px solid #E5E7EB;box-shadow:0 2px 10px rgba(0,0,0,.04);margin-bottom:20px;}
-.c-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #F3F4F6;flex-wrap:gap;}
-.c-ttl{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#111827;}
+/* PAGES */
+.pg{display:none}
+.pg.on{display:block;animation:fu .2s ease}
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-/* FILTER */
-.filter-row{display:flex;gap:8px;flex-wrap:wrap;}
-.s-inp{padding:8px 12px;background:#F8F7F2;border:1.5px solid #E5E7EB;border-radius:9px;font-family:'Inter',sans-serif;font-size:13px;color:#111827;outline:none;transition:.2s;}
-.s-inp:focus{border-color:#D4AF37;box-shadow:0 0 0 3px rgba(212,175,55,.1);}
-.s-sel{padding:8px 12px;background:#F8F7F2;border:1.5px solid #E5E7EB;border-radius:9px;font-family:'Inter',sans-serif;font-size:13px;color:#111827;outline:none;appearance:none;cursor:pointer;padding-right:28px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;}
+.pgpad{padding:14px 16px}
+
+/* CARDS */
+.card{background:var(--white);border-radius:14px;padding:15px;border:1px solid var(--cream2);box-shadow:0 2px 8px rgba(15,33,68,.06);margin-bottom:11px}
+.card-t{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--txt);margin-bottom:12px;padding-bottom:9px;border-bottom:2px solid var(--cream2);display:flex;align-items:center;justify-content:space-between}
+.card-count{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:var(--cream2);color:var(--navy)}
 
 /* TABLE */
-.tbl-wrap{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;font-size:13px;min-width:600px;}
-th{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#9CA3AF;text-align:left;padding:9px 12px;border-bottom:2px solid #F3F4F6;white-space:nowrap;}
-td{padding:11px 12px;border-bottom:1px solid #F8F8F8;color:#374151;vertical-align:middle;}
-tr:last-child td{border-bottom:none;}
-tr:hover td{background:#FAFAF8;}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:500px}
+th{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--txt3);text-align:left;padding:9px 10px;border-bottom:2px solid var(--cream2);white-space:nowrap}
+td{padding:11px 10px;border-bottom:1px solid var(--cream2);color:var(--txt2);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#FAFAF7}
 
-.uc{display:flex;align-items:center;gap:9px;}
-.uav{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#1A3A6B,#2657A8);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;}
-.un{font-size:13px;font-weight:600;color:#111827;}
-.us{font-size:11px;color:#9CA3AF;margin-top:1px;}
+/* BADGE */
+.bdg{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;display:inline-block}
+.b-att{background:#FFFBEB;color:var(--orange)}
+.b-ok{background:#F0FDF4;color:var(--green)}
+.b-ko{background:#FFF5F5;color:var(--red2)}
+.b-inactif{background:#FFF5F5;color:var(--red2)}
+.b-actif{background:#F0FDF4;color:var(--green)}
+.b-admin{background:linear-gradient(135deg,#FEF9C3,#FDE68A);color:var(--goldd)}
 
-.badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
-.b-actif{background:#F0FDF4;color:#16A34A;}.b-inactif{background:#FFF5F5;color:#DC2626;}
-.b-att{background:#FFFBEB;color:#D97706;}.b-ok{background:#F0FDF4;color:#16A34A;}.b-ko{background:#FFF5F5;color:#DC2626;}
-.b-adm{background:#FFFBEF;color:#8B6914;}
+/* ACTION BUTTONS */
+.btn-sm{padding:6px 12px;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:.15s;white-space:nowrap}
+.btn-activate{background:#F0FDF4;color:var(--green);border:1.5px solid #BBF7D0}
+.btn-activate:hover{background:#DCFCE7}
+.btn-approve{background:#F0FDF4;color:var(--green);border:1.5px solid #BBF7D0}
+.btn-approve:hover{background:#DCFCE7}
+.btn-reject{background:#FFF5F5;color:var(--red2);border:1.5px solid #FECACA}
+.btn-reject:hover{background:#FEE2E2}
+.btn-danger{background:#FFF5F5;color:var(--red2);border:1.5px solid #FECACA}
+.btn-danger:hover{background:#FEE2E2}
 
-.acts{display:flex;gap:6px;flex-wrap:wrap;}
-.btn-sm{padding:5px 12px;border-radius:8px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .18s;white-space:nowrap;}
-.btn-act{background:#F0FDF4;color:#16A34A;border:1px solid rgba(22,163,74,.25);}.btn-act:hover{background:#DCFCE7;}
-.btn-del{background:#FFF5F5;color:#DC2626;border:1px solid rgba(220,38,38,.2);}.btn-del:hover{background:#FEE2E2;}
-.btn-trt{background:linear-gradient(135deg,#1A3A6B,#2657A8);color:#fff;padding:5px 12px;}.btn-trt:hover{transform:scale(1.03);}
+/* USER CARD (mobile) */
+.ucard{background:var(--white);border:1.5px solid var(--cream2);border-radius:13px;padding:13px;margin-bottom:9px}
+.uc-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.uc-av{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--blue2));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--white);flex-shrink:0}
+.uc-nm{font-size:13px;font-weight:700;color:var(--txt)}
+.uc-info{font-size:11px;color:var(--txt3);margin-top:1px}
+.uc-rows{display:grid;gap:6px;margin-bottom:10px}
+.uc-row{display:flex;justify-content:space-between;font-size:12px}
+.uc-k{color:var(--txt3);font-weight:500}
+.uc-v{font-weight:600;color:var(--txt)}
+.uc-actions{display:flex;gap:7px;flex-wrap:wrap}
 
-/* EMPTY */
-.empty{text-align:center;padding:32px;color:#9CA3AF;}
-.empty .ei{font-size:32px;margin-bottom:8px;}
+/* DEMANDE ACTIVATION CARD */
+.da-card{background:var(--white);border:1.5px solid #FDE68A;border-radius:13px;padding:13px;margin-bottom:9px}
+.da-card:last-child{margin-bottom:0}
+.da-top{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.da-ic{font-size:22px;flex-shrink:0}
+.da-nm{font-size:14px;font-weight:700;color:var(--txt)}
+.da-sub{font-size:11px;color:var(--txt3);margin-top:2px}
+.da-desc{font-size:12px;color:var(--txt2);background:var(--cream);border-radius:9px;padding:9px 11px;margin-bottom:10px;line-height:1.55;word-break:break-word}
+.da-actions{display:flex;gap:8px}
+.da-actions .btn-sm{flex:1;padding:9px;font-size:12px}
+
+/* RETRAIT CARD */
+.ret-card{background:var(--white);border:1.5px solid var(--cream2);border-radius:13px;padding:13px;margin-bottom:9px}
+.ret-card.att{border-color:#FDE68A}
+.rc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:9px}
+.rc-amt{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--navy)}
+.rc-sub{font-size:11px;color:var(--txt3);margin-top:2px}
+.rc-info{display:grid;gap:5px;margin-bottom:9px}
+.rc-row{display:flex;gap:8px;font-size:12px}
+.rc-k{color:var(--txt3);font-weight:500;width:80px;flex-shrink:0}
+.rc-v{font-weight:600;color:var(--txt);flex:1;word-break:break-all}
+.rc-actions{display:flex;gap:8px}
+.rc-actions .btn-sm{flex:1;padding:9px;font-size:12px}
+
+/* SEARCH + FILTER */
+.search-bar{display:flex;gap:8px;margin-bottom:13px}
+.search-bar input{flex:1;padding:10px 13px;border:1.5px solid var(--cream2);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--txt);background:var(--white);outline:none;transition:.18s}
+.search-bar input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,175,55,.12)}
+.filter-btn{padding:10px 14px;background:var(--white);border:1.5px solid var(--cream2);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;color:var(--txt2);cursor:pointer;transition:.15s;white-space:nowrap}
+.filter-btn.on{background:var(--navy);color:var(--white);border-color:var(--navy)}
 
 /* MODAL */
-.ov{display:none;position:fixed;inset:0;background:rgba(13,27,62,.6);z-index:999;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
-.ov.on{display:flex;}
-.modal{background:#fff;border-radius:22px;padding:32px;width:480px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);animation:pi .3s cubic-bezier(.22,1,.36,1);}
-@keyframes pi{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
-.m-ttl{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:#111827;margin-bottom:4px;}
-.m-sub{font-size:13px;color:#9CA3AF;margin-bottom:20px;}
-.comm-box{background:#F8F7F2;border:1.5px solid #E5E7EB;border-radius:13px;padding:14px;margin-bottom:18px;}
-.c-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #F3F4F6;}
-.c-row:last-child{border-bottom:none;}
-.c-lbl{font-size:13px;font-weight:600;color:#374151;}
-.c-sub2{font-size:11px;color:#9CA3AF;margin-top:2px;}
-.c-amt{font-family:'Playfair Display',serif;font-size:20px;font-weight:800;color:#16A34A;}
-.c-muted{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#9CA3AF;}
-.m-btns{display:flex;gap:10px;margin-top:18px;}
-.btn-cancel{padding:13px 18px;background:#F3F4F6;color:#6B7280;border:1.5px solid #E5E7EB;border-radius:11px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:.2s;}
-.btn-cancel:hover{color:#374151;border-color:#D1D5DB;}
-.btn-confirm{flex:1;padding:13px;background:linear-gradient(135deg,#1A3A6B,#2657A8,#8B6914);color:#fff;border:none;border-radius:11px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .3s;box-shadow:0 6px 20px rgba(26,58,107,.25);}
-.btn-confirm:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 28px rgba(26,58,107,.38);}
-.btn-confirm:disabled{opacity:.6;cursor:not-allowed;}
-.btn-rej{flex:1;padding:13px;background:linear-gradient(135deg,#7B1515,#DC2626);color:#fff;border:none;border-radius:11px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .3s;}
-.btn-rej:hover:not(:disabled){transform:translateY(-2px);}
-.btn-rej:disabled{opacity:.6;cursor:not-allowed;}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(15,33,68,.6);z-index:300;backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px}
+.modal-bg.on{display:flex}
+.modal{background:var(--white);border-radius:18px;padding:22px;width:100%;max-width:420px;box-shadow:0 20px 50px rgba(15,33,68,.3)}
+.modal-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--txt);margin-bottom:13px}
+.modal-body{font-size:13px;color:var(--txt2);line-height:1.65;margin-bottom:16px;background:var(--cream);border-radius:10px;padding:12px}
+.modal-note{margin-bottom:14px}
+.modal-note label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:5px}
+.modal-note textarea{width:100%;padding:11px;border:1.5px solid var(--cream2);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--txt);background:#FAFAFA;outline:none;resize:vertical;min-height:70px;transition:.18s}
+.modal-note textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,175,55,.12)}
+.modal-actions{display:flex;gap:9px}
+.modal-actions .btn-sm{flex:1;padding:11px;font-size:13px}
+.btn-cancel{background:var(--cream2);color:var(--txt2);border:1.5px solid #DDD9D0}
 
-/* NOTE INPUT */
-.note-lbl{display:block;font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#1A3A6B;margin-bottom:6px;margin-top:14px;}
-.note-inp{width:100%;padding:11px 14px;background:#F8F7F2;border:1.5px solid #E5E7EB;border-radius:10px;font-family:'Inter',sans-serif;font-size:13px;color:#111827;outline:none;transition:.2s;}
-.note-inp:focus{border-color:#D4AF37;}
+/* EMPTY */
+.empty{text-align:center;padding:28px 14px;color:var(--txt3)}
+.empty .ei{font-size:30px;margin-bottom:7px}
+.empty p{font-size:13px}
 
-/* RETRAIT DETAIL */
-.ret-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:#F8F7F2;border-radius:12px;padding:14px;margin-bottom:4px;}
-.rdi .rl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#9CA3AF;margin-bottom:4px;}
-.rdi .rv{font-size:15px;font-weight:700;color:#374151;}
-.rdi .rv.gold{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;color:#D4AF37;}
-
-/* SPIN */
-.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:5px;}
+/* SPINNER */
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.4);border-top-color:var(--white);border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:5px}
 @keyframes sp{to{transform:rotate(360deg)}}
 
-/* TOAST */
-.toast{position:fixed;top:20px;right:20px;z-index:9999;padding:12px 18px;border-radius:11px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;background:#fff;box-shadow:0 8px 30px rgba(0,0,0,.13);transform:translateX(120%);transition:transform .35s cubic-bezier(.22,1,.36,1);max-width:320px;}
-.toast.on{transform:translateX(0);}
-.toast.ok{border-left:4px solid #22C55E;color:#166534;}
-.toast.er{border-left:4px solid #EF4444;color:#991B1B;}
-.toast.nfo{border-left:4px solid #2657A8;color:#1A3A6B;}
+/* BOTTOM NAV */
+.bnav{flex-shrink:0;background:var(--white);border-top:1px solid var(--cream2);box-shadow:0 -3px 14px rgba(15,33,68,.06);display:flex;align-items:stretch;padding-bottom:env(safe-area-inset-bottom,0);z-index:60}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:9px 4px 7px;cursor:pointer;border:none;background:none;gap:3px;position:relative;transition:.15s}
+.nb:active{background:var(--cream)}
+.nb::after{content:'';position:absolute;bottom:0;left:18%;right:18%;height:3px;background:transparent;border-radius:3px 3px 0 0;transition:.2s}
+.nb.on::after{background:linear-gradient(135deg,var(--blue),var(--gold))}
+.nb-ic{font-size:21px;color:var(--txt3);transition:.2s}
+.nb-lb{font-size:10px;font-weight:600;color:var(--txt3);transition:.2s}
+.nb.on .nb-ic,.nb.on .nb-lb{color:var(--navy)}
+.nb.on .nb-lb{font-weight:700}
+.nb-dot{position:absolute;top:7px;right:calc(50% - 15px);width:8px;height:8px;border-radius:50%;background:var(--red2);border:2px solid var(--white);display:none}
+.nb-dot.on{display:block}
 
-@media(max-width:860px){.sb{display:none;}.main{margin-left:0;padding:20px;}.stats{grid-template-columns:1fr 1fr;}}
+/* TOAST */
+.toast{position:fixed;top:14px;left:50%;transform:translate(-50%,-120px);z-index:999;padding:11px 17px;border-radius:12px;font-size:13px;font-weight:600;background:var(--white);box-shadow:0 8px 26px rgba(15,33,68,.18);transition:transform .32s cubic-bezier(.22,1,.36,1);display:flex;align-items:center;gap:8px;max-width:88vw;white-space:nowrap}
+.toast.show{transform:translate(-50%,0)}
+.toast.ok{border-left:4px solid #22C55E;color:#166534}.toast.er{border-left:4px solid #EF4444;color:#991B1B}.toast.nfo{border-left:4px solid var(--blue2);color:var(--blue)}
 </style>
 </head>
 <body>
 
-<nav class="sb">
-  <div class="sb-in">
-    <div class="sb-logo">
-      <div class="sb-sq">S</div>
-      <div class="sb-nm">SYLLA AGENCE</div>
-    </div>
-    <div class="adm-tag">🔑 ADMINISTRATEUR</div>
-
-    <div class="sb-sec">Gestion</div>
-    <div class="sb-lnk on" onclick="goPg('dash',this)"><span class="i">📊</span>Vue d'ensemble</div>
-    <div class="sb-lnk" onclick="goPg('users',this)"><span class="i">👥</span>Membres<span class="sb-cnt" id="cnt-i">0</span></div>
-    <div class="sb-lnk" onclick="goPg('retraits',this)"><span class="i">💸</span>Retraits<span class="sb-cnt" id="cnt-r">0</span></div>
-    <div class="sb-lnk" onclick="goPg('tx',this)"><span class="i">📋</span>Transactions</div>
-
-    <div class="sb-foot">
-      <button class="sb-logout" onclick="logout()">🚪 Se déconnecter</button>
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <div class="tb-sq">S</div>
+    <div class="tb-info">
+      <div class="tb-wm">SYLLA AGENCE</div>
+      <div class="tb-role">ADMINISTRATION</div>
     </div>
   </div>
-</nav>
+  <button class="tb-logout" onclick="logout()">Déconnexion</button>
+</div>
 
-<main class="main">
+<!-- SCROLL -->
+<div class="scroll" id="scroll">
 
-  <!-- DASH -->
-  <div class="pg on" id="pg-dash">
-    <div class="pg-title">Vue d'ensemble</div>
-    <div class="pg-sub">Statistiques globales de la plateforme</div>
-    <div class="stats">
-      <div class="sc"><div class="s-lbl">Membres totaux</div><div class="s-val sv-blue" id="d-tot">—</div></div>
-      <div class="sc"><div class="s-lbl">Comptes actifs</div><div class="s-val sv-green" id="d-act">—</div></div>
-      <div class="sc"><div class="s-lbl">En attente</div><div class="s-val sv-red" id="d-ina">—</div></div>
-      <div class="sc"><div class="s-lbl">Retraits en attente</div><div class="s-val sv-warn" id="d-ratt">—</div></div>
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stats-bar-title">Vue d'ensemble</div>
+    <div class="sb-grid">
+      <div class="sb-card hi"><div class="sbc-v" id="st-total">—</div><div class="sbc-l">Total membres</div></div>
+      <div class="sb-card"><div class="sbc-v" id="st-actif">—</div><div class="sbc-l">Actifs</div></div>
+      <div class="sb-card"><div class="sbc-v" id="st-attente">—</div><div class="sbc-l">En attente</div></div>
+      <div class="sb-card"><div class="sbc-v" id="st-retraits">—</div><div class="sbc-l">Retraits en att.</div></div>
     </div>
-    <div class="card">
-      <div class="c-hd"><div class="c-ttl">⚡ Activations en attente</div></div>
-      <div id="d-pend"><div class="empty"><div class="ei">⏳</div><p>Chargement...</p></div></div>
+  </div>
+  <div class="arc"></div>
+
+  <!-- TAB NAV (desktop style, scrollable on mobile) -->
+  <div class="tab-nav" id="tab-nav">
+    <div class="tn on" onclick="goTab('activations')" id="tn-activations">⏳ Activations</div>
+    <div class="tn" onclick="goTab('membres')"     id="tn-membres">👥 Membres</div>
+    <div class="tn" onclick="goTab('retraits')"    id="tn-retraits">💸 Retraits</div>
+    <div class="tn" onclick="goTab('transactions')" id="tn-transactions">📋 Transactions</div>
+  </div>
+
+  <!-- TAB: ACTIVATIONS EN ATTENTE -->
+  <div class="pg on" id="pg-activations">
+    <div class="pgpad">
+      <div class="card">
+        <div class="card-t">
+          Demandes d'activation
+          <span class="card-count" id="cnt-act">0</span>
+        </div>
+        <div id="list-activations"><div class="empty"><div class="ei">⏳</div><p>Chargement...</p></div></div>
+      </div>
     </div>
   </div>
 
-  <!-- USERS -->
-  <div class="pg" id="pg-users">
-    <div class="pg-title">Membres</div>
-    <div class="pg-sub">Gestion de tous les utilisateurs</div>
-    <div class="card">
-      <div class="c-hd">
-        <div class="c-ttl">Tous les membres</div>
-        <div class="filter-row">
-          <input class="s-inp" id="u-q" placeholder="🔍 Rechercher..." oninput="renderUsers()" style="width:200px;">
-          <select class="s-sel" id="u-f" onchange="renderUsers()"><option value="">Tous</option><option value="inactif">Inactifs</option><option value="actif">Actifs</option></select>
+  <!-- TAB: MEMBRES -->
+  <div class="pg" id="pg-membres">
+    <div class="pgpad">
+      <div class="search-bar">
+        <input type="text" id="srch-membres" placeholder="🔍 Chercher un membre..." oninput="filterMembres()">
+        <button class="filter-btn on" id="flt-all" onclick="setFilter('all')">Tous</button>
+        <button class="filter-btn" id="flt-actif" onclick="setFilter('actif')">Actifs</button>
+        <button class="filter-btn" id="flt-inactif" onclick="setFilter('inactif')">Inactifs</button>
+      </div>
+      <div id="list-membres"><div class="empty"><div class="ei">⏳</div><p>Chargement...</p></div></div>
+    </div>
+  </div>
+
+  <!-- TAB: RETRAITS -->
+  <div class="pg" id="pg-retraits">
+    <div class="pgpad">
+      <div class="card">
+        <div class="card-t">Retraits en attente<span class="card-count" id="cnt-ret">0</span></div>
+        <div id="list-ret-att"><div class="empty"><div class="ei">⏳</div><p>Chargement...</p></div></div>
+      </div>
+      <div class="card">
+        <div class="card-t">Historique retraits</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Membre</th><th>Montant</th><th>Moyen</th><th>Numéro</th><th>Statut</th><th>Date</th></tr></thead>
+            <tbody id="tbl-ret-hist"></tbody>
+          </table>
         </div>
       </div>
-      <div class="tbl-wrap" id="u-tbl"><div class="empty"><div class="ei">⏳</div></div></div>
     </div>
   </div>
 
-  <!-- RETRAITS -->
-  <div class="pg" id="pg-retraits">
-    <div class="pg-title">Retraits</div>
-    <div class="pg-sub">Traitement des demandes de retrait</div>
-    <div class="card">
-      <div class="c-hd">
-        <div class="c-ttl">Demandes</div>
-        <select class="s-sel" id="r-f" onchange="renderRetraits()"><option value="">Toutes</option><option value="en_attente">En attente</option><option value="approuve">Approuvées</option><option value="rejete">Rejetées</option></select>
+  <!-- TAB: TRANSACTIONS -->
+  <div class="pg" id="pg-transactions">
+    <div class="pgpad">
+      <div class="card">
+        <div class="card-t">Toutes les transactions</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Membre</th><th>Type</th><th>Montant</th><th>Description</th><th>Date</th></tr></thead>
+            <tbody id="tbl-tx"></tbody>
+          </table>
+        </div>
       </div>
-      <div class="tbl-wrap" id="r-tbl"><div class="empty"><div class="ei">⏳</div></div></div>
     </div>
   </div>
 
-  <!-- TX -->
-  <div class="pg" id="pg-tx">
-    <div class="pg-title">Transactions</div>
-    <div class="pg-sub">Historique complet des commissions distribuées</div>
-    <div class="card">
-      <div class="tbl-wrap" id="tx-tbl"><div class="empty"><div class="ei">⏳</div></div></div>
-    </div>
-  </div>
+</div><!-- /scroll -->
 
-</main>
+<!-- BOTTOM NAV -->
+<nav class="bnav">
+  <button class="nb on" id="nb-activations" onclick="goTab('activations')">
+    <span class="nb-ic">⏳</span><span class="nb-lb">Activations</span>
+    <span class="nb-dot" id="dot-act"></span>
+  </button>
+  <button class="nb" id="nb-membres" onclick="goTab('membres')">
+    <span class="nb-ic">👥</span><span class="nb-lb">Membres</span>
+  </button>
+  <button class="nb" id="nb-retraits" onclick="goTab('retraits')">
+    <span class="nb-ic">💸</span><span class="nb-lb">Retraits</span>
+    <span class="nb-dot" id="dot-ret"></span>
+  </button>
+  <button class="nb" id="nb-transactions" onclick="goTab('transactions')">
+    <span class="nb-ic">📋</span><span class="nb-lb">Transactions</span>
+  </button>
+</nav>
 
-<!-- MODAL ACTIVATION -->
-<div class="ov" id="ov-act">
+<!-- MODAL RETRAIT -->
+<div class="modal-bg" id="modal-ret">
   <div class="modal">
-    <div class="m-ttl">Activer le compte</div>
-    <div class="m-sub" id="act-sub">Confirmation et distribution automatique des commissions.</div>
-    <div class="comm-box" id="act-comm"></div>
-    <div class="m-btns">
-      <button class="btn-cancel" onclick="closeOv('act')">Annuler</button>
-      <button class="btn-confirm" id="btn-act-ok" onclick="confirmAct()">✅ Activer & Créditer</button>
+    <div class="modal-title" id="modal-ret-title">Traiter le retrait</div>
+    <div class="modal-body" id="modal-ret-body">...</div>
+    <div class="modal-note">
+      <label>Note admin (optionnel)</label>
+      <textarea id="modal-ret-note" placeholder="Raison du rejet ou confirmation..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-sm btn-cancel" onclick="closeModal('modal-ret')">Annuler</button>
+      <button class="btn-sm btn-reject" id="modal-ret-reject" onclick="doRetAction('rejete')">✕ Rejeter</button>
+      <button class="btn-sm btn-approve" id="modal-ret-approve" onclick="doRetAction('approuve')">✓ Approuver</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL RETRAIT -->
-<div class="ov" id="ov-ret">
+<!-- MODAL ACTIVATION -->
+<div class="modal-bg" id="modal-act">
   <div class="modal">
-    <div class="m-ttl" id="ret-m-ttl">Traiter le retrait</div>
-    <div class="m-sub" id="ret-m-sub"></div>
-    <div class="ret-grid" id="ret-m-det"></div>
-    <label class="note-lbl">Note pour le membre (optionnel)</label>
-    <input class="note-inp" id="ret-note" placeholder="Ex: Paiement effectué le...">
-    <div class="m-btns" style="margin-top:16px;">
-      <button class="btn-cancel" onclick="closeOv('ret')">Annuler</button>
-      <button class="btn-rej" id="btn-ret-ko" onclick="procRet('rejete')">❌ Rejeter</button>
-      <button class="btn-confirm" id="btn-ret-ok" onclick="procRet('approuve')">✅ Approuver</button>
+    <div class="modal-title">✅ Confirmer l'activation</div>
+    <div class="modal-body" id="modal-act-body">...</div>
+    <div class="modal-note">
+      <label>Note optionnelle</label>
+      <textarea id="modal-act-note" placeholder="Commentaire admin..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-sm btn-cancel" onclick="closeModal('modal-act')">Annuler</button>
+      <button class="btn-sm btn-activate" onclick="doActivate()">✓ Activer le compte</button>
     </div>
   </div>
 </div>
@@ -241,224 +325,506 @@ tr:hover td{background:#FAFAF8;}
 <div class="toast" id="toast"></div>
 
 <script>
-const SB='https://fqiotqrraobmsrcyewsi.supabase.co';
-const AK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc';
-const rq=(p,o={})=>fetch(`${SB}/rest/v1/${p}`,{headers:{'apikey':AK,'Authorization':'Bearer '+AK,'Content-Type':'application/json','Prefer':o.prefer||'',...(o.headers||{})},...o});
+'use strict';
+var API = 'https://fqiotqrraobmsrcyewsi.supabase.co/rest/v1';
+var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc';
 
-let US=[],RE=[],TX=[];
-let pActId=null,pActComm=[],pRetId=null;
-
-async function init(){
-  const s=localStorage.getItem('sylla_user');
-  if(!s)return location.href='index.html';
-  const u=JSON.parse(s);
-  if(u.role!=='admin')return location.href='dashboard.html';
-  await loadAll();
+// ── API HELPERS ────────────────────────────────────────────────
+function apiGet(table, q) {
+  return fetch(API + '/' + table + '?' + q, {
+    headers: { apikey: KEY, Authorization: 'Bearer ' + KEY }
+  }).then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
 }
 
-async function loadAll(){
-  const [ru,rr,rt]=await Promise.all([
-    rq('sylla_users?order=created_at.desc&select=*'),
-    rq('sylla_retraits?order=created_at.desc&select=*'),
-    rq('sylla_transactions?order=created_at.desc&select=*&limit=500')
-  ]);
-  US=await ru.json()||[];RE=await rr.json()||[];TX=await rt.json()||[];
-  updBadges();renderDash();renderUsers();renderRetraits();renderTx();
+function apiPost(table, body) {
+  return fetch(API + '/' + table, {
+    method: 'POST',
+    headers: { apikey: KEY, Authorization: 'Bearer ' + KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+    body: JSON.stringify(body)
+  }).then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); });
 }
 
-function updBadges(){
-  document.getElementById('cnt-i').textContent=US.filter(u=>u.statut==='inactif'&&u.role!=='admin').length;
-  document.getElementById('cnt-r').textContent=RE.filter(r=>r.statut==='en_attente').length;
+function apiPatch(table, q, body) {
+  return fetch(API + '/' + table + '?' + q, {
+    method: 'PATCH',
+    headers: { apikey: KEY, Authorization: 'Bearer ' + KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+    body: JSON.stringify(body)
+  }).then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); });
 }
 
-function renderDash(){
-  const uu=US.filter(u=>u.role!=='admin');
-  const ina=uu.filter(u=>u.statut==='inactif');
-  document.getElementById('d-tot').textContent=uu.length;
-  document.getElementById('d-act').textContent=uu.filter(u=>u.statut==='actif').length;
-  document.getElementById('d-ina').textContent=ina.length;
-  document.getElementById('d-ratt').textContent=RE.filter(r=>r.statut==='en_attente').length;
-  const el=document.getElementById('d-pend');
-  if(!ina.length){el.innerHTML='<div class="empty"><div class="ei">🎉</div><p>Aucune activation en attente</p></div>';return;}
-  el.innerHTML='<div class="tbl-wrap"><table><thead><tr><th>Membre</th><th>Pays</th><th>Téléphone</th><th>Code</th><th>Inscrit le</th><th>Action</th></tr></thead><tbody>'+
-  ina.map(u=>`<tr>
-    <td><div class="uc"><div class="uav">${u.prenom.charAt(0)+u.nom.charAt(0)}</div><div><div class="un">${u.prenom} ${u.nom}</div><div class="us">${u.email}</div></div></div></td>
-    <td style="font-size:12px;">🌍 ${u.pays||'—'}</td>
-    <td>${u.telephone}</td>
-    <td><span style="font-size:11px;font-weight:700;color:#8B6914;background:#FFFBEF;padding:2px 7px;border-radius:6px;letter-spacing:1px;">${u.code_parrainage}</span></td>
-    <td style="color:#9CA3AF;font-size:12px;">${new Date(u.created_at).toLocaleDateString('fr-FR')}</td>
-    <td><div class="acts"><button class="btn-sm btn-act" onclick="openAct('${u.id}')">✅ Activer</button><button class="btn-sm btn-del" onclick="delUser('${u.id}','${u.prenom} ${u.nom}')">🗑</button></div></td>
-  </tr>`).join('')+'</tbody></table></div>';
-}
+// ── STATE ──────────────────────────────────────────────────────
+var AU = null; // admin user
+var allUsers = [], allTx = [], allRetraits = [];
+var pendingActivations = []; // { tx, user }
+var currentFilter = 'all';
+var currentRetId = null, currentRetUserId = null;
+var currentActTxId = null, currentActUserId = null;
 
-function renderUsers(){
-  const q=(document.getElementById('u-q')?.value||'').toLowerCase();
-  const f=document.getElementById('u-f')?.value||'';
-  const um={};US.forEach(u=>um[u.id]=u);
-  const arr=US.filter(u=>{
-    const ms=!q||`${u.nom} ${u.prenom} ${u.email} ${u.telephone}`.toLowerCase().includes(q);
-    const mf=!f||u.statut===f;return ms&&mf;
+// ── INIT ────────────────────────────────────────────────────────
+(function init() {
+  try { AU = JSON.parse(localStorage.getItem('sylla_user') || 'null'); } catch(e) {}
+  if (!AU || !AU.id) { location.href = 'index.html'; return; }
+  if (AU.role !== 'admin') { location.href = 'dashboard.html'; return; }
+  loadAll();
+})();
+
+// ── LOAD ALL DATA (one batch) ───────────────────────────────────
+function loadAll() {
+  Promise.all([
+    apiGet('sylla_users', 'select=*&order=created_at.desc'),
+    apiGet('sylla_transactions', 'select=*&order=created_at.desc'),
+    apiGet('sylla_retraits', 'select=*&order=created_at.desc')
+  ]).then(function(results) {
+    allUsers   = results[0] || [];
+    allTx      = results[1] || [];
+    allRetraits = results[2] || [];
+    processData();
+  }).catch(function(e) {
+    showToast('Erreur chargement : ' + e.message, 'er');
   });
-  const el=document.getElementById('u-tbl');
-  if(!arr.length){el.innerHTML='<div class="empty"><div class="ei">👤</div><p>Aucun résultat</p></div>';return;}
-  el.innerHTML='<table><thead><tr><th>Membre</th><th>Pays</th><th>Téléphone</th><th>Parrain</th><th>Solde</th><th>Statut</th><th>Actions</th></tr></thead><tbody>'+
-  arr.map(u=>`<tr>
-    <td><div class="uc"><div class="uav">${u.prenom.charAt(0)+u.nom.charAt(0)}</div><div><div class="un">${u.prenom} ${u.nom}</div><div class="us">${u.email}</div></div></div></td>
-    <td style="font-size:12px;">🌍 ${u.pays||'—'}</td>
-    <td>${u.telephone}</td>
-    <td style="font-size:12px;color:#9CA3AF;">${u.parrain_id?(um[u.parrain_id]?um[u.parrain_id].prenom+' '+um[u.parrain_id].nom:'—'):'—'}</td>
-    <td style="font-family:'Playfair Display',serif;font-size:17px;font-weight:800;color:#D4AF37;">${(u.solde||0).toLocaleString('fr-FR')} F</td>
-    <td><span class="badge ${u.role==='admin'?'b-adm':u.statut==='actif'?'b-actif':'b-inactif'}">${u.role==='admin'?'Admin':u.statut}</span></td>
-    <td><div class="acts">
-      ${u.role!=='admin'&&u.statut==='inactif'?`<button class="btn-sm btn-act" onclick="openAct('${u.id}')">✅</button>`:''}
-      ${u.role!=='admin'?`<button class="btn-sm btn-del" onclick="delUser('${u.id}','${u.prenom} ${u.nom}')">🗑</button>`:''}
-    </div></td>
-  </tr>`).join('')+'</tbody></table>';
 }
 
-function renderRetraits(){
-  const f=document.getElementById('r-f')?.value||'';
-  const um={};US.forEach(u=>um[u.id]=u);
-  const arr=f?RE.filter(r=>r.statut===f):RE;
-  const el=document.getElementById('r-tbl');
-  if(!arr.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>Aucune demande</p></div>';return;}
-  el.innerHTML='<table><thead><tr><th>Membre</th><th>Montant</th><th>Moyen</th><th>Numéro</th><th>Statut</th><th>Date</th><th>Action</th></tr></thead><tbody>'+
-  arr.map(r=>{
-    const u=um[r.user_id]||{};const ini=u.prenom?(u.prenom.charAt(0)+u.nom.charAt(0)):'?';
-    return`<tr>
-      <td><div class="uc"><div class="uav">${ini}</div><div><div class="un">${u.prenom||'?'} ${u.nom||''}</div><div class="us">${u.telephone||''}</div></div></div></td>
-      <td style="font-family:'Playfair Display',serif;font-size:18px;font-weight:800;color:#D4AF37;">${r.montant.toLocaleString('fr-FR')} F</td>
-      <td>${r.moyen_paiement}</td>
-      <td style="font-weight:600;">${r.numero}</td>
-      <td><span class="badge ${r.statut==='en_attente'?'b-att':r.statut==='approuve'?'b-ok':'b-ko'}">${r.statut.replace('_',' ')}</span></td>
-      <td style="color:#9CA3AF;font-size:12px;">${new Date(r.created_at).toLocaleDateString('fr-FR')}</td>
-      <td>${r.statut==='en_attente'?`<button class="btn-sm btn-trt" onclick="openRet('${r.id}')">Traiter</button>`:`<span style="font-size:11px;color:#9CA3AF;">${r.note_admin||'—'}</span>`}</td>
-    </tr>`;
-  }).join('')+'</tbody></table>';
+function processData() {
+  // Build user map
+  var userMap = {};
+  allUsers.forEach(function(u) { userMap[u.id] = u; });
+
+  // Stats
+  var nonAdmin = allUsers.filter(function(u) { return u.role !== 'admin'; });
+  var actifs   = nonAdmin.filter(function(u) { return u.statut === 'actif'; });
+  var inactifs = nonAdmin.filter(function(u) { return u.statut === 'inactif'; });
+  var retAtt   = allRetraits.filter(function(r) { return r.statut === 'en_attente'; });
+
+  setText('st-total',  nonAdmin.length);
+  setText('st-actif',  actifs.length);
+  setText('st-attente', inactifs.length);
+  setText('st-retraits', retAtt.length);
+
+  // Dot indicators
+  var da = allTx.filter(function(t) { return t.type === 'demande_activation'; });
+  // Find pending activation requests (users who are inactif and have a demande)
+  pendingActivations = [];
+  inactifs.forEach(function(u) {
+    var tx = allTx.filter(function(t) { return t.type === 'demande_activation' && t.user_id === u.id; });
+    if (tx.length > 0) {
+      pendingActivations.push({ user: u, tx: tx[0] });
+    }
+  });
+
+  var dotAct = document.getElementById('dot-act');
+  if (dotAct) dotAct.classList.toggle('on', pendingActivations.length > 0);
+  var dotRet = document.getElementById('dot-ret');
+  if (dotRet) dotRet.classList.toggle('on', retAtt.length > 0);
+
+  setText('cnt-act', pendingActivations.length);
+  setText('cnt-ret', retAtt.length);
+
+  renderActivations(userMap);
+  renderMembres(nonAdmin, userMap);
+  renderRetraits(allRetraits, userMap);
+  renderTransactions(allTx, userMap);
 }
 
-function renderTx(){
-  const um={};US.forEach(u=>um[u.id]=u.prenom+' '+u.nom);
-  const el=document.getElementById('tx-tbl');
-  if(!TX.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>Aucune transaction</p></div>';return;}
-  const ic={commission_n1:'🥇',commission_n2:'🥈',commission_n3:'🥉',retrait:'💸'};
-  el.innerHTML='<table><thead><tr><th>Bénéficiaire</th><th>Type</th><th>Montant</th><th>Description</th><th>Date</th></tr></thead><tbody>'+
-  TX.map(t=>`<tr>
-    <td style="font-weight:600;">${um[t.user_id]||'—'}</td>
-    <td>${ic[t.type]||'💰'} <span style="font-size:11px;color:#9CA3AF;">${t.type}</span></td>
-    <td style="font-family:'Playfair Display',serif;font-size:17px;font-weight:800;color:${t.montant>0?'#16A34A':'#DC2626'};">${t.montant>0?'+':''}${t.montant.toLocaleString('fr-FR')} F</td>
-    <td style="font-size:12px;color:#9CA3AF;">${t.description||'—'}</td>
-    <td style="font-size:12px;color:#9CA3AF;">${new Date(t.created_at).toLocaleDateString('fr-FR')}</td>
-  </tr>`).join('')+'</tbody></table>';
-}
-
-// ACTIVATION
-function openAct(uid){
-  pActId=uid;pActComm=[];
-  const u=US.find(x=>x.id===uid);if(!u)return;
-  document.getElementById('act-sub').textContent=`${u.prenom} ${u.nom} — ${u.telephone} — ${u.pays||''}`;
-  const comms=[];let cur=u;
-  for(let lv=1;lv<=3;lv++){
-    if(!cur.parrain_id)break;
-    const p=US.find(x=>x.id===cur.parrain_id);if(!p)break;
-    comms.push({lv,p,amt:lv===1?1250:lv===2?600:300});cur=p;
+// ── RENDER: ACTIVATIONS ─────────────────────────────────────────
+function renderActivations(userMap) {
+  var el = document.getElementById('list-activations');
+  if (!pendingActivations.length) {
+    el.innerHTML = '<div class="empty"><div class="ei">✅</div><p>Aucune demande en attente</p></div>';
+    return;
   }
-  pActComm=comms;
-  const box=document.getElementById('act-comm');
-  if(!comms.length){box.innerHTML='<div style="text-align:center;padding:12px;color:#9CA3AF;font-size:13px;">Aucun parrain — les 2 500 F restent dans la plateforme.</div>';return;}
-  const tot=comms.reduce((s,c)=>s+c.amt,0);
-  box.innerHTML=comms.map(c=>`<div class="c-row"><div><div class="c-lbl">Niveau ${c.lv} — ${c.p.prenom} ${c.p.nom}</div><div class="c-sub2">${c.p.telephone}</div></div><div class="c-amt">+${c.amt.toLocaleString('fr-FR')} F</div></div>`).join('')+
-  `<div class="c-row"><div class="c-lbl" style="color:#9CA3AF;">Reste plateforme</div><div class="c-muted">${(2500-tot).toLocaleString('fr-FR')} F</div></div>`;
-  document.getElementById('ov-act').classList.add('on');
+  el.innerHTML = pendingActivations.map(function(item) {
+    var u = item.user, tx = item.tx;
+    var av = (u.prenom || '?').charAt(0).toUpperCase() + (u.nom || '?').charAt(0).toUpperCase();
+    var dt = new Date(tx.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+    return '<div class="da-card">' +
+      '<div class="da-top"><span class="da-ic">💳</span><div><div class="da-nm">' + u.prenom + ' ' + u.nom + '</div><div class="da-sub">' + u.email + ' · ' + u.telephone + ' · ' + (u.pays || '') + '</div></div></div>' +
+      '<div class="da-desc"><strong>Détails paiement :</strong><br>' + (tx.description || '—') + '<br><span style="color:var(--txt3);font-size:11px">Soumis le ' + dt + '</span></div>' +
+      '<div class="da-actions">' +
+      '<button class="btn-sm btn-reject" onclick="openActModal(\'' + u.id + '\',\'' + tx.id + '\',\'' + escStr(u.prenom + ' ' + u.nom) + '\',false)">✕ Refuser</button>' +
+      '<button class="btn-sm btn-activate" onclick="openActModal(\'' + u.id + '\',\'' + tx.id + '\',\'' + escStr(u.prenom + ' ' + u.nom) + '\',true)">✓ Activer</button>' +
+      '</div></div>';
+  }).join('');
 }
 
-async function confirmAct(){
-  if(!pActId)return;
-  const btn=document.getElementById('btn-act-ok');
-  btn.disabled=true;btn.innerHTML='<span class="spin"></span>Traitement...';
-  try{
-    await rq('sylla_users?id=eq.'+pActId,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({statut:'actif'})});
-    const u=US.find(x=>x.id===pActId);
-    for(const c of pActComm){
-      const ns=(c.p.solde||0)+c.amt;
-      await rq('sylla_users?id=eq.'+c.p.id,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({solde:ns})});
-      await rq('sylla_transactions',{method:'POST',prefer:'return=minimal',body:JSON.stringify({user_id:c.p.id,type:'commission_n'+c.lv,montant:c.amt,description:'Commission N'+c.lv+' — '+(u?u.prenom+' '+u.nom:'nouveau'),source_user_id:pActId})});
-      c.p.solde=ns;
-    }
-    if(u)u.statut='actif';
-    toast('Compte activé et commissions distribuées !','ok');
-    closeOv('act');await loadAll();
-  }catch(e){toast(e.message||'Erreur','er');}
-  finally{btn.disabled=false;btn.textContent='✅ Activer & Créditer';}
+// ── RENDER: MEMBRES ─────────────────────────────────────────────
+function renderMembres(users, userMap) {
+  var filtered = users;
+  var q = (document.getElementById('srch-membres') ? document.getElementById('srch-membres').value : '').toLowerCase();
+  if (q) {
+    filtered = filtered.filter(function(u) {
+      return (u.nom + ' ' + u.prenom + ' ' + u.email + ' ' + u.telephone).toLowerCase().indexOf(q) !== -1;
+    });
+  }
+  if (currentFilter !== 'all') {
+    filtered = filtered.filter(function(u) { return u.statut === currentFilter; });
+  }
+
+  var el = document.getElementById('list-membres');
+  if (!filtered.length) { el.innerHTML = '<div class="empty"><div class="ei">👤</div><p>Aucun membre trouvé</p></div>'; return; }
+
+  el.innerHTML = filtered.map(function(u) {
+    var av = (u.prenom || '?').charAt(0).toUpperCase() + (u.nom || '?').charAt(0).toUpperCase();
+    var parrain = u.parrain_id && userMap[u.parrain_id] ? userMap[u.parrain_id].prenom + ' ' + userMap[u.parrain_id].nom : '—';
+    var dt = new Date(u.created_at).toLocaleDateString('fr-FR');
+    var isAdm = u.role === 'admin';
+    return '<div class="ucard">' +
+      '<div class="uc-top"><div class="uc-av">' + av + '</div><div style="flex:1;min-width:0"><div class="uc-nm">' + u.prenom + ' ' + u.nom + '</div><div class="uc-info">' + u.email + '</div></div>' +
+      '<span class="bdg ' + (isAdm ? 'b-admin' : (u.statut === 'actif' ? 'b-actif' : 'b-inactif')) + '">' + (isAdm ? 'Admin' : u.statut) + '</span>' +
+      '</div>' +
+      '<div class="uc-rows">' +
+      mkURow('Téléphone', u.telephone) + mkURow('Pays', u.pays || '—') +
+      mkURow('Solde', fmt(u.solde) + ' F CFA') +
+      mkURow('Code', u.code_parrainage) + mkURow('Parrain', parrain) +
+      mkURow('Inscrit le', dt) +
+      '</div>' +
+      (isAdm ? '' :
+        '<div class="uc-actions">' +
+        (u.statut === 'inactif' ? '<button class="btn-sm btn-activate" onclick="quickActivate(\'' + u.id + '\',\'' + escStr(u.prenom + ' ' + u.nom) + '\')">✓ Activer</button>' : '<button class="btn-sm btn-reject" onclick="deactivateUser(\'' + u.id + '\',\'' + escStr(u.prenom + ' ' + u.nom) + '\')">✗ Désactiver</button>') +
+        '<button class="btn-sm btn-danger" onclick="confirmDelete(\'' + u.id + '\',\'' + escStr(u.prenom + ' ' + u.nom) + '\')">🗑 Supprimer</button>' +
+        '</div>'
+      ) +
+      '</div>';
+  }).join('');
 }
 
-async function delUser(uid,name){
-  if(!confirm('Supprimer '+name+' ? Action irréversible.'))return;
-  try{
-    await rq('sylla_transactions?user_id=eq.'+uid,{method:'DELETE'});
-    await rq('sylla_retraits?user_id=eq.'+uid,{method:'DELETE'});
-    await rq('sylla_users?id=eq.'+uid,{method:'DELETE'});
-    toast(name+' supprimé.','nfo');await loadAll();
-  }catch(e){toast('Erreur suppression','er');}
+function mkURow(k, v) {
+  return '<div class="uc-row"><span class="uc-k">' + k + '</span><span class="uc-v">' + v + '</span></div>';
 }
 
-// RETRAIT
-function openRet(rid){
-  pRetId=rid;
-  const r=RE.find(x=>x.id===rid);const u=US.find(x=>x.id===r?.user_id)||{};
-  if(!r)return;
-  document.getElementById('ret-m-ttl').textContent='Retrait — '+(u.prenom||'?')+' '+(u.nom||'');
-  document.getElementById('ret-m-sub').textContent='Soumis le '+new Date(r.created_at).toLocaleDateString('fr-FR');
-  document.getElementById('ret-m-det').innerHTML=
-    `<div class="rdi"><div class="rl">Montant</div><div class="rv gold">${r.montant.toLocaleString('fr-FR')} F</div></div>
-     <div class="rdi"><div class="rl">Solde membre</div><div class="rv">${(u.solde||0).toLocaleString('fr-FR')} F</div></div>
-     <div class="rdi"><div class="rl">Moyen de paiement</div><div class="rv">${r.moyen_paiement}</div></div>
-     <div class="rdi"><div class="rl">Numéro</div><div class="rv">${r.numero}</div></div>`;
-  document.getElementById('ret-note').value='';
-  document.getElementById('ov-ret').classList.add('on');
+function filterMembres() {
+  var nonAdmin = allUsers.filter(function(u) { return u.role !== 'admin'; });
+  var userMap = {};
+  allUsers.forEach(function(u) { userMap[u.id] = u; });
+  renderMembres(nonAdmin, userMap);
 }
 
-async function procRet(dec){
-  const r=RE.find(x=>x.id===pRetId);if(!r)return;
-  const note=document.getElementById('ret-note').value;
-  const ba=document.getElementById('btn-ret-ok'),br=document.getElementById('btn-ret-ko');
-  ba.disabled=br.disabled=true;
-  try{
-    if(dec==='approuve'){
-      const u=US.find(x=>x.id===r.user_id);
-      if(u){
-        const ns=Math.max(0,(u.solde||0)-r.montant);
-        await rq('sylla_users?id=eq.'+u.id,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({solde:ns})});
-        await rq('sylla_transactions',{method:'POST',prefer:'return=minimal',body:JSON.stringify({user_id:u.id,type:'retrait',montant:-r.montant,description:'Retrait via '+r.moyen_paiement+' — '+r.numero})});
-        u.solde=ns;
+function setFilter(f) {
+  currentFilter = f;
+  ['all','actif','inactif'].forEach(function(k) {
+    var el = document.getElementById('flt-' + k);
+    if (el) el.classList.toggle('on', k === f);
+  });
+  filterMembres();
+}
+
+// ── RENDER: RETRAITS ────────────────────────────────────────────
+function renderRetraits(retraits, userMap) {
+  var att = retraits.filter(function(r) { return r.statut === 'en_attente'; });
+  var hist = retraits.filter(function(r) { return r.statut !== 'en_attente'; });
+
+  // En attente — cards
+  var elAtt = document.getElementById('list-ret-att');
+  if (!att.length) {
+    elAtt.innerHTML = '<div class="empty"><div class="ei">✅</div><p>Aucun retrait en attente</p></div>';
+  } else {
+    elAtt.innerHTML = att.map(function(r) {
+      var u = userMap[r.user_id] || {};
+      var dt = new Date(r.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+      return '<div class="ret-card att">' +
+        '<div class="rc-top"><div><div class="rc-amt">' + fmt(r.montant) + ' F</div><div class="rc-sub">Demandé le ' + dt + '</div></div><span class="bdg b-att">En attente</span></div>' +
+        '<div class="rc-info">' +
+        mkRRow('Membre', (u.prenom || '?') + ' ' + (u.nom || '?')) +
+        mkRRow('Email', u.email || '—') + mkRRow('Téléphone', u.telephone || '—') +
+        mkRRow('Opérateur', r.moyen_paiement) + mkRRow('Numéro', r.numero) +
+        mkRRow('Solde actuel', fmt(u.solde || 0) + ' F') +
+        '</div>' +
+        '<div class="rc-actions">' +
+        '<button class="btn-sm btn-reject" onclick="openRetModal(\'' + r.id + '\',\'' + (r.user_id) + '\',\'' + fmt(r.montant) + '\',\'' + escStr((u.prenom || '') + ' ' + (u.nom || '')) + '\')">✕ Rejeter</button>' +
+        '<button class="btn-sm btn-approve" onclick="openRetModal(\'' + r.id + '\',\'' + (r.user_id) + '\',\'' + fmt(r.montant) + '\',\'' + escStr((u.prenom || '') + ' ' + (u.nom || '')) + '\')">✓ Approuver</button>' +
+        '</div></div>';
+    }).join('');
+  }
+
+  // Historique — table
+  var tbody = document.getElementById('tbl-ret-hist');
+  if (!hist.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:18px;color:var(--txt3)">Aucun historique</td></tr>';
+  } else {
+    var m = { en_attente: 'b-att', approuve: 'b-ok', rejete: 'b-ko' };
+    tbody.innerHTML = hist.map(function(r) {
+      var u = userMap[r.user_id] || {};
+      return '<tr>' +
+        '<td><div style="font-weight:600">' + (u.prenom || '?') + ' ' + (u.nom || '?') + '</div><div style="font-size:11px;color:var(--txt3)">' + (u.telephone || '—') + '</div></td>' +
+        '<td style="font-family:\'Playfair Display\',serif;font-weight:700;color:var(--goldd)">' + fmt(r.montant) + ' F</td>' +
+        '<td>' + r.moyen_paiement + '</td>' +
+        '<td>' + r.numero + '</td>' +
+        '<td><span class="bdg ' + (m[r.statut] || '') + '">' + r.statut.replace('_', ' ') + '</span></td>' +
+        '<td style="font-size:12px;color:var(--txt3)">' + new Date(r.created_at).toLocaleDateString('fr-FR') + '</td>' +
+        '</tr>';
+    }).join('');
+  }
+}
+
+function mkRRow(k, v) { return '<div class="rc-row"><span class="rc-k">' + k + '</span><span class="rc-v">' + v + '</span></div>'; }
+
+// ── RENDER: TRANSACTIONS ────────────────────────────────────────
+function renderTransactions(txList, userMap) {
+  var tbody = document.getElementById('tbl-tx');
+  if (!txList.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:18px;color:var(--txt3)">Aucune transaction</td></tr>';
+    return;
+  }
+  var TYPE_LBL = { commission_n1: '🥇 Comm. N1', commission_n2: '🥈 Comm. N2', commission_n3: '🥉 Comm. N3', retrait: '💸 Retrait', demande_activation: '🔑 Activation' };
+  tbody.innerHTML = txList.map(function(t) {
+    var u = userMap[t.user_id] || {};
+    var cr = t.montant > 0;
+    return '<tr>' +
+      '<td><div style="font-weight:600">' + (u.prenom || '?') + ' ' + (u.nom || '?') + '</div><div style="font-size:11px;color:var(--txt3)">' + (u.telephone || '—') + '</div></td>' +
+      '<td>' + (TYPE_LBL[t.type] || t.type) + '</td>' +
+      '<td style="font-family:\'Playfair Display\',serif;font-weight:700;color:' + (cr ? 'var(--green)' : 'var(--red2)') + '">' + (cr ? '+' : '') + fmt(t.montant) + ' F</td>' +
+      '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--txt2)">' + (t.description || '—') + '</td>' +
+      '<td style="font-size:12px;color:var(--txt3);white-space:nowrap">' + new Date(t.created_at).toLocaleDateString('fr-FR') + '</td>' +
+      '</tr>';
+  }).join('');
+}
+
+// ── ACTIONS: ACTIVATION ─────────────────────────────────────────
+var pendingActConfirm = false; // true = activate, false = refuse
+
+function openActModal(userId, txId, name, doActivateBool) {
+  currentActUserId = userId;
+  currentActTxId   = txId;
+  pendingActConfirm = doActivateBool;
+  var body = '<strong>Membre :</strong> ' + name + '<br>' +
+    (doActivateBool
+      ? '⚠️ Cette action va <strong>activer le compte</strong> et distribuer les <strong>commissions</strong> aux parrains (N1: 1250 F, N2: 600 F, N3: 300 F).'
+      : '⚠️ Cette action va <strong>refuser la demande</strong>. Le compte restera inactif.');
+  document.getElementById('modal-act-body').innerHTML = body;
+  document.getElementById('modal-act-note').value = '';
+  document.getElementById('modal-act').classList.add('on');
+}
+
+function doActivate() {
+  if (!currentActUserId) return;
+  var btn = document.querySelector('#modal-act .btn-sm.btn-activate');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Traitement...'; }
+
+  if (!pendingActConfirm) {
+    // Just close modal, no action needed (keep as inactif)
+    closeModal('modal-act');
+    showToast('Demande refusée.', 'nfo');
+    if (btn) { btn.disabled = false; btn.textContent = '✓ Activer le compte'; }
+    return;
+  }
+
+  // 1. Activate user
+  apiPatch('sylla_users', 'id=eq.' + currentActUserId, { statut: 'actif' })
+    .then(function() {
+      // 2. Get user to find parrain chain
+      return apiGet('sylla_users', 'select=*&id=eq.' + currentActUserId);
+    })
+    .then(function(data) {
+      if (!data || !data.length) throw new Error('Utilisateur introuvable');
+      var user = data[0];
+      // 3. Distribute commissions
+      return distributeCommissions(user);
+    })
+    .then(function() {
+      closeModal('modal-act');
+      showToast('Compte activé et commissions distribuées !', 'ok');
+      loadAll(); // Refresh all data
+    })
+    .catch(function(e) {
+      showToast('Erreur : ' + e.message, 'er');
+      if (btn) { btn.disabled = false; btn.textContent = '✓ Activer le compte'; }
+    });
+}
+
+function distributeCommissions(newUser) {
+  // Chain: newUser -> N1 parrain -> N2 parrain -> N3 parrain
+  var commissions = [
+    { level: 1, amount: 1250, type: 'commission_n1', parrainId: newUser.parrain_id }
+  ];
+
+  if (!newUser.parrain_id) return Promise.resolve(); // No parrain, nothing to distribute
+
+  // Get N1 parrain
+  return apiGet('sylla_users', 'select=*&id=eq.' + newUser.parrain_id)
+    .then(function(data) {
+      var n1 = data && data.length ? data[0] : null;
+      if (!n1 || n1.role === 'admin') {
+        // Still credit N1 if admin (optional: skip admin)
       }
-    }
-    await rq('sylla_retraits?id=eq.'+pRetId,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({statut:dec,note_admin:note||null})});
-    toast(dec==='approuve'?'Retrait approuvé, solde déduit !':'Retrait rejeté.','ok');
-    closeOv('ret');await loadAll();
-  }catch(e){toast(e.message||'Erreur','er');}
-  finally{ba.disabled=br.disabled=false;}
+      var tasks = [];
+
+      // N1 commission
+      if (n1) {
+        tasks.push(
+          apiPatch('sylla_users', 'id=eq.' + n1.id, { solde: Number(n1.solde || 0) + 1250 })
+            .then(function() {
+              return apiPost('sylla_transactions', {
+                user_id: n1.id, type: 'commission_n1', montant: 1250,
+                description: 'Commission N1 — activation de ' + newUser.prenom + ' ' + newUser.nom,
+                source_user_id: newUser.id
+              });
+            })
+        );
+      }
+
+      // N2
+      if (n1 && n1.parrain_id) {
+        tasks.push(
+          apiGet('sylla_users', 'select=*&id=eq.' + n1.parrain_id)
+            .then(function(d2) {
+              var n2 = d2 && d2.length ? d2[0] : null;
+              if (!n2) return;
+              return apiPatch('sylla_users', 'id=eq.' + n2.id, { solde: Number(n2.solde || 0) + 600 })
+                .then(function() {
+                  return apiPost('sylla_transactions', {
+                    user_id: n2.id, type: 'commission_n2', montant: 600,
+                    description: 'Commission N2 — activation de ' + newUser.prenom + ' ' + newUser.nom,
+                    source_user_id: newUser.id
+                  });
+                })
+                .then(function() {
+                  // N3
+                  if (!n2.parrain_id) return;
+                  return apiGet('sylla_users', 'select=*&id=eq.' + n2.parrain_id)
+                    .then(function(d3) {
+                      var n3 = d3 && d3.length ? d3[0] : null;
+                      if (!n3) return;
+                      return apiPatch('sylla_users', 'id=eq.' + n3.id, { solde: Number(n3.solde || 0) + 300 })
+                        .then(function() {
+                          return apiPost('sylla_transactions', {
+                            user_id: n3.id, type: 'commission_n3', montant: 300,
+                            description: 'Commission N3 — activation de ' + newUser.prenom + ' ' + newUser.nom,
+                            source_user_id: newUser.id
+                          });
+                        });
+                    });
+                });
+            })
+        );
+      }
+
+      return Promise.all(tasks);
+    });
 }
 
-function closeOv(name){document.getElementById('ov-'+name).classList.remove('on');pActId=null;pActComm=[];pRetId=null;}
-document.querySelectorAll('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('on');}));
-
-function goPg(name,el){
-  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
-  document.querySelectorAll('.sb-lnk').forEach(n=>n.classList.remove('on'));
-  document.getElementById('pg-'+name).classList.add('on');
-  if(el)el.classList.add('on');
-  document.querySelector('.main').scrollTop=0;
+function quickActivate(userId, name) {
+  if (!confirm('Activer le compte de ' + name + ' et distribuer les commissions ?')) return;
+  currentActUserId = userId;
+  currentActTxId   = null;
+  pendingActConfirm = true;
+  doActivate();
 }
 
-function logout(){localStorage.removeItem('sylla_user');location.href='index.html';}
-
-function toast(msg,type='nfo'){
-  const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' on';
-  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),4500);
+function deactivateUser(userId, name) {
+  if (!confirm('Désactiver le compte de ' + name + ' ?')) return;
+  apiPatch('sylla_users', 'id=eq.' + userId, { statut: 'inactif' })
+    .then(function() { showToast('Compte désactivé.', 'nfo'); loadAll(); })
+    .catch(function(e) { showToast('Erreur : ' + e.message, 'er'); });
 }
 
-init();
+function confirmDelete(userId, name) {
+  if (!confirm('⚠️ Supprimer définitivement le compte de ' + name + ' ? Cette action est irréversible.')) return;
+  fetch(API + '/sylla_users?id=eq.' + userId, {
+    method: 'DELETE',
+    headers: { apikey: KEY, Authorization: 'Bearer ' + KEY }
+  }).then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    showToast('Compte supprimé.', 'ok'); loadAll();
+  }).catch(function(e) { showToast('Erreur : ' + e.message, 'er'); });
+}
+
+// ── ACTIONS: RETRAITS ───────────────────────────────────────────
+var pendingRetMontant = 0;
+
+function openRetModal(retId, userId, montantStr, name) {
+  currentRetId     = retId;
+  currentRetUserId = userId;
+  var montantNum = parseFloat(montantStr.replace(/\s/g, '').replace(',', '.')) || 0;
+  pendingRetMontant = montantNum;
+  document.getElementById('modal-ret-title').textContent = 'Retrait de ' + montantStr + ' F — ' + name;
+  document.getElementById('modal-ret-body').innerHTML =
+    '<strong>Membre :</strong> ' + name + '<br>' +
+    '<strong>Montant :</strong> ' + montantStr + ' F CFA<br><br>' +
+    '• <strong>Approuver</strong> : décrémentera le solde du membre.<br>' +
+    '• <strong>Rejeter</strong> : le solde reste inchangé.';
+  document.getElementById('modal-ret-note').value = '';
+  document.getElementById('modal-ret').classList.add('on');
+}
+
+function doRetAction(action) {
+  if (!currentRetId) return;
+  var note = (document.getElementById('modal-ret-note').value || '').trim();
+  var bApprove = document.getElementById('modal-ret-approve');
+  var bReject  = document.getElementById('modal-ret-reject');
+  bApprove.disabled = true; bReject.disabled = true;
+  bApprove.innerHTML = '<span class="spin"></span>...';
+
+  var patchRet = apiPatch('sylla_retraits', 'id=eq.' + currentRetId, { statut: action, note_admin: note || null });
+
+  var chain = patchRet;
+  if (action === 'approuve') {
+    // Decrement solde
+    var userObj = allUsers.find(function(u) { return u.id === currentRetUserId; });
+    var currentSolde = userObj ? Number(userObj.solde || 0) : 0;
+    var newSolde = Math.max(0, currentSolde - pendingRetMontant);
+    chain = patchRet.then(function() {
+      return apiPatch('sylla_users', 'id=eq.' + currentRetUserId, { solde: newSolde });
+    }).then(function() {
+      return apiPost('sylla_transactions', {
+        user_id: currentRetUserId, type: 'retrait',
+        montant: -pendingRetMontant,
+        description: 'Retrait approuvé — ' + pendingRetMontant.toLocaleString('fr-FR') + ' F'
+      });
+    });
+  }
+
+  chain.then(function() {
+    closeModal('modal-ret');
+    showToast(action === 'approuve' ? 'Retrait approuvé !' : 'Retrait rejeté.', action === 'approuve' ? 'ok' : 'nfo');
+    loadAll();
+  }).catch(function(e) {
+    showToast('Erreur : ' + e.message, 'er');
+    bApprove.disabled = false; bReject.disabled = false;
+    bApprove.textContent = '✓ Approuver';
+  });
+}
+
+// ── NAVIGATION ──────────────────────────────────────────────────
+function goTab(name) {
+  var tabs = ['activations','membres','retraits','transactions'];
+  tabs.forEach(function(t) {
+    document.getElementById('pg-' + t).classList.toggle('on', t === name);
+    document.getElementById('tn-' + t).classList.toggle('on', t === name);
+    document.getElementById('nb-' + t).classList.toggle('on', t === name);
+  });
+  document.getElementById('scroll').scrollTop = 0;
+}
+
+// ── MODAL ────────────────────────────────────────────────────────
+function closeModal(id) {
+  document.getElementById(id).classList.remove('on');
+  currentRetId = null; currentRetUserId = null;
+  currentActTxId = null; currentActUserId = null;
+  // Re-enable buttons
+  var btns = document.querySelectorAll('#' + id + ' .btn-sm');
+  btns.forEach(function(b) { b.disabled = false; });
+  var ba = document.getElementById('modal-ret-approve');
+  if (ba) ba.textContent = '✓ Approuver';
+  var bact = document.querySelector('#modal-act .btn-sm.btn-activate');
+  if (bact) bact.textContent = '✓ Activer le compte';
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-bg').forEach(function(bg) {
+  bg.addEventListener('click', function(e) {
+    if (e.target === bg) closeModal(bg.id);
+  });
+});
+
+// ── UTILS ────────────────────────────────────────────────────────
+function setText(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+function fmt(n) { return Number(n || 0).toLocaleString('fr-FR'); }
+function escStr(s) { return (s || '').replace(/'/g, "\\'"); }
+function logout() { localStorage.removeItem('sylla_user'); location.href = 'index.html'; }
+function showToast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + (type || 'nfo') + ' show';
+  clearTimeout(t._t); t._t = setTimeout(function() { t.classList.remove('show'); }, 5000);
+}
 </script>
 </body>
 </html>
