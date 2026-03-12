@@ -2,1081 +2,732 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>SYLLA Agence — Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html{height:100%;}
-body{
-  font-family:'Inter',sans-serif;
-  background:#F0EEE9;
-  min-height:100vh;
-  padding-bottom:80px; /* space for bottom nav */
-  color:#111827;
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --navy:#0F2144;--blue:#1A3A6B;--blue2:#2657A8;
+  --gold:#D4AF37;--goldl:#F5D976;--goldd:#8B6914;
+  --red:#8B1A1A;--cream:#F5F3EE;--cream2:#EDE9DF;
+  --white:#fff;--txt:#111827;--txt2:#4B5563;--txt3:#9CA3AF
 }
+html{height:100%}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--txt);height:100%;display:flex;flex-direction:column;overflow:hidden}
 
-/* ====== TOP BAR ====== */
-.topbar{
-  position:sticky;top:0;z-index:100;
-  background:linear-gradient(135deg,#1A3A6B 0%,#2657A8 55%,#8B1A1A 100%);
-  padding:14px 20px;
-  display:flex;align-items:center;justify-content:space-between;
-  box-shadow:0 2px 16px rgba(26,58,107,.25);
-}
-.tb-logo{display:flex;align-items:center;gap:10px;}
-.tb-sq{
-  width:34px;height:34px;border-radius:9px;
-  background:linear-gradient(135deg,#F5D976,#D4AF37,#8B6914);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Playfair Display',serif;font-weight:800;font-size:17px;color:#0B1628;
-  flex-shrink:0;
-}
-.tb-name{
-  font-family:'Playfair Display',serif;font-size:15px;font-weight:700;letter-spacing:1.5px;
-  background:linear-gradient(135deg,#F5D976,#D4AF37);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.burger-btn{
-  width:38px;height:38px;border-radius:10px;
-  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:.2s;flex-shrink:0;
-}
-.burger-btn:hover{background:rgba(255,255,255,.2);}
-.burger-lines{display:flex;flex-direction:column;gap:5px;}
-.burger-lines span{display:block;width:18px;height:2px;background:#fff;border-radius:2px;transition:.3s;}
+/* TOPBAR */
+.topbar{flex-shrink:0;height:56px;background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 55%,var(--red) 100%);display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:60;box-shadow:0 2px 14px rgba(15,33,68,.3)}
+.tb-brand{display:flex;align-items:center;gap:9px;cursor:pointer}
+.tb-sq{width:33px;height:33px;border-radius:9px;background:linear-gradient(135deg,var(--goldl),var(--gold),var(--goldd));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:800;font-size:16px;color:var(--navy);flex-shrink:0}
+.tb-wm{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;letter-spacing:1.8px;background:linear-gradient(135deg,var(--goldl),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.burger-btn{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;transition:.2s}
+.burger-btn:active{background:rgba(255,255,255,.2)}
+.burger-btn span{display:block;width:16px;height:2px;background:var(--white);border-radius:2px}
 
-/* ====== SIDE DRAWER (burger menu) ====== */
-.drawer-overlay{
-  display:none;position:fixed;inset:0;background:rgba(13,27,62,.55);z-index:200;
-  backdrop-filter:blur(3px);
-}
-.drawer-overlay.on{display:block;}
-.drawer{
-  position:fixed;top:0;right:-320px;bottom:0;width:300px;
-  background:#fff;z-index:201;
-  transition:right .3s cubic-bezier(.22,1,.36,1);
-  display:flex;flex-direction:column;
-  box-shadow:-8px 0 40px rgba(0,0,0,.18);
-}
-.drawer.on{right:0;}
-.drawer-head{
-  background:linear-gradient(135deg,#1A3A6B,#2657A8);
-  padding:28px 22px 22px;
-}
-.drawer-avatar{
-  width:52px;height:52px;border-radius:14px;
-  background:linear-gradient(135deg,#F5D976,#D4AF37,#8B6914);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Playfair Display',serif;font-size:20px;font-weight:800;color:#0B1628;
-  margin-bottom:10px;
-}
-.drawer-uname{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#fff;}
-.drawer-email{font-size:12px;color:rgba(255,255,255,.6);margin-top:2px;}
-.drawer-badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;margin-top:6px;}
-.drawer-badge.actif{background:rgba(34,197,94,.2);color:#86efac;}
+/* SCROLL */
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:68px}
+.scroll::-webkit-scrollbar{display:none}
 
-.drawer-body{flex:1;overflow-y:auto;padding:12px 14px;}
-.d-section{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#9CA3AF;padding:10px 8px 6px;}
-.d-item{
-  display:flex;align-items:center;gap:12px;
-  padding:13px 14px;border-radius:12px;
-  cursor:pointer;transition:.18s;margin-bottom:2px;
-  text-decoration:none;
-}
-.d-item:hover{background:#F5F3EE;}
-.d-item .di{font-size:18px;width:22px;text-align:center;flex-shrink:0;}
-.d-item .dt{font-size:14px;font-weight:600;color:#374151;}
-.d-item .da{margin-left:auto;font-size:11px;color:#9CA3AF;}
+/* PAGES — hidden by default, .on = visible */
+.pg{display:none}
+.pg.on{display:block;animation:fu .22s ease}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-/* Sub items parrainage */
-.d-sub{padding-left:16px;}
-.d-sub .d-item{padding:10px 14px;}
-.d-sub .d-item .dt{font-size:13px;font-weight:500;color:#6B7280;}
+/* ── WELCOME BANNER ── */
+.welcome{background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 55%,var(--red) 100%);padding:18px 16px 30px;position:relative;overflow:hidden}
+.welcome::before{content:'';position:absolute;width:150px;height:150px;border-radius:50%;background:rgba(212,175,55,.07);top:-50px;right:-30px}
+.welcome::after{content:'';position:absolute;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.04);bottom:-30px;left:12px}
+.wc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;position:relative;z-index:1}
+.wc-greet{font-size:12px;color:rgba(255,255,255,.55);margin-bottom:2px}
+.wc-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--white)}
+.wc-av{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,var(--goldl),var(--gold),var(--goldd));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:18px;font-weight:800;color:var(--navy);flex-shrink:0;cursor:pointer;box-shadow:0 3px 12px rgba(212,175,55,.35)}
+.wc-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;position:relative;z-index:1}
+.wmc{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:11px 9px}
+.wmc.hi{background:rgba(212,175,55,.13);border-color:rgba(212,175,55,.22)}
+.wmc-l{font-size:9px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:3px}
+.wmc-v{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--goldl);line-height:1}
+.wmc-u{font-size:9px;color:rgba(255,255,255,.38);margin-top:2px}
+.arc{background:var(--cream);border-radius:18px 18px 0 0;height:18px;margin-top:-1px}
 
-.drawer-foot{padding:14px;}
-.btn-logout-d{
-  width:100%;padding:12px;border:1.5px solid #FEE2E2;border-radius:12px;
-  background:#FFF5F5;color:#DC2626;
-  font-family:'Inter',sans-serif;font-size:13px;font-weight:700;
-  cursor:pointer;transition:.2s;
-}
-.btn-logout-d:hover{background:#FEE2E2;}
+/* SECTION TITLE */
+.stitle{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--txt3);padding:16px 16px 9px;display:flex;align-items:center;gap:8px}
+.stitle::after{content:'';flex:1;height:1px;background:var(--cream2)}
 
-/* ====== MAIN SCROLL CONTENT ====== */
-.content{padding:20px 16px 0;}
+/* STAT CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;padding:0 16px}
+.sc{background:var(--white);border-radius:14px;padding:13px 9px;border:1px solid var(--cream2);box-shadow:0 2px 8px rgba(15,33,68,.06);text-align:center;cursor:pointer;transition:.15s}
+.sc:active{transform:scale(.96)}
+.sc-ic{font-size:22px;margin-bottom:5px}
+.sc-v{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--navy);line-height:1}
+.sc-l{font-size:10px;color:var(--txt3);margin-top:3px}
 
-/* WELCOME CARD */
-.welcome-card{
-  background:linear-gradient(135deg,#1A3A6B 0%,#2657A8 55%,#8B1A1A 100%);
-  border-radius:20px;padding:20px;margin-bottom:16px;
-  position:relative;overflow:hidden;
-  box-shadow:0 8px 28px rgba(26,58,107,.3);
-}
-.welcome-card::before{
-  content:'';position:absolute;top:-40px;right:-30px;
-  width:130px;height:130px;border-radius:50%;
-  background:rgba(255,255,255,.05);
-}
-.welcome-card::after{
-  content:'';position:absolute;bottom:-50px;right:30px;
-  width:100px;height:100px;border-radius:50%;
-  background:rgba(212,175,55,.08);
-}
-.wc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-.wc-greeting{font-size:13px;color:rgba(255,255,255,.65);font-weight:400;}
-.wc-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:800;color:#fff;margin-top:2px;}
-.wc-avatar{
-  width:48px;height:48px;border-radius:13px;flex-shrink:0;
-  background:linear-gradient(135deg,#F5D976,#D4AF37,#8B6914);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Playfair Display',serif;font-size:18px;font-weight:800;color:#0B1628;
-  box-shadow:0 4px 12px rgba(212,175,55,.35);
-}
-.wc-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative;z-index:1;}
-.wc-mini{
-  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
-  border-radius:13px;padding:12px 14px;
-}
-.wc-mini .lbl{font-size:10px;font-weight:600;color:rgba(255,255,255,.6);letter-spacing:.5px;margin-bottom:4px;}
-.wc-mini .val{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:#F5D976;}
-.wc-mini .unit{font-size:10px;color:rgba(255,255,255,.5);margin-top:1px;}
-.wc-mini.blue-card{background:rgba(255,255,255,.07);}
+/* ACTION GRID */
+.ac-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:0 16px}
+.ac{background:var(--white);border-radius:15px;padding:13px;border:1px solid var(--cream2);box-shadow:0 2px 8px rgba(15,33,68,.06);display:flex;align-items:center;gap:10px;cursor:pointer;transition:.15s}
+.ac:active{transform:scale(.97)}
+.ac-ico{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ico-g{background:linear-gradient(135deg,#FEF9C3,#FDE68A)}.ico-b{background:linear-gradient(135deg,#DBEAFE,#BFDBFE)}.ico-r{background:linear-gradient(135deg,#FFE4E6,#FECDD3)}.ico-gn{background:linear-gradient(135deg,#DCFCE7,#BBF7D0)}
+.ac-t{font-size:13px;font-weight:700;color:var(--txt)}.ac-s{font-size:11px;color:var(--txt3)}
 
-/* STATS SECTION */
-.section-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#9CA3AF;margin-bottom:12px;padding-left:2px;}
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
-.stat-card{
-  background:#fff;border-radius:14px;padding:14px 12px;
-  border:1px solid #EDE9DE;
-  box-shadow:0 2px 8px rgba(0,0,0,.05);
-  text-align:center;transition:.2s;
-}
-.stat-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.08);}
-.sc-icon{font-size:22px;margin-bottom:6px;}
-.sc-val{font-family:'Playfair Display',serif;font-size:24px;font-weight:800;color:#1A3A6B;line-height:1;}
-.sc-lbl{font-size:10px;color:#9CA3AF;margin-top:4px;font-weight:500;}
-
-/* QUICK LINKS */
-.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
-.quick-card{
-  background:#fff;border-radius:14px;padding:16px;
-  border:1px solid #EDE9DE;
-  box-shadow:0 2px 8px rgba(0,0,0,.05);
-  cursor:pointer;transition:.2s;display:flex;align-items:center;gap:12px;
-  text-decoration:none;
-}
-.quick-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.08);border-color:#D4AF37;}
-.qc-ico{
-  width:42px;height:42px;border-radius:11px;
-  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
-}
-.qc-ico.gold{background:linear-gradient(135deg,#FEF9C3,#FDE68A);}
-.qc-ico.blue{background:linear-gradient(135deg,#DBEAFE,#BFDBFE);}
-.qc-ico.red{background:linear-gradient(135deg,#FFE4E6,#FECDD3);}
-.qc-ico.green{background:linear-gradient(135deg,#DCFCE7,#BBF7D0);}
-.qc-ttl{font-size:13px;font-weight:700;color:#111827;}
-.qc-sub{font-size:11px;color:#9CA3AF;margin-top:1px;}
-
-/* TX RECENT */
-.tx-section{background:#fff;border-radius:16px;padding:16px;border:1px solid #EDE9DE;box-shadow:0 2px 8px rgba(0,0,0,.05);margin-bottom:20px;}
-.tx-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
-.tx-ttl{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#111827;}
-.tx-all{font-size:12px;font-weight:600;color:#2657A8;cursor:pointer;background:none;border:none;font-family:'Inter',sans-serif;}
-.tx-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F8F6F0;}
-.tx-item:last-child{border-bottom:none;}
-.tx-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.tx-ico.cr{background:#F0FDF4;}.tx-ico.db{background:#FFF5F5;}
-.tx-lbl{font-size:13px;font-weight:600;color:#111827;flex:1;min-width:0;}
-.tx-dt{font-size:11px;color:#9CA3AF;margin-top:1px;}
-.tx-amt{font-family:'Playfair Display',serif;font-size:16px;font-weight:800;white-space:nowrap;}
-.tx-amt.cr{color:#16A34A;}.tx-amt.db{color:#DC2626;}
-
-/* ====== BOTTOM NAV ====== */
-.bottom-nav{
-  position:fixed;bottom:0;left:0;right:0;z-index:100;
-  background:#fff;
-  border-top:1px solid #EDE9DE;
-  box-shadow:0 -4px 20px rgba(0,0,0,.08);
-  display:flex;align-items:stretch;
-  padding:0 0 env(safe-area-inset-bottom,0);
-}
-.nav-item{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:10px 4px 8px;cursor:pointer;transition:.2s;
-  border:none;background:none;text-decoration:none;gap:4px;
-  position:relative;
-}
-.nav-item.active .n-ico{color:#1A3A6B;}
-.nav-item.active .n-lbl{color:#1A3A6B;font-weight:700;}
-.nav-item.active::after{content:'';position:absolute;bottom:0;left:25%;right:25%;height:3px;background:linear-gradient(135deg,#D4AF37,#8B6914);border-radius:3px 3px 0 0;}
-.nav-item:hover{background:#F8F7F2;}
-.n-ico{font-size:22px;color:#9CA3AF;transition:.2s;}
-.n-lbl{font-size:10px;font-weight:600;color:#9CA3AF;letter-spacing:.3px;transition:.2s;}
-
-/* ====== SUB PAGES ====== */
-.sub-page{display:none;}
-.sub-page.on{display:block;}
+/* TX BOX */
+.txbox{margin:0 16px;background:var(--white);border-radius:15px;border:1px solid var(--cream2);box-shadow:0 2px 8px rgba(15,33,68,.06);overflow:hidden}
+.txhead{display:flex;justify-content:space-between;align-items:center;padding:13px 15px 11px;border-bottom:1px solid var(--cream2)}
+.txhead-t{font-family:'Playfair Display',serif;font-size:14px;font-weight:700}
+.txhead-a{font-size:12px;font-weight:700;color:var(--blue2);background:none;border:none;font-family:'DM Sans',sans-serif;cursor:pointer}
+.txi{display:flex;align-items:center;gap:10px;padding:11px 15px;border-bottom:1px solid var(--cream2)}
+.txi:last-child{border-bottom:none}
+.tx-bub{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.tx-bub.cr{background:#F0FDF4}.tx-bub.db{background:#FFF5F5}
+.tx-inf{flex:1;min-width:0}
+.tx-desc{font-size:13px;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx-date{font-size:11px;color:var(--txt3);margin-top:1px}
+.tx-amt{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;white-space:nowrap}
+.tx-amt.cr{color:#16A34A}.tx-amt.db{color:#DC2626}
 
 /* PAGE HEADER */
-.pg-hd{
-  background:linear-gradient(135deg,#1A3A6B,#2657A8);
-  padding:20px;margin-bottom:16px;border-radius:0 0 20px 20px;
-}
-.pg-hd .ph-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:#fff;}
-.pg-hd .ph-sub{font-size:13px;color:rgba(255,255,255,.65);margin-top:3px;}
-.btn-back{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:9px;padding:7px 12px;color:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:12px;display:inline-flex;align-items:center;gap:6px;}
+.pgh{background:linear-gradient(135deg,var(--navy),var(--blue));padding:16px 16px 20px;border-radius:0 0 18px 18px;margin-bottom:14px}
+.pgh-back{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:rgba(255,255,255,.6);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:5px 12px;cursor:pointer;margin-bottom:11px}
+.pgh-t{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--white)}
+.pgh-s{font-size:13px;color:rgba(255,255,255,.55);margin-top:2px}
 
 /* CARD */
-.card{background:#fff;border-radius:16px;padding:18px;border:1px solid #EDE9DE;box-shadow:0 2px 8px rgba(0,0,0,.05);margin-bottom:14px;}
-.card-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#111827;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #F8F6F0;}
+.card{background:var(--white);border-radius:15px;padding:16px;border:1px solid var(--cream2);box-shadow:0 2px 8px rgba(15,33,68,.06);margin:0 16px 12px}
+.card-t{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--txt);margin-bottom:12px;padding-bottom:9px;border-bottom:2px solid var(--cream2)}
 
 /* FORM FIELDS */
-.fld{margin-bottom:14px;}
-.fld label{display:block;font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#1A3A6B;margin-bottom:6px;}
-.inp-w{position:relative;}
-.inp-w .ic{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;}
-.fld input,.fld select{
-  width:100%;padding:12px 12px 12px 40px;
-  border:1.5px solid #E5E7EB;border-radius:11px;
-  font-family:'Inter',sans-serif;font-size:14px;color:#111827;
-  background:#FAFAFA;outline:none;transition:all .2s;appearance:none;
-}
-.fld input::placeholder{color:#C8C8C8;}
-.fld input:focus,.fld select:focus{border-color:#D4AF37;background:#FFFBEF;box-shadow:0 0 0 3px rgba(212,175,55,.14);}
-.fld select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23aaa'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer;}
+.fld{margin-bottom:12px}
+.fld label{display:block;font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--blue);margin-bottom:5px}
+.iw{position:relative}
+.iw .ic{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none}
+.fld input,.fld select{width:100%;padding:12px 11px 12px 36px;border:1.5px solid #E5E7EB;border-radius:11px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--txt);background:#FAFAF8;outline:none;transition:.18s;appearance:none}
+.fld input::placeholder{color:#C8C8C8}
+.fld input:focus,.fld select:focus{border-color:var(--gold);background:#FFFBEF;box-shadow:0 0 0 3px rgba(212,175,55,.12)}
+.fld select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23aaa'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer}
 
-/* BTN */
-.btn{width:100%;padding:14px;border:none;border-radius:12px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .3s;}
-.btn-main{background:linear-gradient(135deg,#1A3A6B 0%,#2657A8 55%,#8B6914 100%);color:#fff;box-shadow:0 6px 20px rgba(26,58,107,.28);}
-.btn-main:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 28px rgba(26,58,107,.38);}
-.btn-main:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+/* BUTTONS */
+.btn{width:100%;padding:13px;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:.2s}
+.btn-main{background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 55%,var(--goldd) 100%);color:var(--white);box-shadow:0 5px 18px rgba(26,58,107,.25)}
+.btn-main:active:not(:disabled){transform:scale(.98)}
+.btn-main:disabled{opacity:.55;cursor:not-allowed}
+.btn-ghost{background:var(--cream2);color:var(--txt2);border:1.5px solid #DDD9D0;margin-top:8px}
 
-/* TABLE */
-table{width:100%;border-collapse:collapse;font-size:13px;}
-th{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#9CA3AF;text-align:left;padding:8px 10px;border-bottom:2px solid #F3F4F6;}
-td{padding:11px 10px;border-bottom:1px solid #F8F8F8;color:#374151;vertical-align:middle;}
-tr:last-child td{border-bottom:none;}
-.badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
-.b-att{background:#FFFBEB;color:#D97706;}.b-ok{background:#F0FDF4;color:#16A34A;}.b-ko{background:#FFF5F5;color:#DC2626;}
+/* SOLDE BOX */
+.solde-box{background:linear-gradient(135deg,var(--navy),var(--blue));border-radius:13px;padding:13px 15px;display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}
+.sb-l{font-size:12px;color:rgba(255,255,255,.6)}
+.sb-v{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--goldl)}
+
+/* PROFIL ROW */
+.pr-row{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--cream);border-radius:11px;margin-bottom:7px}
+.pr-row:last-child{margin-bottom:0}
+.pr-k{font-size:12px;font-weight:600;color:var(--txt3)}
+.pr-v{font-size:13px;font-weight:700;color:var(--txt)}
 
 /* FILLEUL */
-.fi{display:flex;align-items:center;gap:10px;padding:11px 13px;background:#F8F6F0;border-radius:12px;margin-bottom:7px;}
-.fi-av{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#1A3A6B,#2657A8);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;}
-.fi-nm{font-size:13px;font-weight:600;color:#111827;}
-.fi-sub{font-size:11px;color:#9CA3AF;margin-top:1px;}
-.fi-st{margin-left:auto;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;}
-.fi-st.actif{background:#F0FDF4;color:#16A34A;}.fi-st.inactif{background:#FFF5F5;color:#DC2626;}
+.fi{display:flex;align-items:center;gap:10px;padding:11px;background:var(--cream);border-radius:13px;margin-bottom:7px}
+.fi:last-child{margin-bottom:0}
+.fi-av{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--blue2));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--white);flex-shrink:0}
+.fi-nm{font-size:13px;font-weight:600;color:var(--txt)}
+.fi-sb{font-size:11px;color:var(--txt3);margin-top:1px}
+.fi-st{margin-left:auto;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap}
+.fi-st.actif{background:#F0FDF4;color:#16A34A}
+.fi-st.inactif{background:#FFF5F5;color:#DC2626}
 
-/* SOLDE DISPLAY */
-.solde-box{background:linear-gradient(135deg,#1A3A6B,#2657A8);border-radius:14px;padding:16px 18px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
-.sb-lbl{font-size:12px;color:rgba(255,255,255,.65);}.sb-val{font-family:'Playfair Display',serif;font-size:30px;font-weight:800;color:#F5D976;}
+/* COMMISSION ROW */
+.comm{display:flex;justify-content:space-between;align-items:center;padding:11px 13px;border-radius:12px;margin-bottom:7px}
+.comm:last-child{margin-bottom:0}
+.c1{background:linear-gradient(135deg,#FFFBEF,#FFF8DC);border:1.5px solid #FDE68A}
+.c2{background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border:1.5px solid #BFDBFE}
+.c3{background:linear-gradient(135deg,#FFF0F3,#FFE4E6);border:1.5px solid #FECDD3}
+.cn{font-size:13px;font-weight:700;color:var(--txt)}.cs{font-size:11px;color:var(--txt3);margin-top:2px}
+.ca{font-family:'Playfair Display',serif;font-size:19px;font-weight:700}
+.ca.g{color:var(--goldd)}.ca.b{color:var(--blue2)}.ca.r{color:#C0392B}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:280px}
+th{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--txt3);text-align:left;padding:8px 9px;border-bottom:2px solid var(--cream2)}
+td{padding:10px 9px;border-bottom:1px solid var(--cream2);color:var(--txt2);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+
+/* BADGE */
+.bdg{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.b-att{background:#FFFBEB;color:#D97706}.b-ok{background:#F0FDF4;color:#16A34A}.b-ko{background:#FFF5F5;color:#DC2626}
+
+/* LINK BOX */
+.link-box{background:var(--cream);border:1.5px solid var(--cream2);border-radius:11px;padding:11px 13px;font-size:12px;color:var(--blue2);font-weight:500;word-break:break-all;margin-bottom:11px}
+
+/* FAQ */
+.faq-item{background:var(--white);border-radius:14px;border:1px solid var(--cream2);margin:0 16px 8px;overflow:hidden;cursor:pointer}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:14px 15px;gap:10px}
+.fq-t{font-size:13px;font-weight:600;color:var(--txt);flex:1}
+.fq-i{font-size:15px;color:var(--txt3);flex-shrink:0}
+.faq-a{display:none;padding:0 15px 12px;font-size:13px;color:var(--txt2);line-height:1.65;border-top:1px solid var(--cream2);padding-top:10px}
+
+/* PROMO BANNER */
+.promo-banner{background:linear-gradient(135deg,var(--goldd),var(--gold),var(--goldl));border-radius:15px;padding:15px;margin:0 16px 12px;display:flex;align-items:center;gap:12px;box-shadow:0 5px 18px rgba(212,175,55,.28)}
+.pb-ic{font-size:32px;flex-shrink:0}
+.pb-t{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--navy)}
+.pb-s{font-size:12px;color:rgba(15,33,68,.6);margin-top:2px}
+
+/* BIZ LEVEL */
+.biz-lv{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;margin-bottom:7px}
+.biz-lv:last-child{margin-bottom:0}
+.bz-s{background:var(--cream)}.bz-si{background:linear-gradient(135deg,#F8F8F8,#EFEFEF);border:1px solid #E5E7EB}.bz-g{background:linear-gradient(135deg,#FFFBEF,#FDE68A);border:1.5px solid var(--gold)}
+.bv-ic{font-size:20px;flex-shrink:0}
+.bv-n{font-size:13px;font-weight:700;color:var(--txt)}.bv-s{font-size:11px;color:var(--txt3);margin-top:1px}
 
 /* EMPTY */
-.empty{text-align:center;padding:28px;color:#9CA3AF;}
-.empty .ei{font-size:30px;margin-bottom:8px;}
-.empty p{font-size:13px;}
-
-/* LEVEL TAG */
-.lvl-tag{display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:10px;}
-.lv1{background:linear-gradient(135deg,#FEF9C3,#FDE68A);color:#78350F;}
-.lv2{background:linear-gradient(135deg,#DBEAFE,#BFDBFE);color:#1E40AF;}
-.lv3{background:linear-gradient(135deg,#FFE4E6,#FECDD3);color:#9F1239;}
-
-/* PROMO */
-.promo-badge{background:linear-gradient(135deg,#D4AF37,#8B6914);color:#fff;border-radius:12px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;}
-.promo-badge .pi{font-size:28px;}
-.promo-badge .pt{font-size:14px;font-weight:700;}
-.promo-badge .ps{font-size:12px;opacity:.8;margin-top:2px;}
-
-/* INFO BOX */
-.info-box{background:#FFFBEF;border:1.5px solid #D4AF37;border-radius:12px;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;}
-.info-box .ii{font-size:20px;flex-shrink:0;}
-.info-box p{font-size:13px;color:#374151;line-height:1.5;}
+.empty{text-align:center;padding:26px 14px;color:var(--txt3)}
+.empty .ei{font-size:30px;margin-bottom:7px}
+.empty p{font-size:13px}
 
 /* SPINNER */
-.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:6px;}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.4);border-top-color:var(--white);border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:5px}
 @keyframes sp{to{transform:rotate(360deg)}}
 
+/* BOTTOM NAV */
+.bnav{flex-shrink:0;background:var(--white);border-top:1px solid var(--cream2);box-shadow:0 -3px 14px rgba(15,33,68,.06);display:flex;align-items:stretch;padding-bottom:env(safe-area-inset-bottom,0);z-index:60}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:9px 4px 7px;cursor:pointer;border:none;background:none;gap:3px;position:relative;transition:.15s}
+.nb:active{background:var(--cream)}
+.nb::after{content:'';position:absolute;bottom:0;left:18%;right:18%;height:3px;background:transparent;border-radius:3px 3px 0 0;transition:.2s}
+.nb.on::after{background:linear-gradient(135deg,var(--blue),var(--gold))}
+.nb-ic{font-size:21px;color:var(--txt3);transition:.2s}
+.nb-lb{font-size:10px;font-weight:600;color:var(--txt3);transition:.2s}
+.nb.on .nb-ic,.nb.on .nb-lb{color:var(--navy)}
+.nb.on .nb-lb{font-weight:700}
+
+/* DRAWER */
+.drw-ov{display:none;position:fixed;inset:0;z-index:200;background:rgba(15,33,68,.55);backdrop-filter:blur(3px)}
+.drw-ov.on{display:block}
+.drw{position:fixed;top:0;right:-100%;bottom:0;width:min(285px,84vw);background:var(--white);z-index:201;transition:right .28s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;box-shadow:-5px 0 28px rgba(15,33,68,.18);border-radius:16px 0 0 16px}
+.drw.on{right:0}
+.drw-hd{background:linear-gradient(135deg,var(--navy),var(--blue));padding:24px 16px 18px;border-radius:16px 0 0 0}
+.drw-av{width:50px;height:50px;border-radius:13px;background:linear-gradient(135deg,var(--goldl),var(--gold),var(--goldd));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:19px;font-weight:800;color:var(--navy);margin-bottom:10px}
+.drw-nm{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--white)}
+.drw-em{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px}
+.drw-bdg{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(34,197,94,.18);color:#86efac;margin-top:7px}
+.drw-body{flex:1;overflow-y:auto;padding:8px 10px}
+.drw-body::-webkit-scrollbar{display:none}
+.drw-sec{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--txt3);padding:11px 8px 5px}
+.drw-it{display:flex;align-items:center;gap:10px;padding:12px 10px;border-radius:12px;cursor:pointer;transition:.15s;margin-bottom:1px}
+.drw-it:active{background:var(--cream)}
+.di-ic{font-size:17px;width:21px;text-align:center;flex-shrink:0}
+.di-t{font-size:13px;font-weight:600;color:var(--txt);flex:1}
+.di-a{font-size:11px;color:var(--txt3)}
+.di-cnt{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--cream2);color:var(--navy);min-width:20px;text-align:center}
+.drw-ft{padding:11px 10px}
+.btn-logout{width:100%;padding:12px;border-radius:12px;border:1.5px solid #FEE2E2;background:#FFF5F5;color:#DC2626;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:.2s}
+.btn-logout:active{background:#FEE2E2}
+
 /* TOAST */
-.toast{position:fixed;top:20px;right:16px;left:16px;z-index:999;padding:13px 16px;border-radius:12px;font-size:13px;font-weight:600;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,.16);transform:translateY(-80px);transition:transform .35s cubic-bezier(.22,1,.36,1);display:flex;align-items:center;gap:8px;max-width:480px;margin:0 auto;}
-.toast.on{transform:translateY(0);}
-.toast.ok{border-left:4px solid #22C55E;color:#166534;}
-.toast.er{border-left:4px solid #EF4444;color:#991B1B;}
-.toast.nfo{border-left:4px solid #2657A8;color:#1A3A6B;}
+.toast{position:fixed;top:14px;left:50%;transform:translate(-50%,-120px);z-index:999;padding:11px 17px;border-radius:12px;font-size:13px;font-weight:600;background:var(--white);box-shadow:0 8px 26px rgba(15,33,68,.18);transition:transform .32s cubic-bezier(.22,1,.36,1);display:flex;align-items:center;gap:8px;max-width:88vw;white-space:nowrap}
+.toast.show{transform:translate(-50%,0)}
+.toast.ok{border-left:4px solid #22C55E;color:#166534}.toast.er{border-left:4px solid #EF4444;color:#991B1B}.toast.nfo{border-left:4px solid var(--blue2);color:var(--blue)}
 </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
+<!-- TOPBAR -->
 <div class="topbar">
-  <div class="tb-logo">
+  <div class="tb-brand" onclick="goHome()">
     <div class="tb-sq">S</div>
-    <div class="tb-name">SYLLA AGENCE</div>
+    <div class="tb-wm">SYLLA</div>
   </div>
-  <div class="burger-btn" onclick="openDrawer()">
-    <div class="burger-lines">
-      <span></span><span></span><span></span>
-    </div>
+  <div class="burger-btn" onclick="openDrw()">
+    <span></span><span></span><span></span>
   </div>
 </div>
 
-<!-- DRAWER OVERLAY -->
-<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<!-- SCROLL -->
+<div class="scroll" id="scroll">
 
-<!-- SIDE DRAWER -->
-<div class="drawer" id="drawer">
-  <div class="drawer-head">
-    <div class="drawer-avatar" id="d-avatar">?</div>
-    <div class="drawer-uname" id="d-name">...</div>
-    <div class="drawer-email" id="d-email">...</div>
-    <span class="drawer-badge actif">✅ Compte actif</span>
-  </div>
-  <div class="drawer-body">
-    <div class="d-section">Mon compte</div>
-    <div class="d-item" onclick="goSection('profil');closeDrawer()">
-      <span class="di">👤</span><span class="dt">Profil</span><span class="da">›</span>
-    </div>
-    <div class="d-item" onclick="goSection('support');closeDrawer()">
-      <span class="di">🎧</span><span class="dt">Support</span><span class="da">›</span>
-    </div>
-
-    <div class="d-section">Parrainage</div>
-    <div class="d-item" onclick="goSection('niv1');closeDrawer()">
-      <span class="di">🥇</span><span class="dt">Niveau 1</span>
-      <span style="margin-left:auto;font-size:11px;font-weight:700;padding:2px 7px;border-radius:10px;background:#FEF9C3;color:#78350F;" id="cnt-n1">0</span>
-    </div>
-    <div class="d-item" onclick="goSection('niv2');closeDrawer()">
-      <span class="di">🥈</span><span class="dt">Niveau 2</span>
-      <span style="margin-left:auto;font-size:11px;font-weight:700;padding:2px 7px;border-radius:10px;background:#DBEAFE;color:#1E40AF;" id="cnt-n2">0</span>
-    </div>
-    <div class="d-item" onclick="goSection('niv3');closeDrawer()">
-      <span class="di">🥉</span><span class="dt">Niveau 3</span>
-      <span style="margin-left:auto;font-size:11px;font-weight:700;padding:2px 7px;border-radius:10px;background:#FFE4E6;color:#9F1239;" id="cnt-n3">0</span>
-    </div>
-
-    <div class="d-section">Autres</div>
-    <div class="d-item" onclick="goSection('vitrine');closeDrawer()">
-      <span class="di">🚀</span><span class="dt">Vitrine</span><span class="da">›</span>
-    </div>
-    <div class="d-item" onclick="goSection('faq');closeDrawer()">
-      <span class="di">❓</span><span class="dt">FAQ</span><span class="da">›</span>
-    </div>
-    <div class="d-item" onclick="goSection('parametres');closeDrawer()">
-      <span class="di">⚙️</span><span class="dt">Paramètres</span><span class="da">›</span>
-    </div>
-  </div>
-  <div class="drawer-foot">
-    <button class="btn-logout-d" onclick="logout()">🚪 Se déconnecter</button>
-  </div>
-</div>
-
-<!-- ====== MAIN DASHBOARD ====== -->
-<div id="main-dash">
-  <div class="content">
-
-    <!-- WELCOME CARD -->
-    <div class="welcome-card">
+  <!-- HOME -->
+  <div class="pg on" id="pg-home">
+    <div class="welcome">
       <div class="wc-top">
         <div>
-          <div class="wc-greeting">Bienvenue 👋</div>
+          <div class="wc-greet">Bienvenue 👋</div>
           <div class="wc-name" id="wc-name">...</div>
         </div>
-        <div class="wc-avatar" id="wc-avatar">?</div>
+        <div class="wc-av" id="wc-av" onclick="openDrw()">?</div>
       </div>
       <div class="wc-cards">
-        <div class="wc-mini">
-          <div class="lbl">Solde</div>
-          <div class="val" id="wc-solde">0</div>
-          <div class="unit">Francs CFA</div>
-        </div>
-        <div class="wc-mini blue-card">
-          <div class="lbl">Activation</div>
-          <div class="val" style="color:#fff;">2 500</div>
-          <div class="unit">Payé · Actif</div>
-        </div>
+        <div class="wmc hi"><div class="wmc-l">Solde</div><div class="wmc-v" id="wc-solde">0</div><div class="wmc-u">F CFA</div></div>
+        <div class="wmc"><div class="wmc-l">Activation</div><div class="wmc-v" style="color:var(--white)">2500</div><div class="wmc-u">Payé ✓</div></div>
+        <div class="wmc"><div class="wmc-l">Réseau</div><div class="wmc-v" id="wc-net">0</div><div class="wmc-u">membres</div></div>
       </div>
     </div>
+    <div class="arc"></div>
 
-    <!-- STATS -->
-    <div class="section-title">Mes statistiques</div>
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="sc-icon">🤝</div>
-        <div class="sc-val" id="st-n1">0</div>
-        <div class="sc-lbl">Filleuls N1</div>
-      </div>
-      <div class="stat-card">
-        <div class="sc-icon">🌐</div>
-        <div class="sc-val" id="st-tot">0</div>
-        <div class="sc-lbl">Réseau total</div>
-      </div>
-      <div class="stat-card">
-        <div class="sc-icon">💰</div>
-        <div class="sc-val" id="st-gains">0</div>
-        <div class="sc-lbl">Gains F CFA</div>
-      </div>
+    <div class="stitle">Statistiques réseau</div>
+    <div class="stat-grid">
+      <div class="sc" onclick="goSec('niv1')"><div class="sc-ic">🥇</div><div class="sc-v" id="st-n1">0</div><div class="sc-l">Niveau 1</div></div>
+      <div class="sc" onclick="goSec('niv2')"><div class="sc-ic">🥈</div><div class="sc-v" id="st-n2">0</div><div class="sc-l">Niveau 2</div></div>
+      <div class="sc" onclick="goSec('niv3')"><div class="sc-ic">🥉</div><div class="sc-v" id="st-n3">0</div><div class="sc-l">Niveau 3</div></div>
     </div>
 
-    <!-- QUICK ACCESS -->
-    <div class="section-title">Accès rapide</div>
-    <div class="quick-grid">
-      <div class="quick-card" onclick="goNav('retrait')">
-        <div class="qc-ico blue">💸</div>
-        <div><div class="qc-ttl">Retrait</div><div class="qc-sub">Transférer mes gains</div></div>
-      </div>
-      <div class="quick-card" onclick="goNav('parrainage')">
-        <div class="qc-ico gold">🔗</div>
-        <div><div class="qc-ttl">Parrainage</div><div class="qc-sub">Inviter des membres</div></div>
-      </div>
+    <div class="stitle">Accès rapide</div>
+    <div class="ac-grid" style="margin-bottom:18px">
+      <div class="ac" onclick="goNav('retrait')"><div class="ac-ico ico-b">💸</div><div><div class="ac-t">Retrait</div><div class="ac-s">Mes gains</div></div></div>
+      <div class="ac" onclick="goSec('parrainage')"><div class="ac-ico ico-g">🔗</div><div><div class="ac-t">Parrainage</div><div class="ac-s">Mon lien</div></div></div>
     </div>
 
-    <!-- TRANSACTIONS RECENTES -->
-    <div class="tx-section">
-      <div class="tx-hd">
-        <div class="tx-ttl">Transactions récentes</div>
-        <button class="tx-all" onclick="goNav('retrait')">Voir tout</button>
+    <div class="stitle">Transactions récentes</div>
+    <div class="txbox" style="margin-bottom:20px">
+      <div class="txhead">
+        <span class="txhead-t">Activité</span>
+        <button class="txhead-a" onclick="goNav('retrait')">Voir tout →</button>
       </div>
-      <div id="dash-tx"></div>
-    </div>
-
-  </div>
-</div>
-
-<!-- ====== SUB SECTIONS ====== -->
-
-<!-- PROFIL -->
-<div class="sub-page" id="sp-profil">
-  <div class="content">
-    <button class="btn-back" onclick="goBack()">← Retour</button>
-    <div class="pg-hd"><div class="ph-title">Mon Profil</div><div class="ph-sub">Vos informations personnelles</div></div>
-    <div class="card">
-      <div style="text-align:center;margin-bottom:20px;">
-        <div style="width:70px;height:70px;border-radius:18px;background:linear-gradient(135deg,#D4AF37,#8B6914);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:28px;font-weight:800;color:#fff;margin:0 auto 10px;" id="profil-av">?</div>
-        <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;" id="profil-nom">...</div>
-        <div style="font-size:12px;color:#9CA3AF;margin-top:3px;" id="profil-email">...</div>
-      </div>
-      <div style="display:grid;gap:10px;">
-        <div style="background:#F8F6F0;border-radius:11px;padding:12px 14px;display:flex;justify-content:space-between;">
-          <span style="font-size:12px;color:#9CA3AF;font-weight:600;">Téléphone</span>
-          <span style="font-size:13px;font-weight:700;" id="profil-tel">—</span>
-        </div>
-        <div style="background:#F8F6F0;border-radius:11px;padding:12px 14px;display:flex;justify-content:space-between;">
-          <span style="font-size:12px;color:#9CA3AF;font-weight:600;">Pays</span>
-          <span style="font-size:13px;font-weight:700;" id="profil-pays">—</span>
-        </div>
-        <div style="background:#F8F6F0;border-radius:11px;padding:12px 14px;display:flex;justify-content:space-between;">
-          <span style="font-size:12px;color:#9CA3AF;font-weight:600;">Code parrainage</span>
-          <span style="font-size:12px;font-weight:800;color:#8B6914;letter-spacing:1px;" id="profil-code">—</span>
-        </div>
-        <div style="background:#F8F6F0;border-radius:11px;padding:12px 14px;display:flex;justify-content:space-between;">
-          <span style="font-size:12px;color:#9CA3AF;font-weight:600;">Statut</span>
-          <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A;">✅ Actif</span>
-        </div>
-        <div style="background:#F8F6F0;border-radius:11px;padding:12px 14px;display:flex;justify-content:space-between;">
-          <span style="font-size:12px;color:#9CA3AF;font-weight:600;">Membre depuis</span>
-          <span style="font-size:13px;font-weight:700;" id="profil-date">—</span>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">🔗 Mon lien de parrainage</div>
-      <div style="background:#F8F6F0;border-radius:11px;padding:12px 14px;word-break:break-all;font-size:12px;color:#2657A8;font-weight:500;margin-bottom:12px;" id="profil-link">—</div>
-      <button class="btn btn-main" onclick="cpLink()">📋 Copier mon lien</button>
+      <div id="home-tx"><div class="empty"><div class="ei">⏳</div><p>Chargement...</p></div></div>
     </div>
   </div>
-</div>
 
-<!-- SUPPORT -->
-<div class="sub-page" id="sp-support">
-  <div class="content">
-    <button class="btn-back" onclick="goBack()">← Retour</button>
-    <div class="pg-hd"><div class="ph-title">Support</div><div class="ph-sub">Nous sommes là pour vous aider</div></div>
-    <div class="info-box">
-      <span class="ii">ℹ️</span>
-      <p>Pour toute question, contactez notre équipe. Nous répondons sous 24h ouvrées.</p>
-    </div>
-    <div class="card">
-      <div class="card-title">📞 Nous contacter</div>
-      <a href="https://wa.me/2250000000000" class="quick-card" style="margin-bottom:10px;display:flex;">
-        <div class="qc-ico green">💬</div>
-        <div><div class="qc-ttl">WhatsApp</div><div class="qc-sub">Réponse rapide</div></div>
-      </a>
-      <a href="mailto:abdoula13cherif@gmail.com" class="quick-card" style="display:flex;">
-        <div class="qc-ico blue">📧</div>
-        <div><div class="qc-ttl">Email Admin</div><div class="qc-sub">abdoula13cherif@gmail.com</div></div>
-      </a>
-    </div>
-    <div class="card">
-      <div class="card-title">⏰ Horaires de support</div>
-      <div style="display:grid;gap:8px;">
-        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #F3F4F6;font-size:13px;">
-          <span style="color:#6B7280;">Lundi – Vendredi</span>
-          <span style="font-weight:700;">08h00 – 18h00</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:13px;">
-          <span style="color:#6B7280;">Samedi</span>
-          <span style="font-weight:700;">09h00 – 14h00</span>
-        </div>
+  <!-- EBOOKS -->
+  <div class="pg" id="pg-ebooks">
+    <div class="pgh"><div class="pgh-t">📚 eBooks</div><div class="pgh-s">Formation & ressources</div></div>
+    <div style="padding:0 16px">
+      <div style="background:var(--white);border:1.5px solid var(--cream2);border-radius:13px;padding:13px;display:flex;gap:11px;align-items:center;margin-bottom:9px">
+        <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#DBEAFE,#BFDBFE);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">📖</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:700;margin-bottom:2px">Guide du parrainage réussi</div><div style="font-size:11px;color:var(--txt3)">15 pages · PDF</div></div>
+        <span style="font-size:10px;font-weight:700;padding:4px 9px;border-radius:20px;background:#F0FDF4;color:#16A34A;white-space:nowrap">Gratuit</span>
+      </div>
+      <div style="background:var(--white);border:1.5px solid var(--cream2);border-radius:13px;padding:13px;display:flex;gap:11px;align-items:center;margin-bottom:9px">
+        <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#FEF9C3,#FDE68A);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">💡</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:700;margin-bottom:2px">Stratégies de croissance réseau</div><div style="font-size:11px;color:var(--txt3)">32 pages · PDF</div></div>
+        <span style="font-size:10px;font-weight:700;padding:4px 9px;border-radius:20px;background:#FFFBEF;color:#D97706;white-space:nowrap">Premium</span>
+      </div>
+      <div style="background:var(--white);border:1.5px solid var(--cream2);border-radius:13px;padding:13px;display:flex;gap:11px;align-items:center;margin-bottom:9px">
+        <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#FFE4E6,#FECDD3);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🎯</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:700;margin-bottom:2px">Marketing sur les réseaux sociaux</div><div style="font-size:11px;color:var(--txt3)">28 pages · PDF</div></div>
+        <span style="font-size:10px;font-weight:700;padding:4px 9px;border-radius:20px;background:#FFFBEF;color:#D97706;white-space:nowrap">Premium</span>
+      </div>
+      <div style="background:var(--white);border:1.5px solid var(--cream2);border-radius:13px;padding:13px;display:flex;gap:11px;align-items:center">
+        <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#DCFCE7,#BBF7D0);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🚀</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:700;margin-bottom:2px">Construire un réseau solide</div><div style="font-size:11px;color:var(--txt3)">20 pages · PDF</div></div>
+        <span style="font-size:10px;font-weight:700;padding:4px 9px;border-radius:20px;background:#F0FDF4;color:#16A34A;white-space:nowrap">Gratuit</span>
       </div>
     </div>
+    <div style="height:10px"></div>
   </div>
-</div>
 
-<!-- NIVEAU 1 -->
-<div class="sub-page" id="sp-niv1">
-  <div class="content">
-    <button class="btn-back" onclick="goBack()">← Retour</button>
-    <div class="pg-hd"><div class="ph-title">🥇 Niveau 1</div><div class="ph-sub">Vos filleuls directs — Commission 1 250 F</div></div>
-    <div id="list-n1"><div class="empty"><div class="ei">⏳</div><p>Chargement...</p></div></div>
-  </div>
-</div>
-
-<!-- NIVEAU 2 -->
-<div class="sub-page" id="sp-niv2">
-  <div class="content">
-    <button class="btn-back" onclick="goBack()">← Retour</button>
-    <div class="pg-hd"><div class="ph-title">🥈 Niveau 2</div><div class="ph-sub">Filleuls de vos filleuls — Commission 600 F</div></div>
-    <div id="list-n2"><div class="empty"><div class="ei">⏳</div><p>Chargement...</p></div></div>
-  </div>
-</div>
-
-<!-- NIVEAU 3 -->
-<div class="sub-page" id="sp-niv3">
-  <div class="content">
-    <button class="btn-back" onclick="goBack()">← Retour</button>
-    <div class="pg-hd"><div class="ph-title">🥉 Niveau 3</div><div class="ph-sub">Profondeur 3 — Commission 300 F</div></div>
-    <div id="list-n3"><div class="empty"><div class="ei">⏳</div><p>Chargement...</p></div></div>
-  </div>
-</div>
-
-<!-- VITRINE -->
-<div class="sub-page" id="sp-vitrine">
-  <div class="content">
-    <button class="btn-back" onclick="goBack()">← Retour</button>
-    <div class="pg-hd"><div class="ph-title">🚀 Vitrine</div><div class="ph-sub">Partagez votre lien et développez votre réseau</div></div>
+  <!-- RETRAIT -->
+  <div class="pg" id="pg-retrait">
+    <div class="pgh"><div class="pgh-t">💸 Retraits</div><div class="pgh-s">Transférez vos gains</div></div>
     <div class="card">
-      <div class="card-title">🔗 Votre lien unique</div>
-      <div style="background:#F8F6F0;border-radius:11px;padding:12px 14px;word-break:break-all;font-size:12px;color:#2657A8;font-weight:500;margin-bottom:12px;" id="vitrine-link">—</div>
-      <button class="btn btn-main" onclick="cpLink()" style="margin-bottom:10px;">📋 Copier le lien</button>
-      <button class="btn" style="background:#F8F6F0;color:#374151;border:1.5px solid #E5E7EB;" onclick="shareLink()">📤 Partager</button>
-    </div>
-    <div class="card">
-      <div class="card-title">💡 Conseils de parrainage</div>
-      <div style="display:grid;gap:10px;">
-        <div style="display:flex;gap:10px;align-items:flex-start;">
-          <span style="font-size:20px;flex-shrink:0;">📱</span>
-          <div><div style="font-size:13px;font-weight:600;margin-bottom:3px;">Partagez sur WhatsApp</div><div style="font-size:12px;color:#9CA3AF;">Envoyez votre lien dans vos groupes</div></div>
-        </div>
-        <div style="display:flex;gap:10px;align-items:flex-start;">
-          <span style="font-size:20px;flex-shrink:0;">📘</span>
-          <div><div style="font-size:13px;font-weight:600;margin-bottom:3px;">Facebook & Réseaux</div><div style="font-size:12px;color:#9CA3AF;">Publiez votre lien avec un message attractif</div></div>
-        </div>
-        <div style="display:flex;gap:10px;align-items:flex-start;">
-          <span style="font-size:20px;flex-shrink:0;">💬</span>
-          <div><div style="font-size:13px;font-weight:600;margin-bottom:3px;">Bouche à oreille</div><div style="font-size:12px;color:#9CA3AF;">Expliquez les avantages à vos proches</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- FAQ -->
-<div class="sub-page" id="sp-faq">
-  <div class="content">
-    <button class="btn-back" onclick="goBack()">← Retour</button>
-    <div class="pg-hd"><div class="ph-title">❓ FAQ</div><div class="ph-sub">Questions fréquemment posées</div></div>
-    <div id="faq-list"></div>
-  </div>
-</div>
-
-<!-- PARAMÈTRES -->
-<div class="sub-page" id="sp-parametres">
-  <div class="content">
-    <button class="btn-back" onclick="goBack()">← Retour</button>
-    <div class="pg-hd"><div class="ph-title">⚙️ Paramètres</div><div class="ph-sub">Gérez votre compte</div></div>
-    <div class="card">
-      <div class="card-title">🔒 Changer le mot de passe</div>
-      <div class="fld"><label>Mot de passe actuel</label><div class="inp-w"><span class="ic">🔒</span><input type="password" id="pw-old" placeholder="••••••••"></div></div>
-      <div class="fld"><label>Nouveau mot de passe</label><div class="inp-w"><span class="ic">🔑</span><input type="password" id="pw-new" placeholder="Minimum 6 caractères"></div></div>
-      <div class="fld"><label>Confirmer</label><div class="inp-w"><span class="ic">🔑</span><input type="password" id="pw-conf" placeholder="Répétez le mot de passe"></div></div>
-      <button class="btn btn-main" id="btn-pw" onclick="changePw()">Modifier le mot de passe</button>
-    </div>
-    <div class="card" style="margin-top:14px;">
-      <div class="card-title" style="color:#DC2626;">⚠️ Zone de danger</div>
-      <button class="btn" style="background:#FFF5F5;color:#DC2626;border:1.5px solid #FEE2E2;" onclick="logout()">🚪 Se déconnecter</button>
-    </div>
-  </div>
-</div>
-
-<!-- ====== BOTTOM NAV PAGES ====== -->
-
-<!-- PARRAINAGE PAGE -->
-<div class="sub-page" id="sp-parrainage">
-  <div class="content">
-    <div class="pg-hd"><div class="ph-title">🔗 Parrainage</div><div class="ph-sub">Invitez et gagnez des commissions</div></div>
-    <div class="stats-grid" style="margin-bottom:16px;">
-      <div class="stat-card"><div class="sc-icon">🥇</div><div class="sc-val" id="pn1">0</div><div class="sc-lbl">Niveau 1</div></div>
-      <div class="stat-card"><div class="sc-icon">🥈</div><div class="sc-val" id="pn2">0</div><div class="sc-lbl">Niveau 2</div></div>
-      <div class="stat-card"><div class="sc-icon">🥉</div><div class="sc-val" id="pn3">0</div><div class="sc-lbl">Niveau 3</div></div>
-    </div>
-    <div class="card">
-      <div class="card-title">🔗 Mon lien</div>
-      <div style="background:#F8F6F0;border-radius:11px;padding:12px;word-break:break-all;font-size:12px;color:#2657A8;font-weight:500;margin-bottom:10px;" id="par-link">—</div>
-      <button class="btn btn-main" onclick="cpLink()" style="margin-bottom:8px;">📋 Copier le lien</button>
-      <button class="btn" style="background:#F8F6F0;color:#374151;border:1.5px solid #E5E7EB;" onclick="shareLink()">📤 Partager</button>
-    </div>
-    <div class="card">
-      <div class="card-title">💰 Commissions</div>
-      <div style="display:grid;gap:8px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 13px;background:#FFFBEF;border-radius:11px;border:1px solid #FDE68A;">
-          <div><div style="font-size:13px;font-weight:700;">🥇 Niveau 1</div><div style="font-size:11px;color:#9CA3AF;">Filleul direct activé</div></div>
-          <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:800;color:#D4AF37;">+1 250 F</div>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 13px;background:#EFF6FF;border-radius:11px;border:1px solid #BFDBFE;">
-          <div><div style="font-size:13px;font-weight:700;">🥈 Niveau 2</div><div style="font-size:11px;color:#9CA3AF;">Filleul indirect activé</div></div>
-          <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:800;color:#2657A8;">+600 F</div>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 13px;background:#FFF5F5;border-radius:11px;border:1px solid #FECDD3;">
-          <div><div style="font-size:13px;font-weight:700;">🥉 Niveau 3</div><div style="font-size:11px;color:#9CA3AF;">Profondeur 3 activée</div></div>
-          <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:800;color:#C0392B;">+300 F</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- RETRAIT PAGE -->
-<div class="sub-page" id="sp-retrait">
-  <div class="content">
-    <div class="pg-hd"><div class="ph-title">💸 Retraits</div><div class="ph-sub">Transférez vos gains</div></div>
-    <div class="card">
-      <div class="card-title">📤 Nouvelle demande</div>
-      <div class="solde-box"><div class="sb-lbl">Solde disponible</div><div class="sb-val" id="ret-solde">0 F</div></div>
-      <div class="fld"><label>Montant (F CFA)</label><div class="inp-w"><span class="ic">💵</span><input type="number" id="ret-mont" placeholder="Minimum 500 F" min="500"></div></div>
-      <div class="fld"><label>Moyen de paiement</label><div class="inp-w"><span class="ic">📱</span>
+      <div class="card-t">Nouvelle demande</div>
+      <div class="solde-box"><div class="sb-l">Solde disponible</div><div class="sb-v" id="ret-solde">0 F</div></div>
+      <div class="fld"><label>Montant (F CFA)</label><div class="iw"><span class="ic">💵</span><input type="number" id="ret-mont" placeholder="Minimum 500 F" min="500"></div></div>
+      <div class="fld"><label>Opérateur</label><div class="iw"><span class="ic">📱</span>
         <select id="ret-moy"><option value="">-- Choisir --</option><option>Orange Money</option><option>Wave</option><option>MTN Mobile Money</option><option>Moov Money</option></select>
       </div></div>
-      <div class="fld"><label>Numéro de compte</label><div class="inp-w"><span class="ic">📞</span><input type="tel" id="ret-num" placeholder="0700000000"></div></div>
-      <button class="btn btn-main" id="btn-ret" onclick="doRet()">Soumettre la demande</button>
+      <div class="fld"><label>Numéro de compte</label><div class="iw"><span class="ic">📞</span><input type="tel" id="ret-num" placeholder="0700000000"></div></div>
+      <button class="btn btn-main" id="btn-ret" onclick="doRetrait()">Soumettre la demande</button>
     </div>
     <div class="card">
-      <div class="card-title">📋 Historique</div>
+      <div class="card-t">Historique</div>
       <div id="ret-hist"><div class="empty"><div class="ei">⏳</div><p>Chargement...</p></div></div>
     </div>
   </div>
-</div>
 
-<!-- EBOOKS PAGE -->
-<div class="sub-page" id="sp-ebooks">
-  <div class="content">
-    <div class="pg-hd"><div class="ph-title">📚 eBooks</div><div class="ph-sub">Formation & développement personnel</div></div>
-    <div class="info-box"><span class="ii">🚀</span><p>Accédez à nos formations exclusives pour booster vos résultats.</p></div>
+  <!-- PROMO -->
+  <div class="pg" id="pg-promo">
+    <div class="pgh"><div class="pgh-t">🎁 Promotions</div><div class="pgh-s">Offres exclusives</div></div>
+    <div class="promo-banner"><span class="pb-ic">🔥</span><div><div class="pb-t">Offre de bienvenue</div><div class="pb-s">Recrutez 5 membres · Bonus +2 500 F</div></div></div>
     <div class="card">
-      <div style="display:grid;gap:12px;">
-        <div style="border:1.5px solid #E5E7EB;border-radius:13px;padding:14px;display:flex;gap:12px;align-items:center;">
-          <div style="width:48px;height:48px;border-radius:11px;background:linear-gradient(135deg,#1A3A6B,#2657A8);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">📖</div>
-          <div style="flex:1;"><div style="font-size:13px;font-weight:700;margin-bottom:2px;">Guide du parrainage réussi</div><div style="font-size:11px;color:#9CA3AF;">15 pages · PDF</div></div>
-          <span style="font-size:11px;font-weight:700;padding:4px 9px;border-radius:20px;background:#F0FDF4;color:#16A34A;">Gratuit</span>
-        </div>
-        <div style="border:1.5px solid #E5E7EB;border-radius:13px;padding:14px;display:flex;gap:12px;align-items:center;">
-          <div style="width:48px;height:48px;border-radius:11px;background:linear-gradient(135deg,#D4AF37,#8B6914);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">💡</div>
-          <div style="flex:1;"><div style="font-size:13px;font-weight:700;margin-bottom:2px;">Stratégies de croissance réseau</div><div style="font-size:11px;color:#9CA3AF;">32 pages · PDF</div></div>
-          <span style="font-size:11px;font-weight:700;padding:4px 9px;border-radius:20px;background:#FFFBEF;color:#D97706;">Premium</span>
-        </div>
-        <div style="border:1.5px solid #E5E7EB;border-radius:13px;padding:14px;display:flex;gap:12px;align-items:center;">
-          <div style="width:48px;height:48px;border-radius:11px;background:linear-gradient(135deg,#7B1515,#DC2626);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🎯</div>
-          <div style="flex:1;"><div style="font-size:13px;font-weight:700;margin-bottom:2px;">Marketing sur les réseaux sociaux</div><div style="font-size:11px;color:#9CA3AF;">28 pages · PDF</div></div>
-          <span style="font-size:11px;font-weight:700;padding:4px 9px;border-radius:20px;background:#FFFBEF;color:#D97706;">Premium</span>
-        </div>
+      <div class="card-t">Promotions actives</div>
+      <div style="background:linear-gradient(135deg,#FFFBEF,#FFF8DC);border:1.5px solid #FDE68A;border-radius:12px;padding:13px;margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:13px;font-weight:700">🥇 Bonus Recrutement</span><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--gold);color:var(--white)">Actif</span></div>
+        <p style="font-size:12px;color:#78350F;line-height:1.5">Recrutez 10 membres actifs et recevez +5 000 F de bonus.</p>
+      </div>
+      <div style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border:1.5px solid #BFDBFE;border-radius:12px;padding:13px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:13px;font-weight:700">🌐 Challenge Mensuel</span><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--blue2);color:var(--white)">Actif</span></div>
+        <p style="font-size:12px;color:#1E40AF;line-height:1.5">Le plus grand réseau du mois gagne 10 000 F.</p>
       </div>
     </div>
   </div>
-</div>
 
-<!-- PROMO PAGE -->
-<div class="sub-page" id="sp-promo">
-  <div class="content">
-    <div class="pg-hd"><div class="ph-title">🎁 Promotions</div><div class="ph-sub">Offres et avantages exclusifs</div></div>
-    <div class="promo-badge">
-      <span class="pi">🔥</span>
-      <div><div class="pt">Offre de bienvenue</div><div class="ps">Recrutez 5 membres et gagnez un bonus 2 500 F</div></div>
+  <!-- BUSINESS -->
+  <div class="pg" id="pg-business">
+    <div class="pgh"><div class="pgh-t">💼 Business</div><div class="pgh-s">Votre activité SYLLA Agence</div></div>
+    <div class="card">
+      <div class="card-t">Votre statut</div>
+      <div class="pr-row"><span class="pr-k">Réseau total</span><span class="pr-v" id="biz-tot">0 membres</span></div>
+      <div class="pr-row"><span class="pr-k">Gains cumulés</span><span class="pr-v" style="color:var(--goldd)" id="biz-gains">0 F</span></div>
+      <div class="pr-row"><span class="pr-k">Niveau</span><span class="pr-v" style="font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;background:#FFFBEF;color:var(--goldd)" id="biz-lv">Débutant</span></div>
     </div>
     <div class="card">
-      <div class="card-title">🎯 Promotions en cours</div>
-      <div style="display:grid;gap:10px;">
-        <div style="background:linear-gradient(135deg,#FFFBEF,#FFF8DC);border:1.5px solid #D4AF37;border-radius:12px;padding:14px;">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
-            <div style="font-size:13px;font-weight:700;color:#78350F;">🥇 Bonus Niveau 1</div>
-            <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:#D4AF37;color:#fff;">Actif</span>
-          </div>
-          <div style="font-size:12px;color:#92400E;line-height:1.5;">Recrutez 10 membres et recevez +5 000 F de bonus supplémentaire.</div>
-        </div>
-        <div style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border:1.5px solid #2657A8;border-radius:12px;padding:14px;">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
-            <div style="font-size:13px;font-weight:700;color:#1E40AF;">🌐 Challenge Réseau</div>
-            <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:#2657A8;color:#fff;">Actif</span>
-          </div>
-          <div style="font-size:12px;color:#1D4ED8;line-height:1.5;">Le membre avec le plus grand réseau du mois gagne 10 000 F.</div>
-        </div>
-      </div>
+      <div class="card-t">Niveaux business</div>
+      <div class="biz-lv bz-s"><span class="bv-ic">🌱</span><div><div class="bv-n">Débutant</div><div class="bv-s">0 – 9 membres actifs</div></div></div>
+      <div class="biz-lv bz-si"><span class="bv-ic">⭐</span><div><div class="bv-n">Argent</div><div class="bv-s">10 – 49 membres actifs</div></div></div>
+      <div class="biz-lv bz-g"><span class="bv-ic">🥇</span><div><div class="bv-n">Or</div><div class="bv-s">50+ membres actifs</div></div></div>
+    </div>
+    <div style="height:8px"></div>
+  </div>
+
+  <!-- PROFIL (section) -->
+  <div class="pg" id="pg-profil">
+    <div class="pgh"><div class="pgh-back" onclick="goBack()">← Retour</div><div class="pgh-t">👤 Mon Profil</div></div>
+    <div style="text-align:center;padding:0 16px 16px">
+      <div style="width:66px;height:66px;border-radius:17px;background:linear-gradient(135deg,var(--goldl),var(--gold),var(--goldd));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:25px;font-weight:800;color:var(--navy);margin:0 auto 9px" id="pf-av">?</div>
+      <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700" id="pf-nm">...</div>
+      <div style="font-size:12px;color:var(--txt3);margin-top:2px" id="pf-em">...</div>
+    </div>
+    <div class="card" style="margin-top:0"><div id="pf-rows"></div></div>
+    <div class="card"><div class="card-t">Lien de parrainage</div><div class="link-box" id="pf-link">—</div><button class="btn btn-main" onclick="cpLink()">📋 Copier mon lien</button></div>
+    <div style="height:8px"></div>
+  </div>
+
+  <!-- SUPPORT -->
+  <div class="pg" id="pg-support">
+    <div class="pgh"><div class="pgh-back" onclick="goBack()">← Retour</div><div class="pgh-t">🎧 Support</div></div>
+    <div class="card">
+      <div class="card-t">Contactez-nous</div>
+      <a href="https://wa.me/2250000000000" style="display:flex;align-items:center;gap:10px;padding:13px;background:var(--cream);border-radius:13px;text-decoration:none;margin-bottom:9px">
+        <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#DCFCE7,#BBF7D0);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">💬</div>
+        <div><div style="font-size:13px;font-weight:700;color:var(--txt)">WhatsApp</div><div style="font-size:11px;color:var(--txt3)">Réponse rapide garantie</div></div>
+      </a>
+      <a href="mailto:abdoula13cherif@gmail.com" style="display:flex;align-items:center;gap:10px;padding:13px;background:var(--cream);border-radius:13px;text-decoration:none">
+        <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#DBEAFE,#BFDBFE);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📧</div>
+        <div><div style="font-size:13px;font-weight:700;color:var(--txt)">Email Admin</div><div style="font-size:11px;color:var(--txt3)">abdoula13cherif@gmail.com</div></div>
+      </a>
+    </div>
+    <div class="card">
+      <div class="card-t">Horaires</div>
+      <div class="pr-row"><span class="pr-k">Lun – Ven</span><span class="pr-v">08h – 18h</span></div>
+      <div class="pr-row"><span class="pr-k">Samedi</span><span class="pr-v">09h – 14h</span></div>
     </div>
   </div>
-</div>
 
-<!-- BUSINESS PAGE -->
-<div class="sub-page" id="sp-business">
-  <div class="content">
-    <div class="pg-hd"><div class="ph-title">💼 Business</div><div class="ph-sub">Développez votre activité avec SYLLA</div></div>
-    <div class="info-box"><span class="ii">💼</span><p>Devenez un leader SYLLA Agence et bénéficiez d'avantages exclusifs pour votre business.</p></div>
+  <!-- PARRAINAGE -->
+  <div class="pg" id="pg-parrainage">
+    <div class="pgh"><div class="pgh-back" onclick="goBack()">← Retour</div><div class="pgh-t">🔗 Parrainage</div></div>
     <div class="card">
-      <div class="card-title">📊 Votre statut business</div>
-      <div style="display:grid;gap:8px;">
-        <div style="display:flex;justify-content:space-between;padding:11px 13px;background:#F8F6F0;border-radius:11px;">
-          <span style="font-size:12px;color:#6B7280;font-weight:600;">Réseau total</span>
-          <span style="font-size:14px;font-weight:800;color:#1A3A6B;" id="biz-tot">0 membres</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:11px 13px;background:#F8F6F0;border-radius:11px;">
-          <span style="font-size:12px;color:#6B7280;font-weight:600;">Gains totaux</span>
-          <span style="font-size:14px;font-weight:800;color:#D4AF37;" id="biz-gains">0 F</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:11px 13px;background:#F8F6F0;border-radius:11px;">
-          <span style="font-size:12px;color:#6B7280;font-weight:600;">Niveau business</span>
-          <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:#FFFBEF;color:#D97706;" id="biz-level">Débutant</span>
-        </div>
-      </div>
+      <div class="card-t">Mon lien unique</div>
+      <div class="link-box" id="par-link">—</div>
+      <button class="btn btn-main" onclick="cpLink()" style="margin-bottom:8px">📋 Copier le lien</button>
+      <button class="btn btn-ghost" onclick="shareLink()">📤 Partager</button>
     </div>
     <div class="card">
-      <div class="card-title">🏆 Niveaux business</div>
-      <div style="display:grid;gap:8px;">
-        <div style="display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:11px;background:#F8F6F0;">
-          <span style="font-size:18px;">🌱</span>
-          <div style="flex:1;"><div style="font-size:13px;font-weight:700;">Débutant</div><div style="font-size:11px;color:#9CA3AF;">0 – 9 membres actifs</div></div>
-        </div>
-        <div style="display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:11px;background:#FFFBEF;border:1px solid #FDE68A;">
-          <span style="font-size:18px;">⭐</span>
-          <div style="flex:1;"><div style="font-size:13px;font-weight:700;">Argent</div><div style="font-size:11px;color:#9CA3AF;">10 – 49 membres actifs</div></div>
-        </div>
-        <div style="display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:11px;background:linear-gradient(135deg,#FFFBEF,#FFF8DC);border:1px solid #D4AF37;">
-          <span style="font-size:18px;">🥇</span>
-          <div style="flex:1;"><div style="font-size:13px;font-weight:700;">Or</div><div style="font-size:11px;color:#9CA3AF;">50+ membres actifs</div></div>
-        </div>
-      </div>
+      <div class="card-t">Commissions</div>
+      <div class="comm c1"><div><div class="cn">🥇 Niveau 1</div><div class="cs">Filleul direct activé</div></div><div class="ca g">+1 250 F</div></div>
+      <div class="comm c2"><div><div class="cn">🥈 Niveau 2</div><div class="cs">Filleul indirect activé</div></div><div class="ca b">+600 F</div></div>
+      <div class="comm c3"><div><div class="cn">🥉 Niveau 3</div><div class="cs">Profondeur 3 activée</div></div><div class="ca r">+300 F</div></div>
     </div>
   </div>
-</div>
+
+  <!-- NIV 1/2/3 -->
+  <div class="pg" id="pg-niv1"><div class="pgh"><div class="pgh-back" onclick="goBack()">← Retour</div><div class="pgh-t">🥇 Niveau 1</div><div class="pgh-s">Filleuls directs · +1 250 F/activation</div></div><div style="padding:0 16px" id="list-n1"><div class="empty"><div class="ei">⏳</div><p>Chargement...</p></div></div><div style="height:10px"></div></div>
+  <div class="pg" id="pg-niv2"><div class="pgh"><div class="pgh-back" onclick="goBack()">← Retour</div><div class="pgh-t">🥈 Niveau 2</div><div class="pgh-s">Filleuls indirects · +600 F/activation</div></div><div style="padding:0 16px" id="list-n2"><div class="empty"><div class="ei">⏳</div><p>Chargement...</p></div></div><div style="height:10px"></div></div>
+  <div class="pg" id="pg-niv3"><div class="pgh"><div class="pgh-back" onclick="goBack()">← Retour</div><div class="pgh-t">🥉 Niveau 3</div><div class="pgh-s">Profondeur 3 · +300 F/activation</div></div><div style="padding:0 16px" id="list-n3"><div class="empty"><div class="ei">⏳</div><p>Chargement...</p></div></div><div style="height:10px"></div></div>
+
+  <!-- VITRINE -->
+  <div class="pg" id="pg-vitrine">
+    <div class="pgh"><div class="pgh-back" onclick="goBack()">← Retour</div><div class="pgh-t">🚀 Vitrine</div></div>
+    <div class="card"><div class="card-t">Votre lien unique</div><div class="link-box" id="vit-link">—</div><button class="btn btn-main" onclick="cpLink()" style="margin-bottom:8px">📋 Copier</button><button class="btn btn-ghost" onclick="shareLink()">📤 Partager</button></div>
+    <div class="card"><div class="card-t">Conseils de partage</div>
+      <div class="biz-lv bz-s"><span class="bv-ic">📱</span><div><div class="bv-n">WhatsApp</div><div class="bv-s">Partagez dans vos groupes</div></div></div>
+      <div class="biz-lv bz-s"><span class="bv-ic">📘</span><div><div class="bv-n">Facebook</div><div class="bv-s">Publiez avec un message attractif</div></div></div>
+      <div class="biz-lv bz-s"><span class="bv-ic">💬</span><div><div class="bv-n">Bouche à oreille</div><div class="bv-s">Expliquez les avantages à vos proches</div></div></div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="pg" id="pg-faq">
+    <div class="pgh"><div class="pgh-back" onclick="goBack()">← Retour</div><div class="pgh-t">❓ FAQ</div></div>
+    <div id="faq-list"></div>
+    <div style="height:10px"></div>
+  </div>
+
+  <!-- PARAMETRES -->
+  <div class="pg" id="pg-parametres">
+    <div class="pgh"><div class="pgh-back" onclick="goBack()">← Retour</div><div class="pgh-t">⚙️ Paramètres</div></div>
+    <div class="card">
+      <div class="card-t">Changer le mot de passe</div>
+      <div class="fld"><label>Mot de passe actuel</label><div class="iw"><span class="ic">🔒</span><input type="password" id="pw-old" placeholder="••••••••"></div></div>
+      <div class="fld"><label>Nouveau mot de passe</label><div class="iw"><span class="ic">🔑</span><input type="password" id="pw-new" placeholder="Min. 6 caractères"></div></div>
+      <div class="fld"><label>Confirmer</label><div class="iw"><span class="ic">🔑</span><input type="password" id="pw-cf" placeholder="Répétez"></div></div>
+      <button class="btn btn-main" id="btn-pw" onclick="changePw()">Modifier le mot de passe</button>
+    </div>
+    <div class="card"><button class="btn-logout" onclick="logout()">🚪 Se déconnecter</button></div>
+    <div style="height:10px"></div>
+  </div>
+
+</div><!-- /scroll -->
 
 <!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-  <div class="nav-item" id="nav-ebooks" onclick="goNav('ebooks')">
-    <span class="n-ico">📚</span>
-    <span class="n-lbl">eBooks</span>
-  </div>
-  <div class="nav-item" id="nav-retrait" onclick="goNav('retrait')">
-    <span class="n-ico">💸</span>
-    <span class="n-lbl">Retrait</span>
-  </div>
-  <div class="nav-item active" id="nav-home" onclick="goNav('home')">
-    <span class="n-ico">🏠</span>
-    <span class="n-lbl">Accueil</span>
-  </div>
-  <div class="nav-item" id="nav-promo" onclick="goNav('promo')">
-    <span class="n-ico">🎁</span>
-    <span class="n-lbl">Promo</span>
-  </div>
-  <div class="nav-item" id="nav-business" onclick="goNav('business')">
-    <span class="n-ico">💼</span>
-    <span class="n-lbl">Business</span>
-  </div>
+<nav class="bnav">
+  <button class="nb" id="nb-ebooks"   onclick="goNav('ebooks')"><span class="nb-ic">📚</span><span class="nb-lb">eBooks</span></button>
+  <button class="nb" id="nb-retrait"  onclick="goNav('retrait')"><span class="nb-ic">💸</span><span class="nb-lb">Retrait</span></button>
+  <button class="nb" id="nb-promo"    onclick="goNav('promo')"><span class="nb-ic">🎁</span><span class="nb-lb">Promo</span></button>
+  <button class="nb" id="nb-business" onclick="goNav('business')"><span class="nb-ic">💼</span><span class="nb-lb">Business</span></button>
 </nav>
+
+<!-- DRAWER -->
+<div class="drw-ov" id="drw-ov" onclick="closeDrw()"></div>
+<div class="drw" id="drw">
+  <div class="drw-hd">
+    <div class="drw-av" id="drw-av">?</div>
+    <div class="drw-nm" id="drw-nm">...</div>
+    <div class="drw-em" id="drw-em">...</div>
+    <div class="drw-bdg">✅ Compte actif</div>
+  </div>
+  <div class="drw-body">
+    <div class="drw-sec">Compte</div>
+    <div class="drw-it" onclick="goSec('profil')"><span class="di-ic">👤</span><span class="di-t">Profil</span><span class="di-a">›</span></div>
+    <div class="drw-it" onclick="goSec('support')"><span class="di-ic">🎧</span><span class="di-t">Support</span><span class="di-a">›</span></div>
+    <div class="drw-sec">Parrainage</div>
+    <div class="drw-it" onclick="goSec('parrainage')"><span class="di-ic">🔗</span><span class="di-t">Parrainage</span><span class="di-a">›</span></div>
+    <div class="drw-it" onclick="goSec('niv1')"><span class="di-ic">🥇</span><span class="di-t">Niveau 1</span><span class="di-cnt" id="d-n1">0</span></div>
+    <div class="drw-it" onclick="goSec('niv2')"><span class="di-ic">🥈</span><span class="di-t">Niveau 2</span><span class="di-cnt" id="d-n2">0</span></div>
+    <div class="drw-it" onclick="goSec('niv3')"><span class="di-ic">🥉</span><span class="di-t">Niveau 3</span><span class="di-cnt" id="d-n3">0</span></div>
+    <div class="drw-sec">Ressources</div>
+    <div class="drw-it" onclick="goSec('vitrine')"><span class="di-ic">🚀</span><span class="di-t">Vitrine</span><span class="di-a">›</span></div>
+    <div class="drw-it" onclick="goSec('faq')"><span class="di-ic">❓</span><span class="di-t">FAQ</span><span class="di-a">›</span></div>
+    <div class="drw-it" onclick="goSec('parametres')"><span class="di-ic">⚙️</span><span class="di-t">Paramètres</span><span class="di-a">›</span></div>
+  </div>
+  <div class="drw-ft"><button class="btn-logout" onclick="logout()">🚪 Se déconnecter</button></div>
+</div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const SB='https://fqiotqrraobmsrcyewsi.supabase.co';
-const AK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc';
-const rq=(p,o={})=>fetch(`${SB}/rest/v1/${p}`,{headers:{'apikey':AK,'Authorization':'Bearer '+AK,'Content-Type':'application/json','Prefer':o.prefer||'',...(o.headers||{})},...o});
+'use strict';
+var API = 'https://fqiotqrraobmsrcyewsi.supabase.co/rest/v1';
+var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc';
 
-let CU=null,N1=[],N2=[],N3=[],allTx=[];
-let currentSection=null;
-
-// ====== INIT ======
-function init(){
-  const s=localStorage.getItem('sylla_user');
-  if(!s){
-    const p=localStorage.getItem('sylla_pending');
-    if(p){localStorage.removeItem('sylla_user');location.href='activation.html';return;}
-    location.href='index.html';return;
-  }
-  CU=JSON.parse(s);
-  if(CU.role==='admin')return location.href='admin.html';
-  if(CU.statut!=='actif'){
-    localStorage.setItem('sylla_pending',JSON.stringify(CU));
-    localStorage.removeItem('sylla_user');
-    location.href='activation.html';return;
-  }
-  applyUser();loadAll();renderFAQ();
+function get(table, q) {
+  return fetch(API + '/' + table + '?' + q, { headers: { apikey: KEY, Authorization: 'Bearer ' + KEY } })
+    .then(function(r) { return r.json(); });
+}
+function post(table, body) {
+  return fetch(API + '/' + table, {
+    method: 'POST',
+    headers: { apikey: KEY, Authorization: 'Bearer ' + KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+    body: JSON.stringify(body)
+  }).then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); });
+}
+function patch(table, q, body) {
+  return fetch(API + '/' + table + '?' + q, {
+    method: 'PATCH',
+    headers: { apikey: KEY, Authorization: 'Bearer ' + KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+    body: JSON.stringify(body)
+  }).then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); });
 }
 
-function applyUser(){
-  const av=(CU.prenom||'?').charAt(0).toUpperCase()+(CU.nom||'?').charAt(0).toUpperCase();
-  // Top bar
-  // Welcome card
-  document.getElementById('wc-name').textContent=CU.prenom+' '+CU.nom;
-  document.getElementById('wc-avatar').textContent=av;
-  document.getElementById('wc-solde').textContent=(CU.solde||0).toLocaleString('fr-FR');
-  // Drawer
-  document.getElementById('d-avatar').textContent=av;
-  document.getElementById('d-name').textContent=CU.prenom+' '+CU.nom;
-  document.getElementById('d-email').textContent=CU.email;
-  // Profil
-  document.getElementById('profil-av').textContent=av;
-  document.getElementById('profil-nom').textContent=CU.prenom+' '+CU.nom;
-  document.getElementById('profil-email').textContent=CU.email;
-  document.getElementById('profil-tel').textContent=CU.telephone;
-  document.getElementById('profil-pays').textContent=CU.pays||'—';
-  document.getElementById('profil-code').textContent=CU.code_parrainage;
-  document.getElementById('profil-date').textContent=new Date(CU.created_at).toLocaleDateString('fr-FR');
-  // Links
-  const link=`${location.origin}/index.html?ref=${CU.code_parrainage}`;
-  ['profil-link','vitrine-link','par-link'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=link;});
-  // Solde retrait
-  document.getElementById('ret-solde').textContent=(CU.solde||0).toLocaleString('fr-FR')+' F';
+var CU = null, N1 = [], N2 = [], N3 = [], TX = [];
+var prevPg = 'pg-home', dataLoaded = false;
+
+// ── INIT ───────────────────────────────────────────────────────
+(function init() {
+  try { CU = JSON.parse(localStorage.getItem('sylla_user') || 'null'); } catch(e) {}
+  if (!CU || !CU.id) { location.href = 'index.html'; return; }
+  if (CU.role === 'admin') { location.href = 'admin.html'; return; }
+  if (CU.statut !== 'actif') { location.href = 'activation.html'; return; }
+  applyUser();
+  buildFAQ();
+  loadData();
+})();
+
+function applyUser() {
+  var av = (CU.prenom || '').charAt(0).toUpperCase() + (CU.nom || '').charAt(0).toUpperCase();
+  setText('wc-name', CU.prenom + ' ' + CU.nom);
+  setText('wc-av', av);
+  setText('wc-solde', fmt(CU.solde));
+  setText('drw-av', av); setText('drw-nm', CU.prenom + ' ' + CU.nom); setText('drw-em', CU.email);
+  setText('pf-av', av); setText('pf-nm', CU.prenom + ' ' + CU.nom); setText('pf-em', CU.email);
+  var link = makeLink();
+  ['pf-link','par-link','vit-link'].forEach(function(id) { var el = document.getElementById(id); if (el) el.textContent = link; });
+  setText('ret-solde', fmt(CU.solde) + ' F');
+  document.getElementById('pf-rows').innerHTML =
+    mkRow('Téléphone', CU.telephone) + mkRow('Pays', CU.pays || '—') +
+    mkRow('Code parrainage', '<span style="font-family:Playfair Display,serif;font-weight:700;color:var(--goldd);letter-spacing:1px">' + CU.code_parrainage + '</span>') +
+    mkRow('Statut', '<span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;background:#F0FDF4;color:#16A34A">✅ Actif</span>') +
+    mkRow('Membre depuis', new Date(CU.created_at).toLocaleDateString('fr-FR'));
 }
 
-async function loadAll(){
+function loadData() {
+  if (dataLoaded) return;
+  dataLoaded = true;
   // Refresh user
-  const r0=await rq('sylla_users?id=eq.'+CU.id+'&select=*');
-  const d0=await r0.json();
-  if(d0&&d0.length){CU=d0[0];localStorage.setItem('sylla_user',JSON.stringify(CU));applyUser();}
-
-  // N1
-  const r1=await rq('sylla_users?parrain_id=eq.'+CU.id+'&select=*');
-  N1=await r1.json()||[];
-  // N2
-  N2=[];
-  for(const f of N1){const r2=await rq('sylla_users?parrain_id=eq.'+f.id+'&select=*');N2.push(...(await r2.json()||[]));}
-  // N3
-  N3=[];
-  for(const f of N2){const r3=await rq('sylla_users?parrain_id=eq.'+f.id+'&select=*');N3.push(...(await r3.json()||[]));}
-
-  const tot=N1.length+N2.length+N3.length;
-  // Stats
-  document.getElementById('st-n1').textContent=N1.length;
-  document.getElementById('st-tot').textContent=tot;
-  // Drawer counts
-  document.getElementById('cnt-n1').textContent=N1.length;
-  document.getElementById('cnt-n2').textContent=N2.length;
-  document.getElementById('cnt-n3').textContent=N3.length;
-  // Parrainage page
-  document.getElementById('pn1').textContent=N1.filter(f=>f.statut==='actif').length;
-  document.getElementById('pn2').textContent=N2.filter(f=>f.statut==='actif').length;
-  document.getElementById('pn3').textContent=N3.filter(f=>f.statut==='actif').length;
-  // Business
-  document.getElementById('biz-tot').textContent=tot+' membres';
-  const bizLevel=tot>=50?'Or':tot>=10?'Argent':'Débutant';
-  document.getElementById('biz-level').textContent=bizLevel;
-
-  // Transactions
-  const rt=await rq('sylla_transactions?user_id=eq.'+CU.id+'&order=created_at.desc&select=*');
-  allTx=await rt.json()||[];
-
-  const gains=allTx.filter(t=>t.montant>0&&t.type!=='demande_activation').reduce((s,t)=>s+t.montant,0);
-  document.getElementById('st-gains').textContent=gains.toLocaleString('fr-FR');
-  document.getElementById('biz-gains').textContent=gains.toLocaleString('fr-FR')+' F';
-
-  renderDashTx();
-  renderFilleulLists();
-  loadRet();
-}
-
-const TX_IC={commission_n1:'🥇',commission_n2:'🥈',commission_n3:'🥉',retrait:'💸',demande_activation:'🔑'};
-function mkTxHtml(t){
-  const cr=t.montant>0;
-  const ic=TX_IC[t.type]||'💰';
-  const dt=new Date(t.created_at).toLocaleDateString('fr-FR',{day:'2-digit',month:'short'});
-  return`<div class="tx-item"><div class="tx-ico ${cr?'cr':'db'}">${ic}</div><div style="flex:1;min-width:0;"><div class="tx-lbl">${t.description||t.type}</div><div class="tx-dt">${dt}</div></div><div class="tx-amt ${cr?'cr':'db'}">${cr?'+':''}${t.montant.toLocaleString('fr-FR')} F</div></div>`;
-}
-
-function renderDashTx(){
-  const el=document.getElementById('dash-tx');
-  if(!allTx.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>Aucune transaction</p></div>';return;}
-  el.innerHTML=allTx.slice(0,5).map(mkTxHtml).join('');
-}
-
-function mkFiHtml(f){
-  const av=(f.prenom||'?').charAt(0)+(f.nom||'?').charAt(0);
-  return`<div class="fi"><div class="fi-av">${av.toUpperCase()}</div><div style="flex:1;min-width:0;"><div class="fi-nm">${f.prenom} ${f.nom}</div><div class="fi-sub">${f.telephone} · ${f.pays||''}</div></div><span class="fi-st ${f.statut}">${f.statut}</span></div>`;
-}
-
-function renderFilleulLists(){
-  ['n1','n2','n3'].forEach((k,i)=>{
-    const arr=[N1,N2,N3][i];
-    const el=document.getElementById('list-'+k);
-    if(!arr.length){el.innerHTML='<div class="empty"><div class="ei">👤</div><p>Aucun filleul à ce niveau</p></div>';return;}
-    el.innerHTML='<div class="content" style="padding-top:0;">'+arr.map(mkFiHtml).join('')+'</div>';
+  get('sylla_users', 'select=*&id=eq.' + CU.id).then(function(d) {
+    if (d && d.length) { CU = d[0]; localStorage.setItem('sylla_user', JSON.stringify(CU)); applyUser(); }
+    // Load N1
+    return get('sylla_users', 'select=*&parrain_id=eq.' + CU.id);
+  }).then(function(d1) {
+    N1 = d1 || [];
+    setText('st-n1', N1.length); setText('d-n1', N1.length);
+    // Load N2 sequentially
+    var n2Promises = N1.map(function(f) { return get('sylla_users', 'select=*&parrain_id=eq.' + f.id); });
+    return Promise.all(n2Promises);
+  }).then(function(results) {
+    results.forEach(function(r) { if (r) N2 = N2.concat(r); });
+    setText('st-n2', N2.length); setText('d-n2', N2.length);
+    var n3Promises = N2.map(function(f) { return get('sylla_users', 'select=*&parrain_id=eq.' + f.id); });
+    return Promise.all(n3Promises);
+  }).then(function(results) {
+    results.forEach(function(r) { if (r) N3 = N3.concat(r); });
+    setText('st-n3', N3.length); setText('d-n3', N3.length);
+    var tot = N1.length + N2.length + N3.length;
+    setText('wc-net', tot); setText('biz-tot', tot + ' membres');
+    setText('biz-lv', tot >= 50 ? 'Or' : tot >= 10 ? 'Argent' : 'Débutant');
+    renderLists();
+    // Load transactions
+    return get('sylla_transactions', 'select=*&user_id=eq.' + CU.id + '&order=created_at.desc&limit=50');
+  }).then(function(d) {
+    TX = d || [];
+    var gains = TX.filter(function(t) { return t.montant > 0 && t.type !== 'demande_activation'; })
+                  .reduce(function(s, t) { return s + Number(t.montant); }, 0);
+    setText('biz-gains', fmt(gains) + ' F');
+    renderHomeTx();
+    loadRetraits();
+  }).catch(function(e) {
+    showToast('Erreur de chargement', 'er');
   });
 }
 
-async function loadRet(){
-  const r=await rq('sylla_retraits?user_id=eq.'+CU.id+'&order=created_at.desc&select=*');
-  const data=await r.json()||[];
-  const el=document.getElementById('ret-hist');
-  if(!data.length){el.innerHTML='<div class="empty"><div class="ei">📭</div><p>Aucune demande</p></div>';return;}
-  const st={en_attente:'b-att',approuve:'b-ok',rejete:'b-ko'};
-  el.innerHTML='<div style="overflow-x:auto;"><table><thead><tr><th>Montant</th><th>Moyen</th><th>Statut</th><th>Date</th></tr></thead><tbody>'+
-  data.map(r=>`<tr><td style="font-weight:800;color:#D4AF37;">${r.montant.toLocaleString('fr-FR')} F</td><td>${r.moyen_paiement}</td><td><span class="badge ${st[r.statut]||''}">${r.statut.replace('_',' ')}</span></td><td style="color:#9CA3AF;font-size:12px;">${new Date(r.created_at).toLocaleDateString('fr-FR')}</td></tr>`).join('')+
-  '</tbody></table></div>';
+var TX_ICO = { commission_n1: '🥇', commission_n2: '🥈', commission_n3: '🥉', retrait: '💸', demande_activation: '🔑' };
+
+function renderHomeTx() {
+  var el = document.getElementById('home-tx');
+  if (!TX.length) { el.innerHTML = '<div class="empty"><div class="ei">📭</div><p>Aucune transaction</p></div>'; return; }
+  el.innerHTML = TX.slice(0, 5).map(function(t) {
+    var cr = t.montant > 0;
+    return '<div class="txi"><div class="tx-bub ' + (cr ? 'cr' : 'db') + '">' + (TX_ICO[t.type] || '💰') + '</div><div class="tx-inf"><div class="tx-desc">' + (t.description || t.type) + '</div><div class="tx-date">' + new Date(t.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }) + '</div></div><div class="tx-amt ' + (cr ? 'cr' : 'db') + '">' + (cr ? '+' : '') + fmt(t.montant) + ' F</div></div>';
+  }).join('');
 }
 
-async function doRet(){
-  const mont=parseFloat(document.getElementById('ret-mont').value);
-  const moy=document.getElementById('ret-moy').value;
-  const num=document.getElementById('ret-num').value.trim();
-  if(!mont||mont<500)return toast('Montant minimum : 500 F','er');
-  if(!moy)return toast('Choisissez un moyen de paiement','er');
-  if(!num)return toast('Entrez votre numéro','er');
-  if(mont>(CU.solde||0))return toast('Solde insuffisant','er');
-  const btn=document.getElementById('btn-ret');
-  btn.disabled=true;btn.innerHTML='<span class="spin"></span>Envoi...';
-  try{
-    await rq('sylla_retraits',{method:'POST',prefer:'return=minimal',body:JSON.stringify({user_id:CU.id,montant:mont,moyen_paiement:moy,numero:num,statut:'en_attente'})});
-    toast('Demande envoyée !','ok');
-    document.getElementById('ret-mont').value='';document.getElementById('ret-num').value='';document.getElementById('ret-moy').value='';
-    await loadRet();
-  }catch(e){toast(e.message,'er');}
-  finally{btn.disabled=false;btn.textContent='Soumettre la demande';}
+function renderLists() {
+  [['n1',N1],['n2',N2],['n3',N3]].forEach(function(pair) {
+    var el = document.getElementById('list-' + pair[0]);
+    var arr = pair[1];
+    if (!arr.length) { el.innerHTML = '<div class="empty"><div class="ei">👤</div><p>Aucun filleul à ce niveau</p></div>'; return; }
+    el.innerHTML = arr.map(function(f) {
+      var av = (f.prenom || '?').charAt(0).toUpperCase() + (f.nom || '?').charAt(0).toUpperCase();
+      return '<div class="fi"><div class="fi-av">' + av + '</div><div style="flex:1;min-width:0"><div class="fi-nm">' + f.prenom + ' ' + f.nom + '</div><div class="fi-sb">' + f.telephone + ' · ' + (f.pays || '') + '</div></div><span class="fi-st ' + f.statut + '">' + f.statut + '</span></div>';
+    }).join('');
+  });
 }
 
-async function changePw(){
-  const old=document.getElementById('pw-old').value;
-  const nw=document.getElementById('pw-new').value;
-  const cf=document.getElementById('pw-conf').value;
-  if(!old||!nw||!cf)return toast('Remplissez tous les champs','er');
-  if(CU.password_hash!==old)return toast('Mot de passe actuel incorrect','er');
-  if(nw.length<6)return toast('Nouveau mot de passe trop court','er');
-  if(nw!==cf)return toast('Les mots de passe ne correspondent pas','er');
-  const btn=document.getElementById('btn-pw');
-  btn.disabled=true;btn.innerHTML='<span class="spin"></span>Modification...';
-  try{
-    await rq('sylla_users?id=eq.'+CU.id,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({password_hash:nw})});
-    CU.password_hash=nw;localStorage.setItem('sylla_user',JSON.stringify(CU));
-    toast('Mot de passe modifié !','ok');
-    document.getElementById('pw-old').value='';document.getElementById('pw-new').value='';document.getElementById('pw-conf').value='';
-  }catch(e){toast(e.message,'er');}
-  finally{btn.disabled=false;btn.textContent='Modifier le mot de passe';}
+function loadRetraits() {
+  get('sylla_retraits', 'select=*&user_id=eq.' + CU.id + '&order=created_at.desc').then(function(data) {
+    var el = document.getElementById('ret-hist');
+    if (!data || !data.length) { el.innerHTML = '<div class="empty"><div class="ei">📭</div><p>Aucune demande</p></div>'; return; }
+    var m = { en_attente: 'b-att', approuve: 'b-ok', rejete: 'b-ko' };
+    el.innerHTML = '<div class="tbl-wrap"><table><thead><tr><th>Montant</th><th>Moyen</th><th>Statut</th><th>Date</th></tr></thead><tbody>' +
+      data.map(function(r) {
+        return '<tr><td style="font-family:\'Playfair Display\',serif;font-weight:700;color:var(--goldd)">' + fmt(r.montant) + ' F</td><td>' + r.moyen_paiement + '</td><td><span class="bdg ' + (m[r.statut] || '') + '">' + r.statut.replace('_', ' ') + '</span></td><td style="font-size:12px;color:var(--txt3)">' + new Date(r.created_at).toLocaleDateString('fr-FR') + '</td></tr>';
+      }).join('') + '</tbody></table></div>';
+  }).catch(function() {});
 }
 
-// ====== NAVIGATION ======
-const NAV_PAGES={home:'main-dash',ebooks:'sp-ebooks',retrait:'sp-retrait',promo:'sp-promo',business:'sp-business'};
-const SEC_PAGES={profil:'sp-profil',support:'sp-support',niv1:'sp-niv1',niv2:'sp-niv2',niv3:'sp-niv3',vitrine:'sp-vitrine',faq:'sp-faq',parametres:'sp-parametres',parrainage:'sp-parrainage'};
-
-function hideAll(){
-  document.getElementById('main-dash').style.display='none';
-  document.querySelectorAll('.sub-page').forEach(p=>p.classList.remove('on'));
+function doRetrait() {
+  var mont = parseFloat(document.getElementById('ret-mont').value);
+  var moy = document.getElementById('ret-moy').value;
+  var num = (document.getElementById('ret-num').value || '').trim();
+  if (!mont || mont < 500) { showToast('Montant minimum : 500 F', 'er'); return; }
+  if (!moy) { showToast('Choisissez un opérateur', 'er'); return; }
+  if (!num) { showToast('Entrez votre numéro', 'er'); return; }
+  if (mont > Number(CU.solde || 0)) { showToast('Solde insuffisant', 'er'); return; }
+  var btn = document.getElementById('btn-ret');
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Envoi...';
+  post('sylla_retraits', { user_id: CU.id, montant: mont, moyen_paiement: moy, numero: num, statut: 'en_attente' })
+    .then(function() {
+      showToast('Demande envoyée !', 'ok');
+      document.getElementById('ret-mont').value = '';
+      document.getElementById('ret-num').value = '';
+      document.getElementById('ret-moy').value = '';
+      loadRetraits();
+    }).catch(function() { showToast('Erreur serveur', 'er'); })
+    .finally(function() { btn.disabled = false; btn.textContent = 'Soumettre la demande'; });
 }
 
-function goNav(name){
-  hideAll();
-  currentSection=null;
-  if(name==='home'){
-    document.getElementById('main-dash').style.display='block';
-  }else{
-    const spId=NAV_PAGES[name];
-    if(spId&&spId!=='main-dash')document.getElementById(spId).classList.add('on');
-    // special
-    if(name==='retrait'){document.getElementById('ret-solde').textContent=(CU.solde||0).toLocaleString('fr-FR')+' F';loadRet();}
-  }
-  // Update bottom nav active
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  const navEl=document.getElementById('nav-'+name);
-  if(navEl)navEl.classList.add('active');
-  window.scrollTo(0,0);
+function changePw() {
+  var old = document.getElementById('pw-old').value;
+  var nw  = document.getElementById('pw-new').value;
+  var cf  = document.getElementById('pw-cf').value;
+  if (!old || !nw || !cf) { showToast('Remplissez tous les champs', 'er'); return; }
+  if (CU.password_hash !== old) { showToast('Mot de passe actuel incorrect', 'er'); return; }
+  if (nw.length < 6) { showToast('Minimum 6 caractères', 'er'); return; }
+  if (nw !== cf) { showToast('Mots de passe non identiques', 'er'); return; }
+  var btn = document.getElementById('btn-pw');
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span>...';
+  patch('sylla_users', 'id=eq.' + CU.id, { password_hash: nw })
+    .then(function() {
+      CU.password_hash = nw; localStorage.setItem('sylla_user', JSON.stringify(CU));
+      showToast('Mot de passe modifié !', 'ok');
+      ['pw-old','pw-new','pw-cf'].forEach(function(id) { document.getElementById(id).value = ''; });
+    }).catch(function() { showToast('Erreur', 'er'); })
+    .finally(function() { btn.disabled = false; btn.textContent = 'Modifier le mot de passe'; });
 }
 
-function goSection(name){
-  hideAll();
-  currentSection=name;
-  const spId=SEC_PAGES[name];
-  if(spId)document.getElementById(spId).classList.add('on');
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  window.scrollTo(0,0);
+// ── NAVIGATION ─────────────────────────────────────────────────
+var NAV_MAP = { ebooks: 'pg-ebooks', retrait: 'pg-retrait', promo: 'pg-promo', business: 'pg-business' };
+var SEC_MAP = { profil: 'pg-profil', support: 'pg-support', parrainage: 'pg-parrainage', niv1: 'pg-niv1', niv2: 'pg-niv2', niv3: 'pg-niv3', vitrine: 'pg-vitrine', faq: 'pg-faq', parametres: 'pg-parametres' };
+
+function showPg(id) {
+  document.querySelectorAll('.pg').forEach(function(p) { p.classList.remove('on'); });
+  document.getElementById(id).classList.add('on');
+  document.getElementById('scroll').scrollTop = 0;
+}
+function goHome() { prevPg = 'pg-home'; showPg('pg-home'); setNav(null); }
+function goNav(name) {
+  prevPg = 'pg-home';
+  showPg(NAV_MAP[name]);
+  setNav(name);
+  if (name === 'retrait') { setText('ret-solde', fmt(CU.solde) + ' F'); loadRetraits(); }
+}
+function goSec(name) {
+  closeDrw();
+  prevPg = document.querySelector('.pg.on') ? document.querySelector('.pg.on').id : 'pg-home';
+  showPg(SEC_MAP[name]);
+  setNav(null);
+}
+function goBack() {
+  showPg(prevPg);
+  var nb = null;
+  Object.keys(NAV_MAP).forEach(function(k) { if (NAV_MAP[k] === prevPg) nb = k; });
+  setNav(nb);
+}
+function setNav(active) {
+  document.querySelectorAll('.nb').forEach(function(b) { b.classList.remove('on'); });
+  if (active) { var el = document.getElementById('nb-' + active); if (el) el.classList.add('on'); }
 }
 
-function goBack(){
-  hideAll();
-  currentSection=null;
-  document.getElementById('main-dash').style.display='block';
-  document.getElementById('nav-home').classList.add('active');
-  window.scrollTo(0,0);
-}
+// ── DRAWER ──────────────────────────────────────────────────────
+function openDrw() { document.getElementById('drw').classList.add('on'); document.getElementById('drw-ov').classList.add('on'); document.body.style.overflow = 'hidden'; }
+function closeDrw() { document.getElementById('drw').classList.remove('on'); document.getElementById('drw-ov').classList.remove('on'); document.body.style.overflow = ''; }
 
-// ====== DRAWER ======
-function openDrawer(){
-  document.getElementById('drawer').classList.add('on');
-  document.getElementById('drawer-overlay').classList.add('on');
-  document.body.style.overflow='hidden';
-}
-function closeDrawer(){
-  document.getElementById('drawer').classList.remove('on');
-  document.getElementById('drawer-overlay').classList.remove('on');
-  document.body.style.overflow='';
-}
+// ── UTILS ────────────────────────────────────────────────────────
+function setText(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+function fmt(n) { return Number(n || 0).toLocaleString('fr-FR'); }
+function makeLink() { return location.origin + location.pathname.replace('dashboard.html', 'index.html') + '?ref=' + CU.code_parrainage; }
+function mkRow(k, v) { return '<div class="pr-row"><span class="pr-k">' + k + '</span><span class="pr-v">' + v + '</span></div>'; }
+function cpLink() { navigator.clipboard.writeText(makeLink()).then(function() { showToast('Lien copié !', 'ok'); }); }
+function shareLink() { var url = makeLink(); if (navigator.share) navigator.share({ title: 'SYLLA Agence', text: 'Rejoignez SYLLA Agence !', url: url }); else cpLink(); }
+function logout() { localStorage.removeItem('sylla_user'); location.href = 'index.html'; }
+function showToast(msg, type) { var t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast ' + (type || 'nfo') + ' show'; clearTimeout(t._t); t._t = setTimeout(function() { t.classList.remove('show'); }, 4500); }
 
-// ====== UTILS ======
-function cpLink(){
-  const link=`${location.origin}/index.html?ref=${CU.code_parrainage}`;
-  navigator.clipboard.writeText(link).then(()=>toast('Lien copié !','ok'));
-}
-
-function shareLink(){
-  const link=`${location.origin}/index.html?ref=${CU.code_parrainage}`;
-  if(navigator.share){navigator.share({title:'SYLLA Agence',text:'Rejoignez SYLLA Agence et gagnez de l\'argent !',url:link});}
-  else{cpLink();}
-}
-
-function logout(){
-  localStorage.removeItem('sylla_user');
-  localStorage.removeItem('sylla_pending');
-  location.href='index.html';
-}
-
-function toast(msg,type='nfo'){
-  const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' on';
-  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),4500);
-}
-
-function renderFAQ(){
-  const faqs=[
-    {q:'Comment fonctionne le parrainage ?',r:'Partagez votre lien. Quand quelqu\'un s\'inscrit et active son compte, vous recevez 1 250 F automatiquement.'},
-    {q:'Quand reçois-je mes commissions ?',r:'Les commissions sont créditées instantanément dès que l\'admin active le compte de votre filleul.'},
-    {q:'Comment retirer mon argent ?',r:'Allez dans "Retrait", choisissez votre opérateur mobile money, entrez le montant et soumettez. L\'admin traite sous 24h.'},
-    {q:'Le parrainage fonctionne sur combien de niveaux ?',r:'3 niveaux : Niveau 1 = 1 250 F, Niveau 2 = 600 F, Niveau 3 = 300 F.'},
-    {q:'Quel est le montant minimum de retrait ?',r:'Le montant minimum de retrait est de 500 F CFA.'},
-    {q:'Mon compte peut-il être désactivé ?',r:'Votre compte reste actif définitivement. Seul l\'administrateur peut modifier le statut.'},
+function buildFAQ() {
+  var data = [
+    ['Comment fonctionne le parrainage ?','Partagez votre lien. Quand un filleul paie son activation et que l\'admin valide, vous recevez 1 250 F automatiquement.'],
+    ['Quand sont versées les commissions ?','Immédiatement après validation de l\'activation par l\'administrateur.'],
+    ['Comment retirer mes gains ?','Allez dans "Retrait" (barre du bas), entrez le montant, choisissez votre opérateur et soumettez.'],
+    ['Combien de niveaux de parrainage ?','3 niveaux : N1 = 1 250 F · N2 = 600 F · N3 = 300 F par filleul activé.'],
+    ['Quel est le minimum de retrait ?','500 F CFA par demande.'],
+    ['Où trouver mon code parrainage ?','Menu burger (haut droite) → Profil, ou dans la section Parrainage.']
   ];
-  const el=document.getElementById('faq-list');
-  el.innerHTML=faqs.map((f,i)=>`
-    <div class="card" style="margin-bottom:10px;cursor:pointer;" onclick="toggleFaq(${i})">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <div style="font-size:14px;font-weight:700;color:#111827;flex:1;padding-right:12px;">${f.q}</div>
-        <span style="font-size:18px;color:#9CA3AF;flex-shrink:0;transition:.2s;" id="faq-ic-${i}">+</span>
-      </div>
-      <div id="faq-ans-${i}" style="display:none;margin-top:10px;font-size:13px;color:#6B7280;line-height:1.6;padding-top:10px;border-top:1px solid #F3F4F6;">${f.r}</div>
-    </div>
-  `).join('');
+  var el = document.getElementById('faq-list');
+  el.innerHTML = data.map(function(f, i) {
+    return '<div class="faq-item" onclick="toggleFaq(this,' + i + ')"><div class="faq-q"><span class="fq-t">' + f[0] + '</span><span class="fq-i" id="fi' + i + '">+</span></div><div class="faq-a" id="fa' + i + '">' + f[1] + '</div></div>';
+  }).join('');
 }
-
-function toggleFaq(i){
-  const ans=document.getElementById('faq-ans-'+i);
-  const ic=document.getElementById('faq-ic-'+i);
-  const open=ans.style.display==='block';
-  ans.style.display=open?'none':'block';
-  ic.textContent=open?'+':'−';
+function toggleFaq(el, i) {
+  var a = document.getElementById('fa' + i), ic = document.getElementById('fi' + i);
+  var open = a.style.display === 'block';
+  document.querySelectorAll('.faq-a').forEach(function(x, j) { x.style.display = 'none'; var ic2 = document.getElementById('fi' + j); if (ic2) ic2.textContent = '+'; });
+  if (!open) { a.style.display = 'block'; ic.textContent = '−'; }
 }
-
-init();
 </script>
 </body>
 </html>
