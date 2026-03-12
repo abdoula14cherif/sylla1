@@ -2,278 +2,241 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SYLLA Agence — Activation</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{min-height:100%;overflow-x:hidden}
+:root{
+  --navy:#0F2144;--blue:#1A3A6B;--blue2:#2657A8;
+  --gold:#D4AF37;--goldl:#F5D976;--goldd:#8B6914;
+  --red:#8B1A1A;--cream:#F5F3EE;--cream2:#EDE9DF;--white:#fff
+}
+html,body{min-height:100%;background:var(--navy)}
 body{
-  font-family:'Inter',sans-serif;background:#0B1628;
+  font-family:'DM Sans',sans-serif;
   display:flex;align-items:flex-start;justify-content:center;
-  padding:40px 16px 60px;position:relative;
+  padding:36px 16px 60px;position:relative;overflow-x:hidden
 }
 body::before{
-  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:
-    radial-gradient(ellipse 70% 55% at 15% 0%,rgba(212,175,55,.13) 0%,transparent 60%),
-    radial-gradient(ellipse 60% 60% at 88% 100%,rgba(160,40,30,.18) 0%,transparent 60%);
+    radial-gradient(ellipse 70% 50% at 10% 5%,rgba(212,175,55,.10) 0%,transparent 55%),
+    radial-gradient(ellipse 55% 60% at 90% 95%,rgba(139,26,26,.20) 0%,transparent 55%)
 }
+.wrap{width:100%;max-width:480px;position:relative;z-index:1}
 
-.wrap{width:100%;max-width:500px;position:relative;z-index:1;}
-
-/* LOGO */
-.logo-area{text-align:center;margin-bottom:24px;}
-.logo-ring{display:inline-flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);border:1px solid rgba(212,175,55,.3);border-radius:50px;padding:9px 24px;margin-bottom:8px;backdrop-filter:blur(10px);}
-.logo-sq{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#F5D976,#D4AF37,#8B6914);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:800;font-size:18px;color:#0B1628;}
-.logo-txt{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;letter-spacing:2px;background:linear-gradient(135deg,#F5D976,#D4AF37);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.logo-sub{font-size:11px;letter-spacing:3px;color:rgba(255,255,255,.35);text-transform:uppercase;}
-
-/* CARD */
-.card{background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.42),0 0 0 1px rgba(212,175,55,.12);}
-
-/* CARD HEADER */
-.c-head{
-  background:linear-gradient(135deg,#1A3A6B 0%,#2657A8 55%,#8B1A1A 100%);
-  padding:28px 32px 32px;text-align:center;position:relative;
+/* Logo */
+.logo{text-align:center;margin-bottom:22px}
+.logo-pill{
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(212,175,55,.22);
+  border-radius:50px;padding:9px 20px;backdrop-filter:blur(8px);margin-bottom:8px
 }
-.c-head::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:22px;background:#fff;border-radius:22px 22px 0 0;}
-.head-step{font-size:48px;display:block;margin-bottom:10px;}
-.head-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:#fff;margin-bottom:4px;}
-.head-sub{font-size:13px;color:rgba(255,255,255,.65);}
+.logo-sq{width:34px;height:34px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg,var(--goldl),var(--gold),var(--goldd));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:800;font-size:17px;color:var(--navy)}
+.logo-wm{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;letter-spacing:2px;background:linear-gradient(135deg,var(--goldl),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.logo-sub{font-size:11px;letter-spacing:3px;color:rgba(255,255,255,.3);text-transform:uppercase}
 
-/* BODY */
-.c-body{padding:28px 32px 32px;}
-
-/* AMOUNT */
-.amount-banner{
-  background:linear-gradient(135deg,#1A3A6B,#2657A8);
-  border-radius:14px;padding:18px 22px;
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:24px;
+/* Card */
+.card{background:var(--white);border-radius:22px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.35),0 0 0 1px rgba(212,175,55,.08)}
+.card-head{
+  background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 55%,var(--red) 100%);
+  padding:28px 24px 36px;text-align:center;position:relative
 }
-.ab-left .lbl{font-size:11px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.5px;margin-bottom:3px;}
-.ab-left .sub{font-size:11px;color:rgba(255,255,255,.38);}
-.ab-right{font-family:'Playfair Display',serif;font-size:36px;font-weight:800;background:linear-gradient(135deg,#F5D976,#D4AF37);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.card-head::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:22px;background:var(--white);border-radius:22px 22px 0 0}
+.head-icon{font-size:46px;display:block;margin-bottom:10px}
+.head-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:var(--white);margin-bottom:4px}
+.head-sub{font-size:13px;color:rgba(255,255,255,.6)}
+.card-body{padding:26px}
 
-/* STEP LABEL */
+/* Amount row */
+.amount-row{
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  border-radius:14px;padding:14px 18px;
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:24px
+}
+.ar-lbl{font-size:11px;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:2px}
+.ar-sub{font-size:10px;color:rgba(255,255,255,.35)}
+.ar-val{font-family:'Playfair Display',serif;font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--goldl),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* Step label */
 .step-lbl{
   font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  color:#1A3A6B;margin-bottom:12px;display:flex;align-items:center;gap:8px;
+  color:var(--blue);margin-bottom:11px;display:flex;align-items:center;gap:8px
 }
-.step-lbl::after{content:'';flex:1;height:1px;background:#F3F4F6;}
+.step-lbl::after{content:'';flex:1;height:1px;background:var(--cream2)}
 
-/* OPERATOR GRID */
-.op-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
-.op-card{
-  border:2px solid #E5E7EB;border-radius:14px;padding:14px;
-  cursor:pointer;transition:all .22s;text-align:center;
-  background:#FAFAFA;position:relative;overflow:hidden;
+/* Operator grid */
+.op-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.op{
+  border:2px solid #E5E7EB;border-radius:13px;padding:14px 10px;text-align:center;
+  cursor:pointer;transition:.18s;background:#FAFAFA;position:relative
 }
-.op-card:hover{border-color:#D4AF37;background:#FFFBEF;transform:translateY(-2px);box-shadow:0 6px 20px rgba(212,175,55,.15);}
-.op-card.selected{border-color:#D4AF37;background:#FFFBEF;box-shadow:0 0 0 3px rgba(212,175,55,.18);}
-.op-card.selected::after{content:'✓';position:absolute;top:8px;right:10px;font-size:13px;font-weight:800;color:#D4AF37;}
-.op-emoji{font-size:28px;margin-bottom:6px;display:block;}
-.op-name{font-size:13px;font-weight:700;color:#111827;margin-bottom:2px;}
-.op-num{font-size:11px;color:#9CA3AF;}
+.op:hover{border-color:var(--gold);background:#FFFBEF;transform:translateY(-1px)}
+.op.sel{border-color:var(--gold);background:#FFFBEF;box-shadow:0 0 0 3px rgba(212,175,55,.15)}
+.op.sel::after{
+  content:'✓';position:absolute;top:8px;right:9px;
+  font-size:12px;font-weight:800;color:var(--gold)
+}
+.op-ic{font-size:26px;display:block;margin-bottom:5px}
+.op-nm{font-size:12px;font-weight:700;color:#111}
+.op-hint{font-size:10px;color:#9CA3AF;margin-top:2px}
 
-/* COPY NUMBER BOX */
+/* Copy box */
 .copy-box{
-  background:#F8F7F2;border:1.5px solid #E5E7EB;border-radius:12px;
-  padding:14px 16px;margin-bottom:22px;
+  background:var(--cream);border:1.5px solid var(--cream2);
+  border-radius:13px;padding:14px 16px;
   display:none;align-items:center;justify-content:space-between;gap:12px;
+  margin-bottom:22px
 }
-.copy-box.show{display:flex;}
-.copy-box .cb-info .lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#9CA3AF;margin-bottom:4px;}
-.copy-box .cb-info .num{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:#1A3A6B;letter-spacing:2px;}
-.copy-box .cb-info .op-tag{font-size:11px;color:#9CA3AF;margin-top:2px;}
-.btn-copy-num{
-  background:linear-gradient(135deg,#D4AF37,#8B6914);color:#fff;border:none;
-  border-radius:10px;padding:10px 16px;font-family:'Inter',sans-serif;
-  font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.25s;
-  box-shadow:0 3px 10px rgba(212,175,55,.3);flex-shrink:0;
+.copy-box.show{display:flex}
+.cb-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#9CA3AF;margin-bottom:3px}
+.cb-num{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:var(--blue);letter-spacing:2px}
+.cb-op{font-size:11px;color:#9CA3AF;margin-top:2px}
+.btn-copy{
+  background:linear-gradient(135deg,var(--gold),var(--goldd));color:var(--white);
+  border:none;border-radius:10px;padding:10px 14px;
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;
+  cursor:pointer;flex-shrink:0;transition:.18s;white-space:nowrap
 }
-.btn-copy-num:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(212,175,55,.4);}
+.btn-copy:hover{filter:brightness(1.07);transform:translateY(-1px)}
 
-/* FORM */
-.fld{margin-bottom:14px;}
-.fld label{display:block;font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#1A3A6B;margin-bottom:6px;}
-.inp-w{position:relative;}
-.inp-w .ic{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;}
+/* Fields */
+.fld{margin-bottom:13px}
+.fld label{display:block;font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--blue);margin-bottom:5px}
+.iw{position:relative}
+.iw .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none}
 .fld input{
-  width:100%;padding:12px 12px 12px 40px;
+  width:100%;padding:12px 12px 12px 38px;
   border:1.5px solid #E5E7EB;border-radius:11px;
-  font-family:'Inter',sans-serif;font-size:14px;color:#111827;
-  background:#FAFAFA;outline:none;transition:all .2s;
+  font-family:'DM Sans',sans-serif;font-size:14px;color:#111;
+  background:#FAFAFA;outline:none;transition:.18s
 }
-.fld input::placeholder{color:#C8C8C8;}
-.fld input:focus{border-color:#D4AF37;background:#FFFBEF;box-shadow:0 0 0 3px rgba(212,175,55,.14);}
+.fld input::placeholder{color:#C8C8C8}
+.fld input:focus{border-color:var(--gold);background:#FFFBEF;box-shadow:0 0 0 3px rgba(212,175,55,.12)}
+.btn{width:100%;padding:13px;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:.22s}
+.btn-main{background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 55%,var(--goldd) 100%);color:var(--white);box-shadow:0 6px 20px rgba(26,58,107,.28)}
+.btn-main:hover:not(:disabled){transform:translateY(-2px)}
+.btn-main:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn-ghost{background:var(--cream2);color:#555;border:1.5px solid #DDD9D0;margin-top:8px}
 
-/* SUBMIT BTN */
-.btn-submit{
-  width:100%;padding:15px;border:none;border-radius:12px;
-  background:linear-gradient(135deg,#1A3A6B 0%,#2657A8 55%,#8B6914 100%);
-  color:#fff;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;
-  cursor:pointer;transition:all .3s;box-shadow:0 6px 24px rgba(26,58,107,.3);
-  margin-top:4px;
-}
-.btn-submit:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 32px rgba(26,58,107,.42);}
-.btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none;}
-
-/* SUCCESS STATE */
-.success-state{
-  display:none;text-align:center;padding:16px 0 8px;
-}
-.success-state.show{display:block;}
-.success-icon{font-size:56px;display:block;margin-bottom:14px;}
-.success-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:#111827;margin-bottom:8px;}
-.success-sub{font-size:14px;color:#6B7280;line-height:1.7;margin-bottom:20px;}
+/* Success */
+.success{display:none;text-align:center;padding:8px 0}
+.success.show{display:block}
+.s-ic{font-size:52px;display:block;margin-bottom:14px}
+.s-t{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:8px}
+.s-sub{font-size:13px;color:#6B7280;line-height:1.65;margin-bottom:20px}
 .wait-badge{
   display:inline-flex;align-items:center;gap:8px;
-  background:#FFF8E1;border:1.5px solid #F59E0B;border-radius:12px;
-  padding:12px 18px;font-size:13px;font-weight:600;color:#92400E;
+  background:#FFFBEB;border:1.5px solid #F59E0B;
+  border-radius:12px;padding:11px 16px;
+  font-size:13px;font-weight:600;color:#92400E
 }
-.pulse{width:10px;height:10px;border-radius:50%;background:#F59E0B;animation:pulse 1.4s ease infinite;}
-@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.35);opacity:.7}}
-
-.form-state{display:block;}
-
-/* SPINNER */
-.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:6px;}
+.pulse{width:9px;height:9px;border-radius:50%;background:#F59E0B;animation:pulse 1.3s ease infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.4);border-top-color:var(--white);border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:5px}
 @keyframes sp{to{transform:rotate(360deg)}}
-
-/* TOAST */
-.toast{position:fixed;top:20px;right:20px;z-index:9999;padding:13px 18px;border-radius:12px;font-size:13px;font-weight:600;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,.16);transform:translateX(120%);transition:transform .35s cubic-bezier(.22,1,.36,1);max-width:300px;display:flex;align-items:center;gap:8px;}
-.toast.on{transform:translateX(0);}
-.toast.ok{border-left:4px solid #22C55E;color:#166534;}
-.toast.er{border-left:4px solid #EF4444;color:#991B1B;}
-.toast.nfo{border-left:4px solid #2657A8;color:#1A3A6B;}
-
-@media(max-width:480px){
-  .c-body{padding:22px 20px 28px;}
-  .op-grid{grid-template-columns:1fr 1fr;}
-  .ab-right{font-size:28px;}
-}
+.toast{position:fixed;top:16px;left:50%;transform:translate(-50%,-120px);z-index:999;padding:12px 18px;border-radius:13px;font-size:13px;font-weight:600;background:var(--white);box-shadow:0 8px 28px rgba(0,0,0,.18);transition:transform .35s cubic-bezier(.22,1,.36,1);display:flex;align-items:center;gap:9px;max-width:88vw;white-space:nowrap}
+.toast.show{transform:translate(-50%,0)}
+.toast.ok{border-left:4px solid #22C55E;color:#166534}
+.toast.er{border-left:4px solid #EF4444;color:#991B1B}
+.toast.nfo{border-left:4px solid var(--blue2);color:var(--blue)}
 </style>
 </head>
 <body>
 <div class="wrap">
-
-  <div class="logo-area">
-    <div class="logo-ring">
+  <div class="logo">
+    <div class="logo-pill">
       <div class="logo-sq">S</div>
-      <div class="logo-txt">SYLLA AGENCE</div>
+      <div class="logo-wm">SYLLA AGENCE</div>
     </div>
     <div class="logo-sub">Activation du compte</div>
   </div>
 
   <div class="card">
-    <div class="c-head">
-      <span class="head-step">💳</span>
+    <div class="card-head">
+      <span class="head-icon">💳</span>
       <div class="head-title">Activez votre compte</div>
-      <div class="head-sub">Suivez les étapes pour activer et accéder à la plateforme</div>
+      <div class="head-sub">Suivez les étapes ci-dessous pour payer</div>
     </div>
+    <div class="card-body">
 
-    <div class="c-body">
-
-      <!-- MONTANT -->
-      <div class="amount-banner">
-        <div class="ab-left">
-          <div class="lbl">Montant d'activation</div>
-          <div class="sub">Paiement unique · Non remboursable</div>
+      <div id="form-zone">
+        <div class="amount-row">
+          <div>
+            <div class="ar-lbl">Montant d'activation</div>
+            <div class="ar-sub">Paiement unique · Non remboursable</div>
+          </div>
+          <div class="ar-val">2 500 F</div>
         </div>
-        <div class="ab-right">2 500 F</div>
-      </div>
 
-      <!-- FORM STATE -->
-      <div class="form-state" id="form-state">
-
-        <!-- ÉTAPE 1 : CHOISIR OPÉRATEUR -->
         <div class="step-lbl">Étape 1 — Choisissez votre opérateur</div>
         <div class="op-grid">
-          <div class="op-card" onclick="selectOp(this,'Orange Money','📱','07 00 00 00 00')">
-            <span class="op-emoji">📱</span>
-            <div class="op-name">Orange Money</div>
-            <div class="op-num">Cliquer pour voir le numéro</div>
+          <div class="op" onclick="selOp(this,'Orange Money','📱','07 07 77 77 77')">
+            <span class="op-ic">📱</span>
+            <div class="op-nm">Orange Money</div>
+            <div class="op-hint">Cliquez pour voir le numéro</div>
           </div>
-          <div class="op-card" onclick="selectOp(this,'Wave','💳','07 11 11 11 11')">
-            <span class="op-emoji">💳</span>
-            <div class="op-name">Wave</div>
-            <div class="op-num">Cliquer pour voir le numéro</div>
+          <div class="op" onclick="selOp(this,'Wave','💳','07 08 88 88 88')">
+            <span class="op-ic">💳</span>
+            <div class="op-nm">Wave</div>
+            <div class="op-hint">Cliquez pour voir le numéro</div>
           </div>
-          <div class="op-card" onclick="selectOp(this,'MTN Mobile Money','📲','05 22 22 22 22')">
-            <span class="op-emoji">📲</span>
-            <div class="op-name">MTN Mobile Money</div>
-            <div class="op-num">Cliquer pour voir le numéro</div>
+          <div class="op" onclick="selOp(this,'MTN Mobile Money','📲','05 05 55 55 55')">
+            <span class="op-ic">📲</span>
+            <div class="op-nm">MTN Money</div>
+            <div class="op-hint">Cliquez pour voir le numéro</div>
           </div>
-          <div class="op-card" onclick="selectOp(this,'Moov Money','💰','01 33 33 33 33')">
-            <span class="op-emoji">💰</span>
-            <div class="op-name">Moov Money</div>
-            <div class="op-num">Cliquer pour voir le numéro</div>
+          <div class="op" onclick="selOp(this,'Moov Money','💰','01 01 11 11 11')">
+            <span class="op-ic">💰</span>
+            <div class="op-nm">Moov Money</div>
+            <div class="op-hint">Cliquez pour voir le numéro</div>
           </div>
         </div>
 
-        <!-- NUMÉRO À COPIER -->
         <div class="copy-box" id="copy-box">
-          <div class="cb-info">
-            <div class="lbl">Numéro de paiement</div>
-            <div class="num" id="pay-num">—</div>
-            <div class="op-tag" id="pay-op">—</div>
+          <div>
+            <div class="cb-lbl">Numéro à créditer</div>
+            <div class="cb-num" id="pay-num">—</div>
+            <div class="cb-op" id="pay-op">—</div>
           </div>
-          <button class="btn-copy-num" onclick="copyPayNum()">📋 Copier</button>
+          <button class="btn-copy" onclick="copyNum()">📋 Copier</button>
         </div>
 
-        <!-- ÉTAPE 2 : INFOS ENVOYÉES -->
-        <div class="step-lbl">Étape 2 — Soumettez votre paiement</div>
-
+        <div class="step-lbl">Étape 2 — Confirmez votre paiement</div>
         <div class="fld">
           <label>Votre nom complet</label>
-          <div class="inp-w">
-            <span class="ic">👤</span>
-            <input type="text" id="f-nom" placeholder="Tel qu'il apparaît sur votre compte">
+          <div class="iw"><span class="ic">👤</span>
+            <input type="text" id="f-nom" placeholder="Nom Prénom exact">
           </div>
         </div>
-
         <div class="fld">
           <label>Votre numéro de téléphone</label>
-          <div class="inp-w">
-            <span class="ic">📱</span>
+          <div class="iw"><span class="ic">📱</span>
             <input type="tel" id="f-tel" placeholder="0700000000">
           </div>
         </div>
-
         <div class="fld">
-          <label>Référence du paiement</label>
-          <div class="inp-w">
-            <span class="ic">🔖</span>
+          <label>Référence / Numéro de transaction</label>
+          <div class="iw"><span class="ic">🔖</span>
             <input type="text" id="f-ref" placeholder="Ex: TXN123456789">
           </div>
         </div>
-
-        <button class="btn-submit" id="btn-send" onclick="doSend()">
-          Envoyer ma demande d'activation
-        </button>
-
+        <button class="btn btn-main" id="btn-send" onclick="doSend()">Envoyer ma demande d'activation</button>
+        <button class="btn btn-ghost" onclick="location.href='index.html'">← Retour à la connexion</button>
       </div>
 
-      <!-- SUCCESS STATE -->
-      <div class="success-state" id="success-state">
-        <span class="success-icon">⏳</span>
-        <div class="success-title">Demande envoyée !</div>
-        <div class="success-sub">
-          Votre demande d'activation a bien été reçue.<br>
-          L'administrateur vérifiera votre paiement et activera votre compte.<br>
-          Vous serez notifié dès que votre compte est actif.
+      <div class="success" id="success-zone">
+        <span class="s-ic">⏳</span>
+        <div class="s-t">Demande envoyée !</div>
+        <div class="s-sub">
+          Votre demande a bien été reçue.<br>
+          L'administrateur va vérifier votre paiement<br>
+          et activer votre compte très prochainement.
         </div>
-        <div class="wait-badge">
-          <span class="pulse"></span>
-          En attente de validation par l'admin
-        </div>
-        <div style="margin-top:22px;">
-          <button onclick="location.href='index.html'" style="background:none;border:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#9CA3AF;cursor:pointer;text-decoration:underline;">
-            ← Retour à la connexion
-          </button>
-        </div>
+        <div class="wait-badge"><span class="pulse"></span>En attente de validation admin</div>
+        <br><br>
+        <button class="btn btn-ghost" onclick="location.href='index.html'" style="width:auto;padding:10px 22px">← Retour connexion</button>
       </div>
 
     </div>
@@ -281,79 +244,74 @@ body::before{
 </div>
 
 <div class="toast" id="toast"></div>
-
 <script>
-const SB='https://fqiotqrraobmsrcyewsi.supabase.co';
-const AK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc';
-const rq=(p,o={})=>fetch(`${SB}/rest/v1/${p}`,{headers:{'apikey':AK,'Authorization':'Bearer '+AK,'Content-Type':'application/json','Prefer':o.prefer||'',...(o.headers||{})},...o});
+'use strict';
+var API = 'https://fqiotqrraobmsrcyewsi.supabase.co/rest/v1';
+var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc';
 
-// Vérifier qu'un utilisateur pending existe
-const pending=localStorage.getItem('sylla_pending');
-const loggedIn=localStorage.getItem('sylla_user');
-if(loggedIn){const u=JSON.parse(loggedIn);if(u.statut==='actif')location.href=u.role==='admin'?'admin.html':'dashboard.html';}
-if(!pending&&!loggedIn)location.href='index.html';
+// Guard
+var CU = null;
+try { CU = JSON.parse(localStorage.getItem('sylla_user') || 'null'); } catch(e) {}
+if (!CU || !CU.id) { location.href = 'index.html'; }
+else if (CU.statut === 'actif') { location.href = CU.role === 'admin' ? 'admin.html' : 'dashboard.html'; }
 
-let selectedOp='';
-let selectedNum='';
+var selOpName = '', selNum = '';
 
-function selectOp(el,name,emoji,num){
-  // Désélectionner tous
-  document.querySelectorAll('.op-card').forEach(c=>c.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedOp=name;
-  selectedNum=num.replace(/\s/g,'');
-  // Afficher la box de copie
-  document.getElementById('pay-num').textContent=num;
-  document.getElementById('pay-op').textContent='Via '+name;
+function selOp(el, name, icon, num) {
+  document.querySelectorAll('.op').forEach(function(o) { o.classList.remove('sel'); });
+  el.classList.add('sel');
+  selOpName = name;
+  selNum = num.replace(/\s/g, '');
+  document.getElementById('pay-num').textContent = num;
+  document.getElementById('pay-op').textContent = 'Payer via ' + name;
   document.getElementById('copy-box').classList.add('show');
 }
 
-function copyPayNum(){
-  navigator.clipboard.writeText(selectedNum).then(()=>toast('Numéro copié : '+selectedNum,'ok'));
+function copyNum() {
+  if (!selNum) return;
+  navigator.clipboard.writeText(selNum).then(function() { toast('Numéro copié : ' + selNum, 'ok'); });
 }
 
-function toast(msg,type='nfo'){
-  const el=document.getElementById('toast');
-  el.textContent=msg;el.className='toast '+type+' on';
-  clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),5000);
+function toast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + (type || 'nfo') + ' show';
+  clearTimeout(t._t); t._t = setTimeout(function() { t.classList.remove('show'); }, 4500);
 }
 
-function g(id){return document.getElementById(id).value.trim();}
+function gv(id) { return (document.getElementById(id).value || '').trim(); }
 
-async function doSend(){
-  if(!selectedOp)return toast('Sélectionnez d\'abord votre opérateur de paiement.','er');
-  const nom=g('f-nom'),tel=g('f-tel'),ref=g('f-ref');
-  if(!nom)return toast('Entrez votre nom complet.','er');
-  if(!tel)return toast('Entrez votre numéro de téléphone.','er');
-  if(!ref)return toast('Entrez la référence de votre paiement.','er');
+function doSend() {
+  if (!selOpName) { toast('Sélectionnez un opérateur de paiement.', 'er'); return; }
+  var nom = gv('f-nom'), tel = gv('f-tel'), ref = gv('f-ref');
+  if (!nom) { toast('Entrez votre nom complet.', 'er'); return; }
+  if (!tel) { toast('Entrez votre numéro de téléphone.', 'er'); return; }
+  if (!ref) { toast('Entrez la référence du paiement.', 'er'); return; }
 
-  const btn=document.getElementById('btn-send');
-  btn.disabled=true;btn.innerHTML='<span class="spin"></span>Envoi en cours...';
+  var btn = document.getElementById('btn-send');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>Envoi en cours...';
 
-  try{
-    // Récupérer l'utilisateur en attente
-    const user=pending?JSON.parse(pending):(loggedIn?JSON.parse(loggedIn):null);
-    if(!user)throw new Error('Session expirée, reconnectez-vous.');
+  var desc = 'Activation | ' + selOpName + ' | Nom: ' + nom + ' | Tel: ' + tel + ' | Ref: ' + ref;
 
-    // Enregistrer la demande d'activation dans les transactions (comme note)
-    await rq('sylla_transactions',{
-      method:'POST',prefer:'return=minimal',
-      body:JSON.stringify({
-        user_id:user.id,
-        type:'demande_activation',
-        montant:2500,
-        description:'Activation · '+selectedOp+' · Nom: '+nom+' · Tél: '+tel+' · Réf: '+ref
-      })
-    });
-
-    // Afficher le succès
-    document.getElementById('form-state').style.display='none';
-    document.getElementById('success-state').classList.add('show');
-
-  }catch(e){
-    toast(e.message||'Erreur lors de l\'envoi.','er');
-    btn.disabled=false;btn.textContent='Envoyer ma demande d\'activation';
-  }
+  fetch(API + '/sylla_transactions', {
+    method: 'POST',
+    headers: {
+      apikey: KEY, Authorization: 'Bearer ' + KEY,
+      'Content-Type': 'application/json', Prefer: 'return=minimal'
+    },
+    body: JSON.stringify({
+      user_id: CU.id, type: 'demande_activation',
+      montant: 2500, description: desc
+    })
+  }).then(function(r) {
+    if (!r.ok) throw new Error('Erreur serveur ' + r.status);
+    document.getElementById('form-zone').style.display = 'none';
+    document.getElementById('success-zone').classList.add('show');
+  }).catch(function(e) {
+    toast(e.message || 'Erreur. Réessayez.', 'er');
+    btn.disabled = false;
+    btn.textContent = "Envoyer ma demande d'activation";
+  });
 }
 </script>
 </body>
