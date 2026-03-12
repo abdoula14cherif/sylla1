@@ -2,252 +2,234 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYLLA Agence</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SYLLA Agence — Connexion</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{min-height:100%;overflow-x:hidden}
+:root{
+  --navy:#0F2144;--blue:#1A3A6B;--blue2:#2657A8;
+  --gold:#D4AF37;--goldl:#F5D976;--goldd:#8B6914;
+  --red:#8B1A1A;--cream:#F5F3EE;--cream2:#EDE9DF;
+  --white:#fff;--txt:#111827;--txt2:#4B5563;--txt3:#9CA3AF
+}
+html,body{min-height:100%;background:var(--navy)}
 body{
-  font-family:'Inter',sans-serif;
-  background:#0B1628;
+  font-family:'DM Sans',sans-serif;
   display:flex;align-items:flex-start;justify-content:center;
-  padding:40px 16px 60px;
-  position:relative;
+  padding:36px 16px 60px;position:relative;overflow-x:hidden
 }
 body::before{
-  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:
-    radial-gradient(ellipse 80% 55% at 15% 0%,rgba(212,175,55,.13) 0%,transparent 60%),
-    radial-gradient(ellipse 60% 70% at 88% 100%,rgba(160,40,30,.18) 0%,transparent 60%),
-    radial-gradient(ellipse 50% 50% at 50% 50%,rgba(26,58,107,.45) 0%,transparent 80%);
+    radial-gradient(ellipse 70% 50% at 10% 5%,rgba(212,175,55,.10) 0%,transparent 55%),
+    radial-gradient(ellipse 55% 60% at 90% 95%,rgba(139,26,26,.20) 0%,transparent 55%)
 }
+.wrap{width:100%;max-width:440px;position:relative;z-index:1}
 
-.wrap{width:100%;max-width:460px;position:relative;z-index:1;}
-
-/* LOGO */
-.logo-area{text-align:center;margin-bottom:28px;}
-.logo-ring{
-  display:inline-flex;align-items:center;gap:12px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(212,175,55,.3);
-  border-radius:50px;padding:10px 26px;margin-bottom:10px;
-  backdrop-filter:blur(10px);
+/* ── Logo ── */
+.logo{text-align:center;margin-bottom:26px}
+.logo-pill{
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(212,175,55,.22);
+  border-radius:50px;padding:9px 20px;backdrop-filter:blur(8px);margin-bottom:8px
 }
 .logo-sq{
-  width:38px;height:38px;border-radius:10px;
-  background:linear-gradient(135deg,#F5D976,#D4AF37,#8B6914);
+  width:36px;height:36px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--goldl),var(--gold),var(--goldd));
   display:flex;align-items:center;justify-content:center;
-  font-family:'Playfair Display',serif;font-weight:800;font-size:20px;color:#0B1628;
-  box-shadow:0 4px 16px rgba(212,175,55,.38);
+  font-family:'Playfair Display',serif;font-weight:800;font-size:18px;color:var(--navy)
 }
-.logo-txt{
-  font-family:'Playfair Display',serif;font-size:18px;font-weight:700;letter-spacing:2px;
-  background:linear-gradient(135deg,#F5D976,#D4AF37);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+.logo-wm{
+  font-family:'Playfair Display',serif;font-size:15px;font-weight:700;letter-spacing:2px;
+  background:linear-gradient(135deg,var(--goldl),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text
 }
-.logo-sub{font-size:11px;letter-spacing:3px;color:rgba(255,255,255,.38);text-transform:uppercase;font-weight:500;}
+.logo-sub{font-size:11px;letter-spacing:3px;color:rgba(255,255,255,.3);text-transform:uppercase}
 
-/* CARD */
-.card{
-  background:#fff;border-radius:24px;overflow:hidden;
-  box-shadow:0 32px 80px rgba(0,0,0,.42),0 0 0 1px rgba(212,175,55,.12);
-}
+/* ── Card ── */
+.card{background:var(--white);border-radius:22px;overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,.35),0 0 0 1px rgba(212,175,55,.08)}
 
-/* TABS */
-.tabs{display:grid;grid-template-columns:1fr 1fr;background:#F5F4F0;}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:#F0EEE8}
 .tab{
-  padding:16px;text-align:center;font-size:14px;font-weight:600;
-  cursor:pointer;color:#A0A0A0;transition:all .22s;
-  border-bottom:3px solid transparent;
+  padding:14px;text-align:center;font-size:14px;font-weight:600;color:var(--txt3);
+  cursor:pointer;border-bottom:3px solid transparent;transition:.2s
 }
-.tab.on{background:#fff;color:#1A3A6B;border-bottom-color:#D4AF37;}
+.tab.on{background:var(--white);color:var(--blue);border-bottom-color:var(--gold)}
 
-/* FORM BODY */
-.fbody{padding:32px;}
-.f-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#111827;margin-bottom:3px;}
-.f-sub{font-size:13px;color:#9CA3AF;margin-bottom:24px;}
+.fbody{padding:26px}
+.ftitle{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:var(--txt);margin-bottom:2px}
+.fsub{font-size:13px;color:var(--txt3);margin-bottom:20px}
 
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-
-.fld{margin-bottom:14px;}
-.fld label{display:block;font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#1A3A6B;margin-bottom:6px;}
-.inp-w{position:relative;}
-.inp-w .ic{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;}
+/* ── Fields ── */
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.fld{margin-bottom:12px}
+.fld label{
+  display:block;font-size:10px;font-weight:700;letter-spacing:1.8px;
+  text-transform:uppercase;color:var(--blue);margin-bottom:5px
+}
+.iw{position:relative}
+.iw .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none}
 .fld input,.fld select{
-  width:100%;padding:12px 12px 12px 40px;
+  width:100%;padding:12px 12px 12px 38px;
   border:1.5px solid #E5E7EB;border-radius:11px;
-  font-family:'Inter',sans-serif;font-size:14px;color:#111827;
-  background:#FAFAFA;outline:none;transition:all .2s;appearance:none;
+  font-family:'DM Sans',sans-serif;font-size:14px;color:var(--txt);
+  background:#FAFAFA;outline:none;transition:.18s;appearance:none
 }
-.fld input::placeholder{color:#C8C8C8;}
+.fld input::placeholder{color:#C8C8C8}
 .fld input:focus,.fld select:focus{
-  border-color:#D4AF37;background:#FFFBEF;
-  box-shadow:0 0 0 3px rgba(212,175,55,.14);
+  border-color:var(--gold);background:#FFFBEF;
+  box-shadow:0 0 0 3px rgba(212,175,55,.12)
 }
 .fld select{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23aaa'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer;
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer
 }
-.fld select option{background:#fff;}
-
-/* BTN */
 .btn{
-  width:100%;padding:15px;border:none;border-radius:12px;
-  font-family:'Inter',sans-serif;font-size:14px;font-weight:700;
-  cursor:pointer;transition:all .3s;letter-spacing:.3px;
+  width:100%;padding:14px;border:none;border-radius:12px;
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:.22s
 }
 .btn-main{
-  background:linear-gradient(135deg,#1A3A6B 0%,#2657A8 55%,#8B6914 100%);
-  color:#fff;box-shadow:0 6px 24px rgba(26,58,107,.3);
+  background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 55%,var(--goldd) 100%);
+  color:#fff;box-shadow:0 6px 20px rgba(26,58,107,.28)
 }
-.btn-main:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 32px rgba(26,58,107,.42);}
-.btn-main:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+.btn-main:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 28px rgba(26,58,107,.38)}
+.btn-main:disabled{opacity:.55;cursor:not-allowed;transform:none}
 
-.divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:#E5E7EB;font-size:12px;}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:#E5E7EB;}
-
-.lnk{background:none;border:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#2657A8;cursor:pointer;text-decoration:underline;}
-
-/* SPINNER */
-.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:6px;}
+.sep{display:flex;align-items:center;gap:10px;margin:15px 0;color:#E5E7EB}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:#E5E7EB}
+.sep span{font-size:11px;color:var(--txt3)}
+.lnk{
+  background:none;border:none;font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:700;color:var(--blue2);cursor:pointer;text-decoration:underline
+}
+.spin{
+  display:inline-block;width:14px;height:14px;
+  border:2px solid rgba(255,255,255,.4);border-top-color:#fff;
+  border-radius:50%;animation:sp .7s linear infinite;
+  vertical-align:middle;margin-right:5px
+}
 @keyframes sp{to{transform:rotate(360deg)}}
 
-/* TOAST */
+/* ── Toast ── */
 .toast{
-  position:fixed;top:20px;right:20px;z-index:9999;
-  padding:13px 18px;border-radius:12px;font-size:13px;font-weight:600;
-  background:#fff;box-shadow:0 8px 32px rgba(0,0,0,.16);
-  transform:translateX(120%);transition:transform .35s cubic-bezier(.22,1,.36,1);
-  max-width:310px;display:flex;align-items:center;gap:8px;
+  position:fixed;top:16px;left:50%;transform:translate(-50%,-120px);
+  z-index:999;padding:12px 18px;border-radius:13px;
+  font-size:13px;font-weight:600;background:var(--white);
+  box-shadow:0 8px 28px rgba(0,0,0,.18);
+  transition:transform .35s cubic-bezier(.22,1,.36,1);
+  display:flex;align-items:center;gap:9px;max-width:88vw;white-space:nowrap
 }
-.toast.on{transform:translateX(0);}
-.toast.ok{border-left:4px solid #22C55E;color:#166534;}
-.toast.er{border-left:4px solid #EF4444;color:#991B1B;}
-.toast.nfo{border-left:4px solid #2657A8;color:#1A3A6B;}
-
-#frm-reg{display:none;}#frm-log{display:block;}
+.toast.show{transform:translate(-50%,0)}
+.toast.ok{border-left:4px solid #22C55E;color:#166534}
+.toast.er{border-left:4px solid #EF4444;color:#991B1B}
+.toast.nfo{border-left:4px solid var(--blue2);color:var(--blue)}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <div class="logo-area">
-    <div class="logo-ring">
+  <div class="logo">
+    <div class="logo-pill">
       <div class="logo-sq">S</div>
-      <div class="logo-txt">SYLLA AGENCE</div>
+      <div class="logo-wm">SYLLA AGENCE</div>
     </div>
     <div class="logo-sub">Plateforme d'affiliation</div>
   </div>
 
   <div class="card">
     <div class="tabs">
-      <div class="tab on" id="tab-log" onclick="sw('log')">Connexion</div>
-      <div class="tab" id="tab-reg" onclick="sw('reg')">Inscription</div>
+      <div class="tab on" id="t-login" onclick="sw('login')">Connexion</div>
+      <div class="tab"    id="t-reg"   onclick="sw('reg')">Inscription</div>
     </div>
 
     <div class="fbody">
 
-      <!-- ===== CONNEXION ===== -->
-      <div id="frm-log">
-        <div class="f-title">Bon retour 👋</div>
-        <div class="f-sub">Connectez-vous à votre espace membre</div>
-
+      <!-- LOGIN -->
+      <div id="f-login">
+        <div class="ftitle">Bon retour 👋</div>
+        <div class="fsub">Connectez-vous à votre espace</div>
         <div class="fld">
           <label>Email ou Téléphone</label>
-          <div class="inp-w">
-            <span class="ic">📧</span>
-            <input type="text" id="l-id" placeholder="email@... ou 0700000000">
+          <div class="iw"><span class="ic">📧</span>
+            <input type="text" id="l-ident" placeholder="email@... ou 0700000000">
           </div>
         </div>
-
         <div class="fld">
           <label>Mot de passe</label>
-          <div class="inp-w">
-            <span class="ic">🔒</span>
+          <div class="iw"><span class="ic">🔒</span>
             <input type="password" id="l-pw" placeholder="••••••••">
           </div>
         </div>
-
-        <button class="btn btn-main" id="btn-log" onclick="doLog()">Se connecter</button>
-
-        <div class="divider">ou</div>
-        <div style="text-align:center;">
-          <span style="font-size:13px;color:#9CA3AF;">Pas encore membre ? </span>
+        <button class="btn btn-main" id="btn-login" onclick="doLogin()">Se connecter</button>
+        <div class="sep"><span>ou</span></div>
+        <div style="text-align:center">
+          <span style="font-size:13px;color:var(--txt3)">Pas encore membre ? </span>
           <button class="lnk" onclick="sw('reg')">Créer un compte</button>
         </div>
       </div>
 
-      <!-- ===== INSCRIPTION ===== -->
-      <div id="frm-reg">
-        <div class="f-title">Créer un compte</div>
-        <div class="f-sub">Tous les champs sont obligatoires</div>
-
+      <!-- REGISTER -->
+      <div id="f-reg" style="display:none">
+        <div class="ftitle">Créer un compte</div>
+        <div class="fsub">Tous les champs sont requis</div>
         <div class="row2">
           <div class="fld">
             <label>Nom</label>
-            <div class="inp-w"><span class="ic">👤</span><input type="text" id="r-nom" placeholder="Sylla"></div>
+            <div class="iw"><span class="ic">👤</span><input type="text" id="r-nom" placeholder="Sylla"></div>
           </div>
           <div class="fld">
             <label>Prénom</label>
-            <div class="inp-w"><span class="ic">👤</span><input type="text" id="r-pre" placeholder="Mamadou"></div>
+            <div class="iw"><span class="ic">👤</span><input type="text" id="r-pre" placeholder="Mamadou"></div>
           </div>
         </div>
-
         <div class="fld">
           <label>Email</label>
-          <div class="inp-w"><span class="ic">📧</span><input type="email" id="r-em" placeholder="vous@email.com"></div>
+          <div class="iw"><span class="ic">📧</span><input type="email" id="r-em" placeholder="vous@email.com"></div>
         </div>
-
         <div class="row2">
           <div class="fld">
             <label>Téléphone</label>
-            <div class="inp-w"><span class="ic">📱</span><input type="tel" id="r-tel" placeholder="0700000000"></div>
+            <div class="iw"><span class="ic">📱</span><input type="tel" id="r-tel" placeholder="0700000000"></div>
           </div>
           <div class="fld">
             <label>Pays</label>
-            <div class="inp-w"><span class="ic">🌍</span>
+            <div class="iw"><span class="ic">🌍</span>
               <select id="r-pays">
                 <option value="">-- Pays --</option>
                 <option>Bénin</option><option>Burkina Faso</option><option>Cameroun</option>
-                <option>Centrafrique</option><option>Comores</option><option>Congo (Brazzaville)</option>
-                <option>Congo (RDC)</option><option>Côte d'Ivoire</option><option>Djibouti</option>
-                <option>Gabon</option><option>Gambie</option><option>Ghana</option>
-                <option>Guinée</option><option>Guinée-Bissau</option><option>Guinée Équatoriale</option>
-                <option>Kenya</option><option>Libéria</option><option>Madagascar</option>
-                <option>Malawi</option><option>Mali</option><option>Maroc</option>
-                <option>Mauritanie</option><option>Maurice</option><option>Mozambique</option>
-                <option>Namibie</option><option>Niger</option><option>Nigeria</option>
-                <option>Ouganda</option><option>Rwanda</option><option>Sénégal</option>
-                <option>Sierra Leone</option><option>Somalie</option><option>Soudan</option>
-                <option>Tanzanie</option><option>Tchad</option><option>Togo</option>
-                <option>Tunisie</option><option>Zambie</option><option>Zimbabwe</option>
-                <option>Afrique du Sud</option><option>Algérie</option><option>Angola</option>
-                <option>Érythrée</option><option>Éthiopie</option><option>Égypte</option>
-                <option>Libye</option><option>France</option><option>Belgique</option>
-                <option>Suisse</option><option>Canada</option><option>États-Unis</option>
-                <option>Autre</option>
+                <option>Congo (Brazzaville)</option><option>Congo (RDC)</option>
+                <option>Côte d'Ivoire</option><option>Gabon</option><option>Ghana</option>
+                <option>Guinée</option><option>Kenya</option><option>Madagascar</option>
+                <option>Mali</option><option>Maroc</option><option>Mauritanie</option>
+                <option>Niger</option><option>Nigeria</option><option>Rwanda</option>
+                <option>Sénégal</option><option>Tanzanie</option><option>Tchad</option>
+                <option>Togo</option><option>Tunisie</option><option>Algérie</option>
+                <option>Angola</option><option>Éthiopie</option><option>Égypte</option>
+                <option>France</option><option>Belgique</option><option>Suisse</option>
+                <option>Canada</option><option>États-Unis</option><option>Autre</option>
               </select>
             </div>
           </div>
         </div>
-
         <div class="fld">
           <label>Mot de passe</label>
-          <div class="inp-w"><span class="ic">🔒</span><input type="password" id="r-pw" placeholder="Minimum 6 caractères"></div>
+          <div class="iw"><span class="ic">🔒</span>
+            <input type="password" id="r-pw" placeholder="Minimum 6 caractères">
+          </div>
         </div>
-
         <div class="fld">
-          <label>Code de parrainage (si vous en avez un)</label>
-          <div class="inp-w"><span class="ic">🔗</span><input type="text" id="r-ref" placeholder="SYLLA-XXX-XXXX" style="text-transform:uppercase;"></div>
+          <label>Code parrainage <span style="font-weight:400;color:var(--txt3)">(optionnel)</span></label>
+          <div class="iw"><span class="ic">🔗</span>
+            <input type="text" id="r-ref" placeholder="SYLLA-XXXXX-XXXX" style="text-transform:uppercase">
+          </div>
         </div>
-
-        <button class="btn btn-main" id="btn-reg" onclick="doReg()">Créer mon compte</button>
-
-        <div class="divider">ou</div>
-        <div style="text-align:center;">
-          <span style="font-size:13px;color:#9CA3AF;">Déjà membre ? </span>
-          <button class="lnk" onclick="sw('log')">Se connecter</button>
+        <button class="btn btn-main" id="btn-reg" onclick="doRegister()">Créer mon compte</button>
+        <div class="sep"><span>ou</span></div>
+        <div style="text-align:center">
+          <span style="font-size:13px;color:var(--txt3)">Déjà membre ? </span>
+          <button class="lnk" onclick="sw('login')">Se connecter</button>
         </div>
       </div>
 
@@ -258,103 +240,135 @@ body::before{
 <div class="toast" id="toast"></div>
 
 <script>
-const SB='https://fqiotqrraobmsrcyewsi.supabase.co';
-const AK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc';
-const rq=(p,o={})=>fetch(`${SB}/rest/v1/${p}`,{headers:{'apikey':AK,'Authorization':'Bearer '+AK,'Content-Type':'application/json','Prefer':o.prefer||'',...(o.headers||{})},...o});
+'use strict';
+var API = 'https://fqiotqrraobmsrcyewsi.supabase.co/rest/v1';
+var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW90cXJyYW9ibXNyY3lld3NpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MjA3NzUsImV4cCI6MjA4NzM5Njc3NX0.pmvaQikEDEj705o7kBBWwkLwAoZ62D-GoxjFm5HEHNc';
 
-// Redirect si déjà connecté
-const su=localStorage.getItem('sylla_user');
-if(su){const u=JSON.parse(su);location.href=u.role==='admin'?'admin.html':u.statut==='actif'?'dashboard.html':'activation.html';}
-
-// Code parrain depuis URL
-const ref=new URLSearchParams(location.search).get('ref');
-if(ref){document.getElementById('r-ref').value=ref;sw('reg');}
-
-function sw(t){
-  ['log','reg'].forEach(x=>{
-    document.getElementById('tab-'+x).classList.toggle('on',x===t);
-    document.getElementById('frm-'+x).style.display=x===t?'block':'none';
-  });
+function sbGet(table, query) {
+  return fetch(API + '/' + table + '?' + query, {
+    headers: { apikey: KEY, Authorization: 'Bearer ' + KEY }
+  }).then(function(r) { return r.json(); });
 }
 
-function toast(msg,type='nfo'){
-  const el=document.getElementById('toast');
-  el.textContent=msg;el.className='toast '+type+' on';
-  clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),5000);
+function sbPost(table, body) {
+  return fetch(API + '/' + table, {
+    method: 'POST',
+    headers: {
+      apikey: KEY, Authorization: 'Bearer ' + KEY,
+      'Content-Type': 'application/json', Prefer: 'return=representation'
+    },
+    body: JSON.stringify(body)
+  }).then(function(r) { return r.json().then(function(d) { return { ok: r.ok, status: r.status, data: d }; }); });
 }
 
-function g(id){return document.getElementById(id).value.trim();}
+function toast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + (type || 'nfo') + ' show';
+  clearTimeout(t._t); t._t = setTimeout(function() { t.classList.remove('show'); }, 4500);
+}
 
-async function doLog(){
-  const id=g('l-id'),pw=g('l-pw');
-  if(!id||!pw)return toast('Remplissez tous les champs.','er');
-  const btn=document.getElementById('btn-log');
-  btn.disabled=true;btn.innerHTML='<span class="spin"></span>Connexion...';
-  try{
-    const f=id.includes('@')?'email=eq.'+encodeURIComponent(id):'telephone=eq.'+encodeURIComponent(id);
-    const r=await rq('sylla_users?'+f+'&select=*');
-    const d=await r.json();
-    if(!d||!d.length)return toast('Compte introuvable.','er');
-    const u=d[0];
-    if(u.password_hash!==pw)return toast('Mot de passe incorrect.','er');
-    // Bloquer les comptes inactifs
-    if(u.statut!=='actif'&&u.role!=='admin'){
-      localStorage.setItem('sylla_pending',JSON.stringify(u));
-      toast('Compte en attente d\'activation.','nfo');
-      setTimeout(()=>location.href='activation.html',1200);
-      return;
+function gv(id) { return (document.getElementById(id).value || '').trim(); }
+
+function setBusy(id, busy, label) {
+  var b = document.getElementById(id);
+  b.disabled = busy;
+  b.innerHTML = busy ? '<span class="spin"></span>Chargement...' : label;
+}
+
+// Si déjà connecté, rediriger
+(function() {
+  try {
+    var u = JSON.parse(localStorage.getItem('sylla_user') || 'null');
+    if (u && u.id && u.statut) {
+      if (u.role === 'admin') { location.href = 'admin.html'; return; }
+      location.href = u.statut === 'actif' ? 'dashboard.html' : 'activation.html';
     }
-    localStorage.setItem('sylla_user',JSON.stringify(u));
-    toast('Connexion réussie !','ok');
-    setTimeout(()=>location.href=u.role==='admin'?'admin.html':'dashboard.html',900);
-  }catch(e){toast(e.message||'Erreur serveur','er');}
-  finally{btn.disabled=false;btn.textContent='Se connecter';}
+  } catch(e) { localStorage.removeItem('sylla_user'); }
+})();
+
+// Pré-remplir code ref depuis URL
+(function() {
+  var ref = new URLSearchParams(location.search).get('ref');
+  if (ref) { document.getElementById('r-ref').value = ref.toUpperCase(); sw('reg'); }
+})();
+
+function sw(tab) {
+  document.getElementById('t-login').classList.toggle('on', tab === 'login');
+  document.getElementById('t-reg').classList.toggle('on',   tab === 'reg');
+  document.getElementById('f-login').style.display = tab === 'login' ? '' : 'none';
+  document.getElementById('f-reg').style.display   = tab === 'reg'   ? '' : 'none';
 }
 
-function genCode(n,p){
-  const b=(n.slice(0,3)+p.slice(0,2)).toUpperCase().replace(/[^A-Z]/g,'');
-  return'SYLLA-'+b+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+function doLogin() {
+  var ident = gv('l-ident'), pw = gv('l-pw');
+  if (!ident || !pw) { toast('Remplissez tous les champs.', 'er'); return; }
+  setBusy('btn-login', true, 'Se connecter');
+  var field = ident.indexOf('@') !== -1 ? 'email' : 'telephone';
+  sbGet('sylla_users', 'select=*&' + field + '=eq.' + encodeURIComponent(ident))
+    .then(function(data) {
+      if (!Array.isArray(data) || data.length === 0) { toast('Compte introuvable.', 'er'); return; }
+      var user = data[0];
+      if (user.password_hash !== pw) { toast('Mot de passe incorrect.', 'er'); return; }
+      localStorage.setItem('sylla_user', JSON.stringify(user));
+      toast('Connexion réussie !', 'ok');
+      setTimeout(function() {
+        if (user.role === 'admin') { location.href = 'admin.html'; return; }
+        location.href = user.statut === 'actif' ? 'dashboard.html' : 'activation.html';
+      }, 700);
+    })
+    .catch(function() { toast('Erreur réseau. Réessayez.', 'er'); })
+    .finally(function() { setBusy('btn-login', false, 'Se connecter'); });
 }
 
-async function doReg(){
-  const nom=g('r-nom'),pre=g('r-pre'),em=g('r-em'),
-        tel=g('r-tel'),pays=g('r-pays'),pw=g('r-pw'),
-        ref=document.getElementById('r-ref').value.trim().toUpperCase();
-  if(!nom||!pre||!em||!tel||!pays||!pw)return toast('Tous les champs sont obligatoires.','er');
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em))return toast('Email invalide.','er');
-  if(pw.length<6)return toast('Mot de passe : minimum 6 caractères.','er');
-  const btn=document.getElementById('btn-reg');
-  btn.disabled=true;btn.innerHTML='<span class="spin"></span>Création...';
-  try{
-    let pid=null;
-    if(ref){
-      const rp=await rq('sylla_users?code_parrainage=eq.'+ref+'&select=id');
-      const dp=await rp.json();
-      if(!dp||!dp.length){btn.disabled=false;btn.textContent='Créer mon compte';return toast('Code parrain invalide.','er');}
-      pid=dp[0].id;
-    }
-    const code=genCode(nom,pre);
-    const res=await rq('sylla_users',{
-      method:'POST',prefer:'return=representation',
-      body:JSON.stringify({nom,prenom:pre,email:em,telephone:tel,pays,password_hash:pw,parrain_id:pid,code_parrainage:code,statut:'inactif',role:'user',solde:0})
-    });
-    const data=await res.json();
-    if(!res.ok){
-      if(data.code==='23505')return toast('Email ou téléphone déjà utilisé.','er');
-      throw new Error(data.message||'Erreur inscription');
-    }
-    const user=Array.isArray(data)?data[0]:data;
-    localStorage.setItem('sylla_pending',JSON.stringify(user));
-    toast('Compte créé ! Procédez à l\'activation.','ok');
-    setTimeout(()=>location.href='activation.html',1000);
-  }catch(e){toast(e.message||'Erreur serveur','er');}
-  finally{btn.disabled=false;btn.textContent='Créer mon compte';}
+function genCode(nom, prenom) {
+  var base = ((nom || '').slice(0, 3) + (prenom || '').slice(0, 2)).toUpperCase().replace(/[^A-Z]/g, '').padEnd(5, 'X');
+  var rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return 'SYLLA-' + base + '-' + rand;
 }
 
-document.addEventListener('keydown',e=>{
-  if(e.key!=='Enter')return;
-  if(document.getElementById('frm-log').style.display!=='none')doLog();
-  else doReg();
+function doRegister() {
+  var nom  = gv('r-nom'), pre  = gv('r-pre'),  em   = gv('r-em');
+  var tel  = gv('r-tel'), pays = gv('r-pays'),  pw   = gv('r-pw');
+  var ref  = document.getElementById('r-ref').value.trim().toUpperCase();
+  if (!nom || !pre || !em || !tel || !pays || !pw) { toast('Tous les champs sont requis.', 'er'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { toast('Email invalide.', 'er'); return; }
+  if (pw.length < 6) { toast('Mot de passe : minimum 6 caractères.', 'er'); return; }
+  setBusy('btn-reg', true, 'Créer mon compte');
+
+  function doInsert(parrainId) {
+    var code = genCode(nom, pre);
+    sbPost('sylla_users', {
+      nom: nom, prenom: pre, email: em, telephone: tel, pays: pays,
+      password_hash: pw, parrain_id: parrainId, code_parrainage: code,
+      statut: 'inactif', role: 'user', solde: 0
+    }).then(function(res) {
+      if (!res.ok) {
+        var msg = (res.data && res.data.code === '23505') ? 'Email ou téléphone déjà utilisé.' : 'Erreur lors de l\'inscription.';
+        toast(msg, 'er'); return;
+      }
+      var user = Array.isArray(res.data) ? res.data[0] : res.data;
+      localStorage.setItem('sylla_user', JSON.stringify(user));
+      toast('Compte créé ! Procédez à l\'activation.', 'ok');
+      setTimeout(function() { location.href = 'activation.html'; }, 800);
+    }).catch(function() { toast('Erreur réseau.', 'er'); })
+      .finally(function() { setBusy('btn-reg', false, 'Créer mon compte'); });
+  }
+
+  if (ref) {
+    sbGet('sylla_users', 'select=id&code_parrainage=eq.' + encodeURIComponent(ref))
+      .then(function(data) {
+        if (!Array.isArray(data) || data.length === 0) { toast('Code de parrainage invalide.', 'er'); setBusy('btn-reg', false, 'Créer mon compte'); return; }
+        doInsert(data[0].id);
+      }).catch(function() { toast('Erreur réseau.', 'er'); setBusy('btn-reg', false, 'Créer mon compte'); });
+  } else {
+    doInsert(null);
+  }
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Enter') return;
+  if (document.getElementById('f-login').style.display !== 'none') doLogin();
+  else doRegister();
 });
 </script>
 </body>
