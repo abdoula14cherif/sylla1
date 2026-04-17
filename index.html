@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JuriAfrik — Votre Droit, Votre Pouvoir</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A0A0A;--paper:#F5F0E8;--gold:#C9922A;--gold-l:#E8B84B;--gold-pale:#FBF3E0;
+  --red:#B83232;--green:#1A5C3A;--muted:#6B6456;--border:#DDD5C4;--card:#FFFDF8;
+  --shadow:rgba(10,10,10,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--ink);}
+body{max-width:480px;margin:0 auto;min-height:100vh;background:var(--paper);overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23C9922A' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events:none;}
+
+/* HEADER */
+.header{position:sticky;top:0;z-index:100;background:var(--ink);padding:0 16px;
+  display:flex;align-items:center;justify-content:space-between;height:58px;
+  border-bottom:3px solid var(--gold);}
+.logo{display:flex;align-items:center;gap:8px;}
+.logo-icon{width:32px;height:32px;background:var(--gold);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;}
+.logo-name{font-family:'Playfair Display',serif;font-size:20px;color:#fff;font-weight:900;letter-spacing:1px;}
+.logo-name span{color:var(--gold-l);}
+.header-badge{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;
+  padding:4px 10px;border:1px solid rgba(201,146,42,.4);border-radius:20px;color:var(--gold-l);text-transform:uppercase;}
+
+/* HERO */
+.hero{position:relative;z-index:10;padding:28px 16px 22px;text-align:center;border-bottom:1px solid var(--border);}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold);
+  text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:24px;height:1px;background:var(--gold);opacity:.5;}
+.hero-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;
+  color:var(--ink);line-height:1.15;margin-bottom:10px;}
+.hero-title em{color:var(--gold);font-style:normal;}
+.hero-sub{font-size:13px;color:var(--muted);line-height:1.7;max-width:320px;margin:0 auto 18px;}
+.hero-stats{display:flex;justify-content:center;gap:24px;}
+.hs{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.hs-val{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--gold);}
+.hs-lbl{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;}
+.hs-div{width:1px;height:36px;background:var(--border);margin-top:4px;}
+
+/* DOMAINES */
+.section{position:relative;z-index:10;padding:20px 16px;}
+.sec-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.sec-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--ink);}
+.sec-line{flex:1;height:1px;background:var(--border);}
+.sec-badge{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1.5px;
+  padding:3px 8px;background:var(--gold-pale);border:1px solid rgba(201,146,42,.3);
+  border-radius:4px;color:var(--gold);text-transform:uppercase;}
+.domains-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.domain-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;
+  padding:14px 12px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;}
+.domain-card::after{content:'';display:block;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-l));
+  border-radius:0 0 10px 10px;margin:10px -12px -12px;transform:scaleX(0);transition:transform .2s;transform-origin:left;}
+.domain-card:hover::after,.domain-card.sel::after{transform:scaleX(1);}
+.domain-card:active{transform:scale(.97);}
+.domain-card.sel{border-color:var(--gold);background:var(--gold-pale);}
+.dc-ico{font-size:24px;margin-bottom:7px;}
+.dc-name{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+.dc-desc{font-size:10.5px;color:var(--muted);line-height:1.5;}
+
+/* PROBLÈME */
+.problem-section{position:relative;z-index:10;padding:0 16px 20px;}
+.input-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;
+  padding:16px;box-shadow:0 2px 16px var(--shadow);}
+.input-label{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.input-hint{font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.5;}
+textarea{width:100%;background:#FAFAF7;border:1.5px solid var(--border);border-radius:10px;
+  padding:12px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--ink);
+  line-height:1.6;resize:none;outline:none;height:110px;transition:border .2s;}
+textarea:focus{border-color:var(--gold);background:var(--gold-pale);}
+textarea::placeholder{color:#B8AFA0;font-style:italic;}
+.examples{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.ex-chip{font-size:11px;padding:5px 10px;background:var(--gold-pale);border:1px solid rgba(201,146,42,.3);
+  border-radius:20px;color:var(--gold);cursor:pointer;font-weight:500;transition:all .2s;}
+.ex-chip:hover{background:var(--gold);color:#fff;}
+
+/* BOUTON */
+.btn-consult{width:100%;padding:16px;background:linear-gradient(135deg,var(--gold),var(--gold-l));
+  border:none;border-radius:12px;font-family:'IBM Plex Sans',sans-serif;font-size:15px;
+  font-weight:700;color:var(--ink);cursor:pointer;display:flex;align-items:center;
+  justify-content:center;gap:10px;transition:all .2s;margin-top:12px;
+  box-shadow:0 4px 20px rgba(201,146,42,.35);}
+.btn-consult:hover:not(:disabled){box-shadow:0 6px 28px rgba(201,146,42,.5);transform:translateY(-1px);}
+.btn-consult:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.sp{width:16px;height:16px;border:2px solid rgba(10,10,10,.2);border-top-color:var(--ink);
+  border-radius:50%;animation:spin .7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* RÉPONSE */
+.response-section{position:relative;z-index:10;padding:0 16px 20px;display:none;}
+.response-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;
+  overflow:hidden;box-shadow:0 4px 24px var(--shadow);}
+.rc-header{background:var(--ink);padding:14px 16px;display:flex;align-items:center;gap:10px;}
+.rc-ico{width:36px;height:36px;background:var(--gold);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.rc-title{font-family:'Playfair Display',serif;font-size:15px;color:#fff;font-weight:700;}
+.rc-sub{font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(201,146,42,.7);letter-spacing:1px;margin-top:1px;}
+.rc-body{padding:16px;}
+.rc-text{font-size:13px;line-height:1.8;color:var(--ink);}
+.rc-text h4{font-family:'Playfair Display',serif;font-size:15px;color:var(--gold);
+  margin:14px 0 6px;border-left:3px solid var(--gold);padding-left:10px;}
+.rc-text ul{padding-left:16px;margin:6px 0;}
+.rc-text li{margin-bottom:5px;}
+.rc-text strong{color:var(--ink);font-weight:700;}
+.rc-text .warning{background:#FEF3CD;border:1px solid #F0C040;border-radius:8px;
+  padding:10px 12px;margin:10px 0;font-size:12px;color:#7A5C00;}
+.rc-text .good{background:#E8F5E9;border:1px solid #81C784;border-radius:8px;
+  padding:10px 12px;margin:10px 0;font-size:12px;color:#1B5E20;}
+.actions-bar{border-top:1px solid var(--border);padding:12px 16px;display:flex;gap:8px;}
+.act-btn{flex:1;padding:11px;border-radius:10px;font-family:'IBM Plex Sans',sans-serif;
+  font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;gap:6px;transition:all .2s;border:1.5px solid var(--border);
+  background:transparent;color:var(--muted);}
+.act-btn:hover{border-color:var(--gold);color:var(--gold);}
+.act-btn-main{background:var(--ink);color:#fff;border:none;flex:1.5;}
+.act-btn-main:hover{background:#1A1A1A;border:none;}
+
+/* HISTORIQUE */
+.history-section{position:relative;z-index:10;padding:0 16px 100px;display:none;}
+.hist-item{background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:12px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;
+  cursor:pointer;transition:all .2s;}
+.hist-item:hover{border-color:var(--gold);background:var(--gold-pale);}
+.hi-ico{width:34px;height:34px;border-radius:9px;background:var(--gold-pale);
+  display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.hi-info{flex:1;min-width:0;}
+.hi-domain{font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;
+  letter-spacing:1px;font-family:'IBM Plex Mono',monospace;margin-bottom:2px;}
+.hi-question{font-size:12.5px;font-weight:600;color:var(--ink);line-height:1.4;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hi-date{font-size:10px;color:var(--muted);margin-top:2px;}
+.hi-tag{font-size:9px;padding:2px 7px;border-radius:4px;font-weight:700;
+  background:#E8F5E9;color:var(--green);font-family:'IBM Plex Mono',monospace;flex-shrink:0;margin-top:2px;}
+
+/* BOTTOM NAV */
+.bot-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;
+  background:var(--ink);border-top:2px solid var(--gold);display:flex;align-items:center;z-index:999;height:62px;}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0;
+  cursor:pointer;transition:all .2s;text-decoration:none;-webkit-tap-highlight-color:transparent;}
+.bni-ico{font-size:20px;opacity:.45;transition:all .2s;}
+.bni-lbl{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1.5px;
+  color:rgba(255,255,255,.35);text-transform:uppercase;}
+.bni.active .bni-ico{opacity:1;}
+.bni.active .bni-lbl{color:var(--gold-l);}
+.bni-center{background:var(--gold);border-radius:12px;padding:6px 18px;margin:0 4px;}
+.bni-center .bni-ico{opacity:1;}
+.bni-center .bni-lbl{color:var(--ink);}
+
+/* LOADING */
+.loading-dots{display:flex;gap:5px;justify-content:center;padding:24px;}
+.ld{width:8px;height:8px;background:var(--gold);border-radius:50%;animation:ldot .8s ease-in-out infinite;}
+.ld:nth-child(2){animation-delay:.15s;}
+.ld:nth-child(3){animation-delay:.3s;}
+@keyframes ldot{0%,80%,100%{transform:scale(.7);opacity:.4;}40%{transform:scale(1);opacity:1;}}
+@keyframes fadeU{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.fade-in{animation:fadeU .4s ease both;}
+
+/* VIDE */
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted);}
+.empty-state .es-ico{font-size:48px;margin-bottom:12px;display:block;opacity:.4;}
+.empty-state p{font-size:13px;line-height:1.7;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">⚖️</div>
+    <div class="logo-name">Juri<span>Afrik</span></div>
+  </div>
+  <div class="header-badge">Droit • OHADA • CM</div>
+</div>
+
+<!-- HERO -->
+<div class="hero" id="heroSection">
+  <div class="hero-eyebrow">Assistant Juridique Africain</div>
+  <div class="hero-title">Connaissez vos <em>droits</em>,<br>protégez vos intérêts</div>
+  <div class="hero-sub">Posez votre question en français — réponse claire basée sur le droit camerounais et OHADA.</div>
+  <div class="hero-stats">
+    <div class="hs"><div class="hs-val">8</div><div class="hs-lbl">Domaines</div></div>
+    <div class="hs-div"></div>
+    <div class="hs"><div class="hs-val">100%</div><div class="hs-lbl">Gratuit</div></div>
+    <div class="hs-div"></div>
+    <div class="hs"><div class="hs-val">24/7</div><div class="hs-lbl">Disponible</div></div>
+  </div>
+</div>
+
+<!-- DOMAINES -->
+<div class="section" id="domainsSection">
+  <div class="sec-header">
+    <div class="sec-title">Choisissez votre domaine</div>
+    <div class="sec-line"></div>
+    <div class="sec-badge">8 domaines</div>
+  </div>
+  <div class="domains-grid">
+    <div class="domain-card" data-domain="travail" onclick="selDomain(this)">
+      <div class="dc-ico">👔</div>
+      <div class="dc-name">Droit du Travail</div>
+      <div class="dc-desc">Licenciement, contrat, salaire, congés</div>
+    </div>
+    <div class="domain-card" data-domain="famille" onclick="selDomain(this)">
+      <div class="dc-ico">👨‍👩‍👧</div>
+      <div class="dc-name">Droit de la Famille</div>
+      <div class="dc-desc">Mariage, divorce, héritage, enfants</div>
+    </div>
+    <div class="domain-card" data-domain="locatif" onclick="selDomain(this)">
+      <div class="dc-ico">🏠</div>
+      <div class="dc-name">Droit Locatif</div>
+      <div class="dc-desc">Bail, loyer, expulsion, réparations</div>
+    </div>
+    <div class="domain-card" data-domain="commerce" onclick="selDomain(this)">
+      <div class="dc-ico">🏪</div>
+      <div class="dc-name">Droit Commercial</div>
+      <div class="dc-desc">OHADA, contrats, SARL, litiges</div>
+    </div>
+    <div class="domain-card" data-domain="penal" onclick="selDomain(this)">
+      <div class="dc-ico">🚔</div>
+      <div class="dc-name">Droit Pénal</div>
+      <div class="dc-desc">Plainte, arrestation, droits face à la police</div>
+    </div>
+    <div class="domain-card" data-domain="foncier" onclick="selDomain(this)">
+      <div class="dc-ico">📋</div>
+      <div class="dc-name">Droit Foncier</div>
+      <div class="dc-desc">Terrain, titre foncier, litiges</div>
+    </div>
+    <div class="domain-card" data-domain="consommateur" onclick="selDomain(this)">
+      <div class="dc-ico">🛒</div>
+      <div class="dc-name">Droit Consommateur</div>
+      <div class="dc-desc">Arnaque, remboursement, fraude</div>
+    </div>
+    <div class="domain-card" data-domain="administratif" onclick="selDomain(this)">
+      <div class="dc-ico">🏛️</div>
+      <div class="dc-name">Droit Administratif</div>
+      <div class="dc-desc">Permis, recours, administration</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLÈME -->
+<div class="problem-section" id="problemSection" style="display:none">
+  <div class="input-card fade-in">
+    <div class="input-label" id="inputLabel">Décrivez votre situation</div>
+    <div class="input-hint">Expliquez en langage simple. Plus de détails = meilleure réponse.</div>
+    <textarea id="problemText" placeholder="Ex: Mon employeur ne m'a pas payé depuis 3 mois malgré mes relances..."></textarea>
+    <div class="examples" id="examplesChips"></div>
+    <button class="btn-consult" id="btnConsult" onclick="consulter()" disabled>
+      <div class="sp" id="sp"></div>
+      <span id="btnTxt">⚖️ Obtenir une réponse juridique</span>
+    </button>
+  </div>
+</div>
+
+<!-- RÉPONSE -->
+<div class="response-section" id="responseSection">
+  <div class="response-card fade-in">
+    <div class="rc-header">
+      <div class="rc-ico">⚖️</div>
+      <div>
+        <div class="rc-title">Analyse juridique</div>
+        <div class="rc-sub" id="rcDomain">—</div>
+      </div>
+    </div>
+    <div class="rc-body">
+      <div class="rc-text" id="rcText"></div>
+    </div>
+    <div class="actions-bar">
+      <button class="act-btn" onclick="nouvelleQuestion()">↩ Nouveau</button>
+      <button class="act-btn" onclick="poserSuivi()">💬 Question de suivi</button>
+      <button class="act-btn act-btn-main" onclick="partager()">📤 Partager</button>
+    </div>
+  </div>
+</div>
+
+<!-- HISTORIQUE -->
+<div class="history-section" id="historySection">
+  <div class="sec-header" style="margin-bottom:12px">
+    <div class="sec-title">Mes consultations</div>
+    <div class="sec-line"></div>
+  </div>
+  <div id="histList"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bot-nav">
+  <div class="bni active" id="nav-accueil" onclick="showTab('accueil')">
+    <div class="bni-ico">⚖️</div>
+    <div class="bni-lbl">Consulter</div>
+  </div>
+  <div class="bni bni-center" id="nav-urgent" onclick="goUrgent()">
+    <div class="bni-ico">🚨</div>
+    <div class="bni-lbl">Urgent</div>
+  </div>
+  <div class="bni" id="nav-historique" onclick="showTab('historique')">
+    <div class="bni-ico">📋</div>
+    <div class="bni-lbl">Historique</div>
+  </div>
+</div>
+
+<script>
+const EXEMPLES = {
+  travail:       ['Mon patron ne me paie pas','J\'ai été licencié sans préavis','Mon contrat n\'est pas respecté','On m\'a mis en chômage technique'],
+  famille:       ['Divorce avec enfants','Héritage contesté','Pension alimentaire non payée','Mariage non reconnu'],
+  locatif:       ['Mon propriétaire veut m\'expulser','Caution non remboursée','Loyer augmenté sans préavis','Réparations refusées'],
+  commerce:      ['Client ne paie pas ma facture','Contrat commercial rompu','Comment créer une SARL','Associé de mauvaise foi'],
+  penal:         ['J\'ai été arrêté injustement','Porter plainte contre quelqu\'un','Mes droits en garde à vue','Menace de mort reçue'],
+  foncier:       ['Litige sur un terrain','Titre foncier frauduleux','Voisin empiète sur ma parcelle','Terrain hérité non titré'],
+  consommateur:  ['J\'ai été arnaqué','Produit défectueux','Fraude en ligne','Commerçant refuse remboursement'],
+  administratif: ['Permis refusé injustement','Recours contre l\'administration','Fonctionnaire abusif','Dossier bloqué au ministère'],
+};
+
+const DOMAIN_LABELS = {
+  travail:'Droit du Travail', famille:'Droit de la Famille', locatif:'Droit Locatif',
+  commerce:'Droit Commercial OHADA', penal:'Droit Pénal', foncier:'Droit Foncier',
+  consommateur:'Droit du Consommateur', administratif:'Droit Administratif',
+};
+
+const DOMAIN_ICONS = {
+  travail:'👔', famille:'👨‍👩‍👧', locatif:'🏠', commerce:'🏪',
+  penal:'🚔', foncier:'📋', consommateur:'🛒', administratif:'🏛️',
+};
+
+let selDomainKey   = null;
+let lastResponse   = '';
+let lastQuestion   = '';
+
+// ── SÉLECTIONNER DOMAINE ──
+function selDomain(el){
+  document.querySelectorAll('.domain-card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  selDomainKey = el.dataset.domain;
+
+  const ps = document.getElementById('problemSection');
+  ps.style.display = 'block';
+  document.getElementById('inputLabel').textContent = DOMAIN_ICONS[selDomainKey] + ' ' + DOMAIN_LABELS[selDomainKey];
+  document.getElementById('responseSection').style.display = 'none';
+  document.getElementById('problemText').value = '';
+  document.getElementById('btnConsult').disabled = true;
+
+  // Exemples
+  const chips = document.getElementById('examplesChips');
+  chips.innerHTML = (EXEMPLES[selDomainKey]||[]).map(e=>
+    `<div class="ex-chip" onclick="setEx(this)">${e}</div>`
+  ).join('');
+
+  ps.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function setEx(el){
+  document.getElementById('problemText').value = el.textContent;
+  document.getElementById('btnConsult').disabled = false;
+}
+
+document.addEventListener('input', e => {
+  if(e.target.id === 'problemText')
+    document.getElementById('btnConsult').disabled = e.target.value.trim().length < 10;
+});
+
+// ── CONSULTER ──
+async function consulter(){
+  const question = document.getElementById('problemText').value.trim();
+  if(!question || !selDomainKey) return;
+  lastQuestion = question;
+  await lancerConsultation(question, selDomainKey);
+}
+
+async function lancerConsultation(question, domaine){
+  const btn = document.getElementById('btnConsult');
+  btn.disabled = true;
+  document.getElementById('sp').style.display = 'inline-block';
+  document.getElementById('btnTxt').textContent = 'Analyse en cours...';
+
+  document.getElementById('responseSection').style.display = 'block';
+  document.getElementById('rcDomain').textContent = DOMAIN_LABELS[domaine] || domaine;
+  document.getElementById('rcText').innerHTML = `<div class="loading-dots"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>`;
+  document.getElementById('responseSection').scrollIntoView({behavior:'smooth', block:'start'});
+
+  try{
+    // ── Appel via proxy Vercel (clé API sécurisée côté serveur) ──
+    const resp = await fetch('/api/juri', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ domaine, question })
+    });
+
+    const data = await resp.json();
+    if(!resp.ok) throw new Error(data.error || 'Erreur serveur');
+
+    const text = data.response || '<div class="warning">⚠️ Réponse vide. Réessayez.</div>';
+    document.getElementById('rcText').innerHTML = text;
+    lastResponse = text;
+
+    // Sauvegarder historique
+    sauvegarderHistorique(domaine, question);
+
+  }catch(e){
+    document.getElementById('rcText').innerHTML = `<div class="warning">⚠️ Erreur de connexion. Vérifiez votre internet et réessayez.</div>`;
+  }
+
+  btn.disabled = false;
+  document.getElementById('sp').style.display = 'none';
+  document.getElementById('btnTxt').textContent = '⚖️ Obtenir une réponse juridique';
+}
+
+// ── ACTIONS ──
+function nouvelleQuestion(){
+  document.getElementById('responseSection').style.display = 'none';
+  document.getElementById('problemSection').style.display = 'none';
+  document.getElementById('problemText').value = '';
+  document.querySelectorAll('.domain-card').forEach(c=>c.classList.remove('sel'));
+  selDomainKey = null;
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function poserSuivi(){
+  const txt = document.getElementById('problemText');
+  document.getElementById('problemSection').style.display = 'block';
+  txt.value = '';
+  txt.placeholder = 'Posez une question de suivi sur la même situation...';
+  txt.focus();
+  document.getElementById('problemSection').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function partager(){
+  const txt = lastQuestion ? `🏛️ JuriAfrik — Consultation juridique\n\nQuestion : ${lastQuestion}\n\nConsultez JuriAfrik gratuitement pour connaître vos droits.` : 'JuriAfrik — Assistant juridique gratuit pour l\'Afrique';
+  if(navigator.share){
+    navigator.share({title:'JuriAfrik', text:txt});
+  } else {
+    navigator.clipboard?.writeText(txt);
+    alert('✅ Lien copié !');
+  }
+}
+
+function goUrgent(){
+  showTab('accueil');
+  const card = document.querySelector('[data-domain="penal"]');
+  if(card){ selDomain(card); card.scrollIntoView({behavior:'smooth', block:'center'}); }
+}
+
+// ── HISTORIQUE ──
+function sauvegarderHistorique(domain, question){
+  const h = JSON.parse(localStorage.getItem('juri_history')||'[]');
+  h.unshift({domain, question, date: new Date().toISOString()});
+  if(h.length>30) h.pop();
+  localStorage.setItem('juri_history', JSON.stringify(h));
+}
+
+function loadHistory(){
+  const h = JSON.parse(localStorage.getItem('juri_history')||'[]');
+  const list = document.getElementById('histList');
+  if(!h.length){
+    list.innerHTML = `<div class="empty-state"><span class="es-ico">⚖️</span><p>Aucune consultation pour le moment.<br>Posez votre première question juridique !</p></div>`;
+    return;
+  }
+  list.innerHTML = h.map(item=>{
+    const d = new Date(item.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+    return `<div class="hist-item" onclick="recharger('${item.domain}','${item.question.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">
+      <div class="hi-ico">${DOMAIN_ICONS[item.domain]||'⚖️'}</div>
+      <div class="hi-info">
+        <div class="hi-domain">${DOMAIN_LABELS[item.domain]||item.domain}</div>
+        <div class="hi-question">${item.question}</div>
+        <div class="hi-date">${d}</div>
+      </div>
+      <div class="hi-tag">Gratuit</div>
+    </div>`;
+  }).join('');
+}
+
+function recharger(domain, question){
+  showTab('accueil');
+  setTimeout(()=>{
+    const card = document.querySelector(`[data-domain="${domain}"]`);
+    if(card) selDomain(card);
+    document.getElementById('problemText').value = question;
+    document.getElementById('btnConsult').disabled = false;
+  }, 100);
+}
+
+// ── NAVIGATION ──
+function showTab(tab){
+  const hero     = document.getElementById('heroSection');
+  const domains  = document.getElementById('domainsSection');
+  const problem  = document.getElementById('problemSection');
+  const response = document.getElementById('responseSection');
+  const history  = document.getElementById('historySection');
+
+  document.querySelectorAll('.bni').forEach(b=>b.classList.remove('active'));
+
+  if(tab === 'accueil'){
+    [hero,domains].forEach(el=>el.style.display='');
+    problem.style.display  = selDomainKey ? 'block' : 'none';
+    response.style.display = lastResponse ? 'block' : 'none';
+    history.style.display  = 'none';
+    document.getElementById('nav-accueil').classList.add('active');
+  } else {
+    [hero,domains,problem,response].forEach(el=>el.style.display='none');
+    history.style.display = 'block';
+    loadHistory();
+    document.getElementById('nav-historique').classList.add('active');
+  }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+</body>
+</html>
