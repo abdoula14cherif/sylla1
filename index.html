@@ -13,7 +13,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--ink);}
-body{max-width:480px;margin:0 auto;min-height:100vh;background:var(--paper);overflow-x:hidden;}
+body{max-width:480px;margin:0 auto;min-height:100vh;background:var(--paper);overflow-x:hidden;padding-bottom:80px;}
 body::before{content:'';position:fixed;inset:0;z-index:0;
   background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23C9922A' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   pointer-events:none;}
@@ -66,7 +66,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
 .dc-desc{font-size:10.5px;color:var(--muted);line-height:1.5;}
 
 /* PROBLÈME */
-.problem-section{position:relative;z-index:10;padding:0 16px 20px;}
+.problem-section{position:relative;z-index:10;padding:0 16px 90px;}
 .input-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;
   padding:16px;box-shadow:0 2px 16px var(--shadow);}
 .input-label{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;}
@@ -94,7 +94,7 @@ textarea::placeholder{color:#B8AFA0;font-style:italic;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* RÉPONSE */
-.response-section{position:relative;z-index:10;padding:0 16px 20px;display:none;}
+.response-section{position:relative;z-index:10;padding:0 16px 90px;display:none;}
 .response-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;
   overflow:hidden;box-shadow:0 4px 24px var(--shadow);}
 .rc-header{background:var(--ink);padding:14px 16px;display:flex;align-items:center;gap:10px;}
@@ -382,17 +382,49 @@ async function lancerConsultation(question, domaine){
   document.getElementById('responseSection').scrollIntoView({behavior:'smooth', block:'start'});
 
   try{
-    // ── Appel via proxy Vercel (clé API sécurisée côté serveur) ──
-    const resp = await fetch('/api/juri', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ domaine, question })
-    });
+    // ── Essai proxy Vercel, fallback direct si non disponible ──
+    let text = '';
+    let proxyOk = false;
 
-    const data = await resp.json();
-    if(!resp.ok) throw new Error(data.error || 'Erreur serveur');
+    // Tenter le proxy d'abord
+    try {
+      const pr = await fetch('/api/juri', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({domaine, question}),
+        signal: AbortSignal.timeout(5000)
+      });
+      if(pr.ok){
+        const pd = await pr.json();
+        if(pd.response){ text = pd.response; proxyOk = true; }
+      }
+    } catch(e){ /* proxy non disponible */ }
 
-    const text = data.response || '<div class="warning">⚠️ Réponse vide. Réessayez.</div>';
+    // Fallback : appel direct Anthropic
+    if(!proxyOk){
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'x-api-key': 'sk-ant-api03-placeholder-remplace-par-ta-cle',
+          'anthropic-version':'2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model:'claude-haiku-4-5-20251001',
+          max_tokens:1000,
+          messages:[{role:'user', content:`Tu es JuriAfrik, assistant juridique africain francophone.
+Domaine : ${DOMAIN_LABELS[domaine]||domaine}
+Question : ${question}
+Réponds en HTML avec h4, ul/li, et classes warning/good. Droit camerounais et OHADA. Max 350 mots. Pas de disclaimer excessif.`}]
+        })
+      });
+      const data = await resp.json();
+      if(!resp.ok) throw new Error(data.error?.message || 'Erreur API');
+      text = data.content?.[0]?.text || '';
+    }
+
+    if(!text) throw new Error('Réponse vide');
     document.getElementById('rcText').innerHTML = text;
     lastResponse = text;
 
