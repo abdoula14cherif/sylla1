@@ -3,6 +3,7 @@ import { renderCV, esc, WATERMARK } from './cv.js';
 import { LEVELS } from './i18n.js';
 import { emptyState, sampleState, EMPTY_ITEMS } from './sample.js';
 import { load, save, clear } from './storage.js';
+import { initExtras } from './extras.js';
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => [...document.querySelectorAll(sel)];
@@ -16,6 +17,7 @@ function fresh() {
 let state = fresh();
 let saveTimer = null;
 
+/* ---------- Chemins pour les champs simples (identite.nom, resume…) ---------- */
 function getPath(obj, path) {
   return path.split('.').reduce((o, k) => (o ? o[k] : ''), obj);
 }
@@ -26,6 +28,7 @@ function setPath(obj, path, value) {
   target[last] = value;
 }
 
+/* ---------- Listes (expériences, formations, langues) ---------- */
 const field = (list, i, key, label, ph = '') =>
   `<label class="f"><span>${label}</span><input data-list="${list}" data-i="${i}" data-k="${key}" value="${esc(
     state[list][i][key]
@@ -78,13 +81,14 @@ function renderLists() {
     .join('');
 }
 
-const PAGE_W = 794;
+/* ---------- Aperçu : affichage et mise à l'échelle ---------- */
+const PAGE_W = 794; // A4 à 96 dpi
 const PAGE_H = 1123;
 
 function fit() {
   const stage = $('#stage');
   const avail = stage.clientWidth - 24;
-  if (avail <= 0) return;
+  if (avail <= 0) return; // onglet masqué
   const s = Math.min(1, avail / PAGE_W);
   const cv = $('#cv');
   const wrap = $('#cv-wrap');
@@ -126,6 +130,7 @@ function syncForm() {
   update();
 }
 
+/* ---------- Événements ---------- */
 $('#editor').addEventListener('input', (e) => {
   const t = e.target;
   if (t.dataset.bind) {
@@ -177,6 +182,7 @@ $('#tabs').addEventListener('click', (e) => {
   if (b) setTab(b.dataset.tab);
 });
 
+/* Photo : recadrée en carré et réduite pour rester légère */
 $('#photo-input').addEventListener('change', (e) => {
   const file = e.target.files && e.target.files[0];
   if (!file) return;
@@ -216,6 +222,7 @@ $('#btn-reset').addEventListener('click', () => {
   syncForm();
 });
 
+/* Téléchargement : on utilise l'impression du navigateur ("Enregistrer au format PDF") */
 let previousTitle = document.title;
 $('#btn-pdf').addEventListener('click', () => {
   previousTitle = document.title;
@@ -231,3 +238,4 @@ new ResizeObserver(fit).observe($('#stage'));
 window.addEventListener('resize', fit);
 
 syncForm();
+initExtras({ getState: () => state, syncForm, syncToolbar });
