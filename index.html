@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#14213D" />
+  <title>Digiform · Créer son CV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header class="top">
+    <div class="brand"><span class="mark">D</span><span>Digiform</span></div>
+    <div class="top-actions">
+      <button type="button" class="ghost" id="btn-sample">Voir un exemple</button>
+      <button type="button" class="ghost" id="btn-reset">Effacer</button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button type="button" data-tab="edit" class="on">Remplir</button>
+    <button type="button" data-tab="preview">Aperçu</button>
+  </nav>
+
+  <main class="layout" data-tab="edit">
+    <section class="editor" id="editor">
+      <div class="card">
+        <h2>Vos informations</h2>
+        <div class="photo-row">
+          <div class="photo-prev" id="photo-prev"></div>
+          <div>
+            <label class="link-btn" for="photo-input">Ajouter une photo</label>
+            <button type="button" class="link-btn danger" id="photo-remove" hidden>Retirer</button>
+            <input type="file" id="photo-input" accept="image/*" hidden />
+          </div>
+        </div>
+        <label class="f"><span>Nom complet</span><input data-bind="identite.nom" autocomplete="name" placeholder="Nadège Mballa" /></label>
+        <label class="f"><span>Métier ou poste visé</span><input data-bind="identite.titre" placeholder="Assistante commerciale" /></label>
+        <div class="grid2">
+          <label class="f"><span>Téléphone</span><input data-bind="identite.tel" type="tel" autocomplete="tel" placeholder="+237 6 00 00 00 00" /></label>
+          <label class="f"><span>Email</span><input data-bind="identite.email" type="email" autocomplete="email" placeholder="nom@email.com" /></label>
+        </div>
+        <div class="grid2">
+          <label class="f"><span>Ville</span><input data-bind="identite.ville" placeholder="Douala, Cameroun" /></label>
+          <label class="f"><span>Lien (LinkedIn, site)</span><input data-bind="identite.lien" placeholder="linkedin.com/in/nom" /></label>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Profil</h2>
+        <label class="f"><span>Présentez-vous en 2 ou 3 phrases</span><textarea data-bind="resume" placeholder="Votre métier, vos années d'expérience, ce que vous apportez à l'employeur."></textarea></label>
+      </div>
+
+      <div class="card">
+        <h2>Expériences</h2>
+        <div id="list-experiences"></div>
+        <button type="button" class="link-btn" data-add="experiences">Ajouter une expérience</button>
+      </div>
+
+      <div class="card">
+        <h2>Formations</h2>
+        <div id="list-formations"></div>
+        <button type="button" class="link-btn" data-add="formations">Ajouter une formation</button>
+      </div>
+
+      <div class="card">
+        <h2>Compétences</h2>
+        <label class="f"><span>Séparées par des virgules</span><textarea data-bind="competences" placeholder="Excel, Vente, Gestion de stock"></textarea></label>
+      </div>
+
+      <div class="card">
+        <h2>Langues</h2>
+        <div id="list-langues"></div>
+        <button type="button" class="link-btn" data-add="langues">Ajouter une langue</button>
+      </div>
+
+      <div class="card">
+        <h2>Centres d'intérêt</h2>
+        <label class="f"><span>Facultatif</span><input data-bind="loisirs" placeholder="Lecture, football, bénévolat" /></label>
+      </div>
+    </section>
+
+    <section class="preview-pane" id="preview-pane">
+      <div class="toolbar" id="toolbar">
+        <div class="seg" aria-label="Modèle">
+          <button type="button" data-template="classique">Classique</button>
+          <button type="button" data-template="moderne">Moderne</button>
+          <button type="button" data-template="sobre">Sobre</button>
+        </div>
+        <div class="seg" aria-label="Langue du CV">
+          <button type="button" data-lang="fr">FR</button>
+          <button type="button" data-lang="en">EN</button>
+        </div>
+        <div class="sw" aria-label="Couleur">
+          <button type="button" data-accent="#14213D" style="background:#14213D" aria-label="Bleu nuit"></button>
+          <button type="button" data-accent="#0B7A4B" style="background:#0B7A4B" aria-label="Vert"></button>
+          <button type="button" data-accent="#B42318" style="background:#B42318" aria-label="Rouge"></button>
+          <button type="button" data-accent="#6B3FA0" style="background:#6B3FA0" aria-label="Violet"></button>
+          <button type="button" data-accent="#1F2933" style="background:#1F2933" aria-label="Anthracite"></button>
+        </div>
+        <p class="warn" id="pagewarn" hidden>Votre CV dépasse une page. Raccourcissez les missions ou supprimez une rubrique.</p>
+      </div>
+      <div class="stage" id="stage">
+        <div class="cv-wrap" id="cv-wrap"><div class="cv" id="cv"></div></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="sticky-cta">
+    <button type="button" class="primary" id="btn-pdf">Télécharger en PDF</button>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
