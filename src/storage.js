@@ -13,7 +13,7 @@ export function save(state) {
   try {
     localStorage.setItem(KEY, JSON.stringify(state));
   } catch {
-    /* stockage plein ou bloqué */
+    /* stockage plein ou bloqué : on continue sans sauvegarde */
   }
 }
 
