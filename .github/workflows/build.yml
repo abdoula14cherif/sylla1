@@ -1,21 +1,12 @@
-name: Build Digiform
+name: Build APK
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
-
 jobs:
-  build:
+  apk:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,30 +15,30 @@ jobs:
         with:
           node-version: 20
 
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
       - name: Installer les dépendances
         run: npm install
 
-      - name: Compiler
+      - name: Compiler le site
         run: npm run build
 
-      - name: Garder le site compilé
+      - name: Créer le projet Android
+        run: |
+          npx cap add android
+          npx cap sync android
+
+      - name: Compiler l'APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Garder l'APK
         uses: actions/upload-artifact@v4
         with:
-          name: digiform-site
-          path: dist
-
-      - name: Préparer GitHub Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          name: digiform-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
