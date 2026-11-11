@@ -1,0 +1,53 @@
+/* ---------- Nouveaux modèles de CV ---------- */
+.seg.wrap { flex-wrap: wrap; }
+
+.tpl-bandeau { padding: 0 0 48px; font-family: 'Plus Jakarta Sans', system-ui, 'Segoe UI', Arial, sans-serif; }
+.tpl-bandeau .head { display: flex; align-items: center; gap: 22px; padding: 40px 52px; margin-bottom: 26px; background: var(--accent); color: #fff; }
+.tpl-bandeau .head h1 { color: #fff; }
+.tpl-bandeau .head .title { margin-top: 4px; font-size: 16px; opacity: 0.92; }
+.tpl-bandeau .head .contactline { color: rgba(255, 255, 255, 0.92); }
+.tpl-bandeau .head .photo { border: 3px solid rgba(255, 255, 255, 0.7); }
+.tpl-bandeau .blk { padding: 0 52px; }
+
+.tpl-chrono { padding: 48px 52px; font-family: 'Plus Jakarta Sans', system-ui, 'Segoe UI', Arial, sans-serif; }
+.tpl-chrono .head { display: flex; align-items: center; gap: 22px; margin-bottom: 26px; }
+.tpl-chrono h1 { color: var(--accent); }
+.tpl-chrono .title { margin-top: 4px; font-size: 16px; color: #3a4458; }
+.tpl-chrono h2 { border-bottom: 0; font-size: 16px; }
+.tpl-chrono .item { position: relative; margin-left: 5px; padding-left: 18px; border-left: 2px solid var(--accent); }
+.tpl-chrono .item::before { content: ''; position: absolute; left: -6px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+
+/* ---------- Fenêtre premium et message ---------- */
+.modal { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 20px; background: rgba(20, 33, 61, 0.55); }
+.modal-box { width: 100%; max-width: 380px; padding: 20px; border-radius: 14px; background: #fff; }
+.modal-box h3 { margin: 0 0 8px; font-size: 18px; }
+.modal-box p { margin: 0; line-height: 1.5; color: var(--ink-2); }
+.modal-box .primary { margin: 16px 0 6px; text-align: center; text-decoration: none; }
+.toast { position: fixed; left: 50%; bottom: 84px; z-index: 90; transform: translateX(-50%); max-width: 90vw; padding: 10px 16px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 14px; text-align: center; }
+
+/* ---------- Lettres et emails ---------- */
+.overlay { position: fixed; inset: 0; z-index: 60; display: flex; flex-direction: column; background: var(--desk); }
+.ov-top { display: flex; flex: none; align-items: center; gap: 12px; height: 48px; padding: 0 14px; background: var(--ink); color: #fff; }
+.ov-body { flex: 1; width: 100%; max-width: 760px; margin: 0 auto; padding: 14px 14px 48px; overflow: auto; }
+.chips-row { display: flex; gap: 8px; margin-bottom: 8px; padding-bottom: 8px; overflow-x: auto; }
+.chip { flex: none; padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; background: #fff; font-size: 14px; cursor: pointer; }
+.chip.on { border-color: var(--ink); background: var(--ink); color: #fff; }
+.ltr-items { display: grid; gap: 8px; }
+.ltr-item { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: #fff; font-weight: 600; text-align: left; cursor: pointer; }
+.ltr-item em { font-size: 12px; font-style: normal; font-weight: 600; white-space: nowrap; color: var(--ink-2); }
+.ltr-actions { display: grid; gap: 8px; margin: 12px 0; }
+.btn2 { padding: 12px; border: 1px solid var(--ink); border-radius: 10px; background: #fff; color: var(--ink); font-weight: 700; cursor: pointer; }
+.letter-paper { padding: 28px 24px; border-radius: 6px; background: #fff; box-shadow: 0 4px 20px rgba(20, 33, 61, 0.15); font-family: Georgia, 'Times New Roman', serif; font-size: 15px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.letter-paper mark { padding: 0 2px; border-radius: 3px; background: #fff0c2; color: inherit; }
+
+@media print {
+  body[data-print='letter'] > *:not(#letters) { display: none !important; }
+  body[data-print='letter'] #letters { position: static; display: block; background: #fff; }
+  body[data-print='letter'] .ov-top,
+  body[data-print='letter'] #ltr-list,
+  body[data-print='letter'] #ltr-detail .card,
+  body[data-print='letter'] .ltr-actions { display: none !important; }
+  body[data-print='letter'] .ov-body { max-width: none; padding: 0; overflow: visible; }
+  body[data-print='letter'] .letter-paper { padding: 25mm 22mm; box-shadow: none; font-size: 12pt; }
+  body[data-print='letter'] .letter-paper mark { background: none; }
+}
