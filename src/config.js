@@ -3,6 +3,9 @@ export const CONFIG = {
   // (le dépôt doit être public ; sans internet, l'app garde les réglages d'origine)
   premiumUrl: 'https://raw.githubusercontent.com/abdoula14cherif/sylla1/main/premium.json',
 
+  // Page GitHub où l'admin colle le nouveau premium.json
+  adminEditUrl: 'https://github.com/abdoula14cherif/sylla1/edit/main/premium.json',
+
   // Numéro WhatsApp de l'admin, format international sans le + (ex. 2376XXXXXXXX)
   adminWhatsapp: '237600000000',
 
