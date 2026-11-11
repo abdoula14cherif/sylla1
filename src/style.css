@@ -14,6 +14,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 :focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
 [hidden] { display: none !important; }
 
+/* ----- Barre du haut ----- */
 .top { display: flex; justify-content: space-between; align-items: center; height: 48px; padding: 0 14px; background: var(--ink); color: #fff; position: sticky; top: 0; z-index: 20; }
 .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; letter-spacing: -0.01em; }
 .mark { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--amber); color: var(--ink); }
@@ -24,10 +25,12 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .tabs button { flex: 1; padding: 12px; border: 0; background: none; font-weight: 600; color: var(--ink-2); border-bottom: 3px solid transparent; cursor: pointer; }
 .tabs button.on { color: var(--ink); border-bottom-color: var(--amber); }
 
+/* ----- Mise en page mobile : un volet à la fois ----- */
 .layout { max-width: 1240px; margin: 0 auto; }
 .layout[data-tab='edit'] .preview-pane { display: none; }
 .layout[data-tab='preview'] .editor { display: none; }
 
+/* ----- Formulaire ----- */
 .editor { padding: 14px 14px 96px; }
 .card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
 .card h2 { margin: 0 0 10px; font-size: 16px; }
@@ -42,6 +45,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .photo-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
 .photo-prev { width: 64px; height: 64px; border-radius: 50%; background: var(--desk) center / cover no-repeat; border: 1px solid var(--line); flex: none; }
 
+/* ----- Aperçu ----- */
 .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 12px 14px; background: #fff; border-bottom: 1px solid var(--line); }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
 .seg button { border: 0; background: #fff; padding: 8px 12px; font-size: 14px; cursor: pointer; }
@@ -58,6 +62,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .primary { display: block; width: 100%; max-width: 520px; margin: 0 auto; padding: 14px; border: 0; border-radius: 10px; background: var(--ink); color: #fff; font-weight: 800; font-size: 16px; cursor: pointer; }
 .primary:active { transform: translateY(1px); }
 
+/* ----- Bureau : deux colonnes ----- */
 @media (min-width: 960px) {
   .tabs { display: none; }
   .layout { display: grid; grid-template-columns: minmax(380px, 460px) 1fr; align-items: start; }
@@ -65,6 +70,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .preview-pane { position: sticky; top: 48px; max-height: calc(100vh - 48px - 66px); overflow: auto; }
 }
 
+/* ================= Le CV (feuille A4) ================= */
 .cv { -webkit-print-color-adjust: exact; print-color-adjust: exact; color: #1c2433; font-size: 13px; line-height: 1.5; --accent: #14213d; }
 .cv h1 { margin: 0; font-size: 32px; line-height: 1.1; }
 .cv h2 { margin: 0 0 10px; padding-bottom: 4px; font-size: 15px; font-weight: 700; color: var(--accent); border-bottom: 2px solid var(--accent); }
@@ -87,11 +93,13 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .cv .contactline { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 8px; color: #3a4458; }
 .cv.wm::after { content: 'Créé avec Digiform'; position: absolute; inset: 0; display: grid; place-items: center; font-size: 64px; font-weight: 800; color: rgba(20, 33, 61, 0.08); transform: rotate(-30deg); pointer-events: none; }
 
+/* Classique : serif, titre souligné */
 .tpl-classique { padding: 48px 52px; font-family: Georgia, 'Times New Roman', serif; }
 .tpl-classique .head { display: flex; align-items: center; gap: 22px; padding-bottom: 18px; margin-bottom: 20px; border-bottom: 3px solid var(--accent); }
 .tpl-classique h1 { color: var(--accent); }
 .tpl-classique .title { margin-top: 4px; font-size: 17px; }
 
+/* Moderne : colonne colorée à gauche */
 .tpl-moderne { display: grid; grid-template-columns: 250px 1fr; font-family: 'Plus Jakarta Sans', system-ui, 'Segoe UI', Arial, sans-serif; }
 .tpl-moderne .side { padding: 40px 24px; background: var(--accent); color: #fff; }
 .tpl-moderne .side h2 { color: #fff; border-bottom-color: rgba(255, 255, 255, 0.45); }
@@ -103,6 +111,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .tpl-moderne h1 { font-size: 34px; color: var(--accent); }
 .tpl-moderne .title { margin: 4px 0 24px; font-size: 16px; color: #3a4458; }
 
+/* Sobre : centré, très épuré */
 .tpl-sobre { padding: 54px 60px; font-family: 'Plus Jakarta Sans', system-ui, 'Segoe UI', Arial, sans-serif; }
 .tpl-sobre .head { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 28px; text-align: center; }
 .tpl-sobre h1 { font-weight: 300; letter-spacing: 0.02em; }
@@ -110,6 +119,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .tpl-sobre .contactline { justify-content: center; }
 .tpl-sobre h2 { color: #1c2433; border-bottom: 1px solid #c9cfda; }
 
+/* ================= Impression / PDF ================= */
 @page { size: A4; margin: 0; }
 @media print {
   html, body { background: #fff; }
