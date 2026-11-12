@@ -3,6 +3,7 @@ import { LAYOUTS, PROFILES, LETTERS } from './catalog.js';
 import { DOCS } from './docs-data.js';
 import { INVOICE_STYLES } from './invoice-core.js';
 import { CARD_DESIGNS } from './card-core.js';
+import { AFFICHE_DESIGNS } from './affiche-core.js';
 import { esc } from './cv.js';
 import { logoSVG } from './logo.js';
 import { copyText } from './native.js';
@@ -29,13 +30,13 @@ const ROOMS = [
   { id: 'lettres', salle: 'salle-lettres', titre: 'Lettres et emails', icon: 'mail', tone: 'teal', desc: () => `${LETTERS.length} modèles à remplir` },
   { id: 'documents', salle: 'salle-documents', titre: 'Contrats et reçus', icon: 'doc', tone: 'slate', desc: () => `${DOCS.length} modèles prêts à signer` },
   { id: 'factures', salle: 'salle-factures', titre: 'Factures et devis', icon: 'receipt', tone: 'gold', desc: () => 'Total en lettres, partage WhatsApp' },
-  { id: 'affiches', titre: 'Affiches', icon: 'image', soon: true, desc: 'Flyers et visuels pour vos ventes' },
+  { id: 'affiches', salle: 'salle-affiches', titre: 'Affiches', icon: 'image', tone: 'orange', desc: () => `${AFFICHE_DESIGNS.length} modèles : A4, statut WhatsApp, carré` },
   { id: 'posts', titre: 'Posts avec IA', icon: 'spark', soon: true, desc: 'Une semaine de publications en un clic' },
   { id: 'carte', salle: 'salle-carte', titre: 'Carte de visite', icon: 'card', tone: 'rose', desc: () => `${CARD_DESIGNS.length} modèles, QR code et contact en un scan` },
   { id: 'suivi', salle: 'salle-suivi', titre: 'Suivi des candidatures', icon: 'list', tone: 'indigo', desc: () => 'Relances et réponses au même endroit' },
 ];
 const descOf = (r) => (typeof r.desc === 'function' ? r.desc() : r.desc);
-const TOTAL_MODELS = LAYOUTS.length + PROFILES.length + LETTERS.length + DOCS.length + INVOICE_STYLES.length + CARD_DESIGNS.length;
+const TOTAL_MODELS = LAYOUTS.length + PROFILES.length + LETTERS.length + DOCS.length + INVOICE_STYLES.length + CARD_DESIGNS.length + AFFICHE_DESIGNS.length;
 
 /* ---------- Groupes de l'écran admin ---------- */
 const adminGroups = () => [
@@ -46,6 +47,7 @@ const adminGroups = () => [
   { titre: 'Contrats et reçus', items: DOCS.map((x) => ({ id: x.id, nom: x.titre })) },
   { titre: 'Factures : styles', items: INVOICE_STYLES.map((x) => ({ id: x.id, nom: x.nom })) },
   { titre: 'Carte de visite : modèles', items: CARD_DESIGNS.map((x) => ({ id: x.id, nom: x.nom })) },
+  { titre: 'Affiches : modèles', items: AFFICHE_DESIGNS.map((x) => ({ id: x.id, nom: x.nom })) },
 ];
 
 export function initHub({ modules, getCvHint }) {
