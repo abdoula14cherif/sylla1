@@ -7,6 +7,10 @@ export const LAYOUTS = [
   { id: 'sobre', nom: 'Sobre', premium: false },
   { id: 'bandeau', nom: 'Bandeau', premium: true },
   { id: 'chrono', nom: 'Chrono', premium: true },
+  { id: 'lateral', nom: 'Latéral', premium: false },
+  { id: 'duo', nom: 'Duo', premium: false },
+  { id: 'elegant', nom: 'Élégant', premium: false },
+  { id: 'creatif', nom: 'Créatif', premium: false },
 ];
 
 const exp = (poste, entreprise, desc) => ({ poste, entreprise, debut: '[Début]', fin: '', desc });
