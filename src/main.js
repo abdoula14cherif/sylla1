@@ -1,5 +1,6 @@
 import './style.css';
-import { renderCV, esc, WATERMARK } from './cv.js';
+import { renderCV, esc, applyDesign } from './cv.js';
+import { PAGES } from './design.js';
 import { LEVELS } from './i18n.js';
 import { emptyState, sampleState, EMPTY_ITEMS } from './sample.js';
 import { load, save, clear } from './storage.js';
@@ -11,7 +12,7 @@ const $$ = (sel) => [...document.querySelectorAll(sel)];
 function fresh() {
   const base = emptyState();
   const saved = load() || {};
-  return { ...base, ...saved, identite: { ...base.identite, ...(saved.identite || {}) } };
+  return { ...base, ...saved, identite: { ...base.identite, ...(saved.identite || {}) }, sections: { ...base.sections, ...(saved.sections || {}) } };
 }
 
 let state = fresh();
@@ -82,26 +83,24 @@ function renderLists() {
 }
 
 /* ---------- Aperçu : affichage et mise à l'échelle ---------- */
-const PAGE_W = 794; // A4 à 96 dpi
-const PAGE_H = 1123;
-
 function fit() {
   const stage = $('#stage');
   const avail = stage.clientWidth - 24;
   if (avail <= 0) return; // onglet masqué
-  const s = Math.min(1, avail / PAGE_W);
   const cv = $('#cv');
-  const wrap = $('#cv-wrap');
+  const w = cv.offsetWidth || 794;
+  const s = Math.min(1, avail / w);
   cv.style.transform = `scale(${s})`;
-  wrap.style.width = `${PAGE_W * s}px`;
+  const wrap = $('#cv-wrap');
+  wrap.style.width = `${w * s}px`;
   wrap.style.height = `${cv.offsetHeight * s}px`;
-  $('#pagewarn').hidden = cv.offsetHeight <= PAGE_H + 7;
+  const page = PAGES[state.format] || PAGES.A4;
+  $('#pagewarn').hidden = cv.offsetHeight <= page.h + 7;
 }
 
 function update() {
   const cv = $('#cv');
-  cv.className = `cv tpl-${state.template}${WATERMARK ? ' wm' : ''}`;
-  cv.style.setProperty('--accent', state.accent);
+  applyDesign(cv, state);
   cv.innerHTML = renderCV(state);
   fit();
   clearTimeout(saveTimer);
@@ -222,20 +221,8 @@ $('#btn-reset').addEventListener('click', () => {
   syncForm();
 });
 
-/* Téléchargement : on utilise l'impression du navigateur ("Enregistrer au format PDF") */
-let previousTitle = document.title;
-$('#btn-pdf').addEventListener('click', () => {
-  previousTitle = document.title;
-  const n = (state.identite.nom || '').trim().replace(/\s+/g, '-');
-  document.title = n ? `CV-${n}` : 'CV';
-  window.print();
-});
-window.addEventListener('afterprint', () => {
-  document.title = previousTitle;
-});
-
 new ResizeObserver(fit).observe($('#stage'));
 window.addEventListener('resize', fit);
 
 syncForm();
-initExtras({ getState: () => state, syncForm, syncToolbar });
+initExtras({ getState: () => state, syncForm, syncToolbar, update });
