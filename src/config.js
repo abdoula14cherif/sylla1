@@ -9,6 +9,9 @@ export const CONFIG = {
   // Numéro WhatsApp de l'admin, format international sans le + (ex. 2376XXXXXXXX)
   adminWhatsapp: '237600000000',
 
+  // Indicatif par défaut pour les numéros saisis sans « + » (237 = Cameroun)
+  countryCode: '237',
+
   // true = tout est débloqué (pratique pour tester)
   unlockAll: false,
 };
