@@ -20,6 +20,7 @@ const ICONS = {
   image: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5-5 4 4 3-3 4 4"/>',
   spark: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/>',
   card: '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6.5 16c.4-1.6 4.6-1.6 5 0M14 10h4M14 13h3"/>',
+  stamp: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.6"/><path d="M9.6 12h4.8"/>',
   list: '<path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/>',
 };
 const icon = (n) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]}</svg>`;
@@ -30,6 +31,7 @@ const ROOMS = [
   { id: 'lettres', salle: 'salle-lettres', titre: 'Lettres et emails', icon: 'mail', tone: 'teal', desc: () => `${LETTERS.length} modèles à remplir` },
   { id: 'documents', salle: 'salle-documents', titre: 'Contrats et reçus', icon: 'doc', tone: 'slate', desc: () => `${DOCS.length} modèles prêts à signer` },
   { id: 'factures', salle: 'salle-factures', titre: 'Factures et devis', icon: 'receipt', tone: 'gold', desc: () => 'Total en lettres, partage WhatsApp' },
+  { id: 'cachet', salle: 'salle-cachet', titre: 'Cachet et signature', icon: 'stamp', tone: 'violet', desc: () => 'Créez votre cachet, signez à l’écran' },
   { id: 'affiches', salle: 'salle-affiches', titre: 'Affiches', icon: 'image', tone: 'orange', desc: () => `${AFFICHE_DESIGNS.length} modèles : A4, statut WhatsApp, carré` },
   { id: 'posts', titre: 'Posts avec IA', icon: 'spark', soon: true, desc: 'Une semaine de publications en un clic' },
   { id: 'carte', salle: 'salle-carte', titre: 'Carte de visite', icon: 'card', tone: 'rose', desc: () => `${CARD_DESIGNS.length} modèles, QR code et contact en un scan` },
