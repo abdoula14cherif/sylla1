@@ -24,6 +24,12 @@ export const CARD_DESIGNS = [
   { id: 'carte-bandeau', nom: 'Bandeau' },
   { id: 'carte-geometrique', nom: 'Géométrie' },
   { id: 'carte-elegant', nom: 'Élégant' },
+  { id: 'carte-luxe', nom: 'Luxe' },
+  { id: 'carte-vague', nom: 'Vague' },
+  { id: 'carte-pagne', nom: 'Pagne' },
+  { id: 'carte-neon', nom: 'Néon' },
+  { id: 'carte-portrait', nom: 'Portrait' },
+  { id: 'carte-pastilles', nom: 'Pastilles' },
 ];
 
 export const CARD_COLORS = [
@@ -403,6 +409,70 @@ function pic(c, img, d, cx, cy, r, { ring = null, needs = false, accent = INK } 
 
 const caps = (s) => String(s).toUpperCase();
 
+/* ---------- Motifs partagés par les nouveaux modèles ---------- */
+function glow(c, x, y, r, color, alpha) {
+  const [R, G, B] = hexRgb(color);
+  const g = c.createRadialGradient(x, y, 0, x, y, r);
+  g.addColorStop(0, `rgba(${R},${G},${B},${alpha})`);
+  g.addColorStop(1, `rgba(${R},${G},${B},0)`);
+  c.fillStyle = g;
+  c.fillRect(0, 0, W, H);
+}
+
+// Coins en équerre
+function corners(c, inset, len, color, w) {
+  c.save();
+  c.strokeStyle = color;
+  c.lineWidth = w;
+  c.lineCap = 'square';
+  [[inset, inset, 1, 1], [W - inset, inset, -1, 1], [inset, H - inset, 1, -1], [W - inset, H - inset, -1, -1]].forEach(([x, y, sx, sy]) => {
+    c.beginPath();
+    c.moveTo(x + sx * len, y);
+    c.lineTo(x, y);
+    c.lineTo(x, y + sy * len);
+    c.stroke();
+  });
+  c.restore();
+}
+
+// Motif inspiré des tissus wax : cercles concentriques en quinconce
+function wax(c, x, y, w, h, a) {
+  const s = 60;
+  const dark = mix(a, '#000000', 0.35);
+  const light = mix(a, '#ffffff', 0.82);
+  c.save();
+  c.beginPath();
+  c.rect(x, y, w, h);
+  c.clip();
+  rect(c, x, y, w, h, a);
+  for (let row = 0; row * s < h + s; row += 1) {
+    for (let col = -1; col * s < w + s; col += 1) {
+      const cx = x + col * s + (row % 2 ? s / 2 : 0) + s / 2;
+      const cy = y + row * s + s / 2;
+      circle(c, cx, cy, 26, '#f2a900');
+      circle(c, cx, cy, 19, dark);
+      circle(c, cx, cy, 12, light);
+      circle(c, cx, cy, 5, '#f2a900');
+    }
+  }
+  c.restore();
+}
+
+// Vague pleine en bas de la carte
+function wave(c, y0, k, fill) {
+  c.beginPath();
+  c.moveTo(0, y0 + 45);
+  c.bezierCurveTo(250, y0 - 20 + k, 450, y0 + 140 - k, 700, y0 + 60);
+  c.bezierCurveTo(850, y0 + 5, 950, y0 + 30, W, y0 - 30);
+  c.lineTo(W, H);
+  c.lineTo(0, H);
+  c.closePath();
+  c.fillStyle = fill;
+  c.fill();
+}
+
+const goldOf = (a) => (lum(a) > 0.3 ? a : '#d4af37');
+
 /* =====================================================
    Les 8 modèles (recto)
    ===================================================== */
@@ -565,6 +635,189 @@ const DESIGNS = {
     centerLines(c, contactLines(d), W / 2, ny + 138, { size: 24, gap: 44, color: '#3a4458', maxW: 820 });
     if (d.entreprise.trim()) txt(c, caps(d.entreprise.trim()), W / 2, 530, { size: 20, weight: '700', color: ac, align: 'center', spacing: 4, maxW: 760 });
   },
+
+  /* ----- Nouveaux modèles ----- */
+
+  // Noir et or, cadre à coins
+  'carte-luxe'(c, d, img, a) {
+    const gold = goldOf(a);
+    rect(c, 0, 0, W, H, '#0b0b0f');
+    const sh = c.createLinearGradient(0, 0, W, H);
+    sh.addColorStop(0, 'rgba(255,255,255,0.07)');
+    sh.addColorStop(1, 'rgba(255,255,255,0)');
+    c.fillStyle = sh;
+    c.fillRect(0, 0, W, H);
+    c.save();
+    c.strokeStyle = gold;
+    c.globalAlpha = 0.55;
+    c.lineWidth = 1.6;
+    c.strokeRect(30, 30, W - 60, H - 60);
+    c.restore();
+    corners(c, 30, 48, gold, 5);
+    pic(c, img, d, 885, 205, 86, { ring: gold, needs: true, accent: gold });
+    txt(c, d.nom.trim() || 'Votre nom', 100, 200, { size: 58, fam: SERIF, weight: '700', color: '#fff', maxW: 660 });
+    if (d.titre.trim()) txt(c, d.titre.trim(), 100, 250, { size: 29, fam: SERIF, weight: '400', italic: true, color: gold, maxW: 660 });
+    if (d.entreprise.trim()) txt(c, caps(d.entreprise.trim()), 100, 300, { size: 21, weight: '700', color: '#fff', alpha: 0.6, spacing: 4, maxW: 660 });
+    rect(c, 100, 326, 160, 2, gold);
+    const items = contactLines(d);
+    const o = { size: 26, gap: 56, color: '#ece7d8', iconColor: gold };
+    if (items.length > 3) {
+      lines(c, items.slice(0, 3), 100, 392, { ...o, maxW: 400 });
+      lines(c, items.slice(3), 540, 392, { ...o, maxW: 400 });
+    } else lines(c, items, 100, 392, { ...o, maxW: 640 });
+    if (d.slogan.trim()) txt(c, d.slogan.trim(), 955, 556, { size: 22, fam: SERIF, weight: '400', italic: true, color: gold, alpha: 0.85, align: 'right', maxW: 380 });
+  },
+
+  // Vagues en bas, coordonnées sur la couleur
+  'carte-vague'(c, d, img, a) {
+    const fg = onColor(a);
+    const ac = inkOn(a);
+    rect(c, 0, 0, W, H, '#fff');
+    const has = pic(c, img, d, 905, 130, 72);
+    txt(c, d.nom.trim() || 'Votre nom', 70, 140, { size: 58, weight: '800', color: INK, maxW: has ? 730 : 900 });
+    if (d.titre.trim()) txt(c, d.titre.trim(), 70, 192, { size: 30, weight: '600', color: ac, maxW: has ? 730 : 900 });
+    if (d.entreprise.trim()) txt(c, caps(d.entreprise.trim()), 70, 238, { size: 22, weight: '700', color: '#5b6475', spacing: 3, maxW: 700 });
+    wave(c, 285, 0, mix(a, '#ffffff', 0.55));
+    wave(c, 330, 0, a);
+    const items = contactLines(d);
+    const o = { size: 26, gap: 50, color: fg, iconColor: fg };
+    if (items.length > 3) {
+      lines(c, items.slice(0, 3), 70, 472, { ...o, maxW: 430 });
+      lines(c, items.slice(3), 540, 472, { ...o, maxW: 440 });
+    } else lines(c, items, 70, 472, { ...o, maxW: 700 });
+  },
+
+  // Bande de motif wax à gauche
+  'carte-pagne'(c, d, img, a) {
+    const ac = inkOn(a);
+    rect(c, 0, 0, W, H, '#fff');
+    wax(c, 0, 0, 300, H, a);
+    circle(c, 150, 300, 122, '#fff');
+    circle(c, 150, 300, 114, '#fff');
+    c.save();
+    c.strokeStyle = '#f2a900';
+    c.lineWidth = 5;
+    c.beginPath();
+    c.arc(150, 300, 122, 0, Math.PI * 2);
+    c.stroke();
+    c.restore();
+    pic(c, img, d, 150, 300, 100, { needs: true, accent: a });
+    txt(c, d.nom.trim() || 'Votre nom', 360, 160, { size: 54, weight: '800', color: INK, maxW: 640 });
+    if (d.titre.trim()) txt(c, d.titre.trim(), 360, 210, { size: 29, weight: '600', color: ac, maxW: 640 });
+    if (d.entreprise.trim()) txt(c, caps(d.entreprise.trim()), 360, 254, { size: 21, weight: '700', color: '#5b6475', spacing: 3, maxW: 640 });
+    rect(c, 360, 280, 90, 5, '#f2a900');
+    lines(c, contactLines(d), 360, 335, { size: 26, gap: 48, maxH: 246, maxW: 640, iconColor: ac });
+    if (d.slogan.trim()) txt(c, d.slogan.trim(), 1000, 566, { size: 22, weight: '500', italic: true, color: '#5b6475', align: 'right', maxW: 620 });
+  },
+
+  // Fond nuit, halos et contour dégradé
+  'carte-neon'(c, d, img, a) {
+    const t = lift(a);
+    const t2 = '#22d3ee';
+    rect(c, 0, 0, W, H, '#070a1a');
+    glow(c, 960, 40, 460, t, 0.5);
+    glow(c, 40, 620, 420, t2, 0.26);
+    const gb = c.createLinearGradient(0, 0, W, H);
+    gb.addColorStop(0, t);
+    gb.addColorStop(1, t2);
+    c.save();
+    c.strokeStyle = gb;
+    c.lineWidth = 3;
+    rpath(c, 24, 24, W - 48, H - 48, 30);
+    c.stroke();
+    c.restore();
+    pic(c, img, d, 885, 180, 90, { ring: t, needs: true, accent: t });
+    const tg = c.createLinearGradient(70, 0, 520, 0);
+    tg.addColorStop(0, t);
+    tg.addColorStop(1, t2);
+    txt(c, d.nom.trim() || 'Votre nom', 70, 190, { size: 58, weight: '800', color: '#fff', maxW: 660 });
+    if (d.titre.trim()) txt(c, d.titre.trim(), 70, 242, { size: 30, weight: '700', color: tg, maxW: 660 });
+    if (d.entreprise.trim()) txt(c, caps(d.entreprise.trim()), 70, 286, { size: 21, weight: '700', color: '#fff', alpha: 0.6, spacing: 4, maxW: 660 });
+    rect(c, 70, 312, 110, 5, tg);
+    const items = contactLines(d);
+    const o = { size: 26, gap: 54, color: '#e5ecff', iconColor: t2 };
+    if (items.length > 3) {
+      lines(c, items.slice(0, 3), 70, 378, { ...o, maxW: 420 });
+      lines(c, items.slice(3), 520, 378, { ...o, maxW: 420 });
+    } else lines(c, items, 70, 378, { ...o, maxW: 640 });
+    if (d.slogan.trim()) txt(c, d.slogan.trim(), 980, 556, { size: 22, weight: '500', italic: true, color: '#fff', alpha: 0.7, align: 'right', maxW: 340 });
+  },
+
+  // Grande photo pleine hauteur à gauche
+  'carte-portrait'(c, d, img, a) {
+    const ac = inkOn(a);
+    const fg = onColor(a);
+    const full = img && d.forme !== 'logo';
+    rect(c, 0, 0, W, H, '#fff');
+    c.save();
+    c.beginPath();
+    c.rect(0, 0, 400, H);
+    c.clip();
+    if (full) {
+      const k = Math.max(400 / img.width, H / img.height);
+      c.drawImage(img, (400 - img.width * k) / 2, (H - img.height * k) / 2, img.width * k, img.height * k);
+      const g = c.createLinearGradient(0, 330, 0, H);
+      g.addColorStop(0, 'rgba(0,0,0,0)');
+      g.addColorStop(1, 'rgba(0,0,0,0.7)');
+      c.fillStyle = g;
+      c.fillRect(0, 0, 400, H);
+    } else {
+      rect(c, 0, 0, 400, H, a);
+      c.globalAlpha = 0.12;
+      circle(c, 40, 80, 190, '#fff');
+      circle(c, 380, 600, 220, '#fff');
+      c.globalAlpha = 1;
+      if (img) pic(c, img, d, 200, 250, 110, { ring: '#fff', accent: a });
+      else txt(c, initials(d), 200, 340, { size: 190, weight: '800', color: fg, alpha: 0.9, align: 'center' });
+    }
+    c.restore();
+    if (d.entreprise.trim()) txt(c, d.entreprise.trim(), 200, 560, { size: 28, weight: '800', color: full || lum(a) < 0.45 ? '#fff' : INK, align: 'center', maxW: 340 });
+    rect(c, 400, 0, 10, H, a);
+    txt(c, d.nom.trim() || 'Votre nom', 465, 165, { size: 52, weight: '800', color: INK, maxW: 540 });
+    if (d.titre.trim()) txt(c, d.titre.trim(), 465, 214, { size: 28, weight: '600', color: ac, maxW: 540 });
+    rect(c, 465, 244, 80, 5, a);
+    lines(c, contactLines(d), 465, 312, { size: 26, gap: 50, maxH: 230, maxW: 540, iconColor: ac });
+    if (d.slogan.trim()) txt(c, d.slogan.trim(), 1000, 566, { size: 22, weight: '500', italic: true, color: '#5b6475', align: 'right', maxW: 530 });
+  },
+
+  // Icônes dans des pastilles, titre en étiquette
+  'carte-pastilles'(c, d, img, a) {
+    const ac = inkOn(a);
+    rect(c, 0, 0, W, H, '#fff');
+    rect(c, 0, 0, 18, H, a);
+    c.save();
+    c.globalAlpha = 0.2;
+    for (let r = 0; r < 7; r += 1) for (let k = 0; k < 12; k += 1) circle(c, 690 + k * 29, 38 + r * 29, 3.4, a);
+    c.restore();
+    const has = pic(c, img, d, 905, 140, 72, { ring: '#fff' });
+    txt(c, d.nom.trim() || 'Votre nom', 70, 135, { size: 58, weight: '800', color: INK, maxW: has ? 640 : 880 });
+    let ty = 170;
+    if (d.titre.trim()) {
+      c.save();
+      c.font = `700 24px ${FONT}`;
+      const w = Math.min(c.measureText(d.titre.trim()).width + 44, has ? 600 : 800);
+      c.restore();
+      rpath(c, 70, ty, w, 46, 23);
+      c.fillStyle = a;
+      c.fill();
+      txt(c, d.titre.trim(), 92, ty + 32, { size: 24, weight: '700', color: onColor(a), maxW: w - 44 });
+      ty += 46;
+    }
+    if (d.entreprise.trim()) txt(c, caps(d.entreprise.trim()), 70, ty + 50, { size: 22, weight: '700', color: '#5b6475', spacing: 3, maxW: 640 });
+    const items = contactLines(d);
+    items.forEach((it, i) => {
+      const col = items.length > 3 ? Math.floor(i / 3) : 0;
+      const row = items.length > 3 ? i % 3 : i;
+      const x = 70 + col * 480;
+      const cy = 352 + row * 78;
+      rpath(c, x, cy - 25, 50, 50, 15);
+      c.fillStyle = mix(a, '#ffffff', 0.88);
+      c.fill();
+      icon(c, it.icon, x + 12, cy - 13, 26, ac);
+      txt(c, it.text, x + 66, cy + 9, { size: 25, weight: '600', color: '#2b3550', maxW: col ? 405 : items.length > 3 ? 390 : 800 });
+    });
+    if (d.slogan.trim()) txt(c, d.slogan.trim(), 980, 572, { size: 22, weight: '500', italic: true, color: '#5b6475', align: 'right', maxW: 600 });
+  },
 };
 
 /* =====================================================
@@ -579,6 +832,12 @@ const BACK = {
   'carte-bandeau': 'accent',
   'carte-geometrique': 'stripe',
   'carte-elegant': 'cream',
+  'carte-luxe': 'luxe',
+  'carte-vague': 'wave',
+  'carte-pagne': 'pagne',
+  'carte-neon': 'neon',
+  'carte-portrait': 'accent',
+  'carte-pastilles': 'light',
 };
 
 let qrCache = { text: null, m: null };
@@ -665,6 +924,50 @@ function drawBack(c, d, a0, theme) {
       poly(c, [[0, H - 150], [150, H], [0, H]], mix(a, '#ffffff', 0.45));
       plateLine = a;
       break;
+    case 'luxe': {
+      const gold = goldOf(a);
+      rect(c, 0, 0, W, H, '#0b0b0f');
+      c.save();
+      c.strokeStyle = gold;
+      c.globalAlpha = 0.55;
+      c.lineWidth = 1.6;
+      c.strokeRect(30, 30, W - 60, H - 60);
+      c.restore();
+      corners(c, 30, 48, gold, 5);
+      fg = '#fff';
+      tint = gold;
+      break;
+    }
+    case 'wave':
+      rect(c, 0, 0, W, H, a);
+      wave(c, 420, 0, 'rgba(255,255,255,0.09)');
+      wave(c, 470, 0, 'rgba(255,255,255,0.09)');
+      fg = onColor(a);
+      tint = fg;
+      break;
+    case 'pagne':
+      rect(c, 0, 0, W, H, '#fff');
+      wax(c, W - 120, 0, 120, H, a);
+      plateLine = a;
+      break;
+    case 'neon': {
+      const t = lift(a);
+      rect(c, 0, 0, W, H, '#070a1a');
+      glow(c, 980, 600, 460, t, 0.45);
+      glow(c, 40, 20, 380, '#22d3ee', 0.22);
+      const gb = c.createLinearGradient(0, 0, W, H);
+      gb.addColorStop(0, t);
+      gb.addColorStop(1, '#22d3ee');
+      c.save();
+      c.strokeStyle = gb;
+      c.lineWidth = 3;
+      rpath(c, 24, 24, W - 48, H - 48, 30);
+      c.stroke();
+      c.restore();
+      fg = '#fff';
+      tint = '#22d3ee';
+      break;
+    }
     case 'cream':
       rect(c, 0, 0, W, H, '#fbf6ea');
       c.save();
@@ -707,7 +1010,7 @@ function drawBack(c, d, a0, theme) {
 
   // Texte à droite
   const x = 535;
-  const mw = theme === 'stripe' ? 380 : 430;
+  const mw = theme === 'stripe' || theme === 'pagne' ? 370 : 430;
   const title = d.entreprise.trim() || d.nom.trim() || 'Votre nom';
   let y = para(c, title, x, 192, { size: 50, weight: '800', color: fg }, mw, 58, 2);
   const msg = d.versoTexte.trim() || d.slogan.trim();
