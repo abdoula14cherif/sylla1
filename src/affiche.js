@@ -74,7 +74,8 @@ export function createAfficheRoom({ onBack }) {
       <div class="card">
         <h2>Message</h2>
         ${input('Accroche (petite étiquette)', 'accroche', 'placeholder="Promotion"')}
-        ${input('Titre', 'titre', 'placeholder="Jusqu’à -50% sur toute la boutique"')}
+        ${input('Titre', 'titre', 'placeholder="Jusqu’à *-50%* sur toute la boutique"')}
+        <p class="hint">Astuce : mettez un mot entre étoiles, comme *-50%*, pour le faire ressortir en surbrillance.</p>
         ${input('Sous-titre', 'sousTitre', 'placeholder="Une semaine pour faire de bonnes affaires"')}
         <label class="f"><span>Points forts (un par ligne, 6 maximum)</span><textarea rows="4" data-f="points" placeholder="Livraison gratuite&#10;Paiement MoMo et Orange Money"></textarea></label>
       </div>
@@ -87,6 +88,14 @@ export function createAfficheRoom({ onBack }) {
         </div>
         ${input('Quand', 'quand', 'placeholder="Samedi 21 novembre à 10h"')}
         ${input('Où', 'lieu', 'placeholder="Akwa, Douala"')}
+      </div>
+
+      <div class="card">
+        <h2>Bouton et autocollant</h2>
+        ${input('Bouton d’action', 'bouton', 'placeholder="Commander maintenant"')}
+        ${input('Lien affiché (site, WhatsApp…)', 'lien', 'placeholder="www.monsite.com"')}
+        ${input('Autocollant en étoile', 'sticker', 'placeholder="-50% ou Livraison gratuite"')}
+        <p class="hint">Chacun est facultatif : laissez vide pour ne pas l’afficher.</p>
       </div>
 
       <div class="card">
@@ -170,7 +179,8 @@ export function createAfficheRoom({ onBack }) {
     const im = demoImgs();
     el.querySelectorAll('[data-design]').forEach((b) => {
       const cv = b.querySelector('canvas');
-      renderAffiche(cv, { ...d, design: b.dataset.design }, im, state.format);
+      const sg = AFFICHE_DESIGNS.find((x) => x.id === b.dataset.design);
+      renderAffiche(cv, { ...d, design: b.dataset.design, accent: state.accentTouched || !sg ? d.accent : sg.suggest }, im, state.format);
     });
   }
   function schedThumbs() {
@@ -323,6 +333,7 @@ export function createAfficheRoom({ onBack }) {
     const k = e.target.dataset.f;
     if (!k) return;
     state[k] = e.target.value;
+    if (k === 'accent') state.accentTouched = true;
     persist();
     if (k === 'accent') renderColors();
     draw();
@@ -351,6 +362,11 @@ export function createAfficheRoom({ onBack }) {
     const ds = t.closest('[data-design]');
     if (ds) {
       state.design = ds.dataset.design;
+      const sg = AFFICHE_DESIGNS.find((x) => x.id === state.design);
+      if (!state.accentTouched && sg) {
+        state.accent = sg.suggest;
+        renderColors();
+      }
       persist();
       el.querySelectorAll('.af-design').forEach((b) => b.classList.toggle('on', b === ds));
       return draw();
@@ -358,6 +374,7 @@ export function createAfficheRoom({ onBack }) {
     const ac = t.closest('button[data-accent]');
     if (ac) {
       state.accent = ac.dataset.accent;
+      state.accentTouched = true;
       persist();
       renderColors();
       draw();
@@ -367,7 +384,7 @@ export function createAfficheRoom({ onBack }) {
     if (th) {
       const theme = THEMES.find((x) => x.id === th.dataset.theme);
       if (!isEmptyAff(state) && !confirm('Remplacer vos textes par ceux de ce thème ?')) return;
-      Object.assign(state, theme.data, { design: theme.design, accent: theme.accent, theme: theme.id });
+      Object.assign(state, { bouton: '', lien: '', sticker: '' }, theme.data, { design: theme.design, accent: theme.accent, accentTouched: false, theme: theme.id });
       persist();
       syncAll();
       return toast(`Thème « ${theme.nom} » appliqué`);
