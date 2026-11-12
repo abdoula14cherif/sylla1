@@ -7,6 +7,7 @@ import { isNative } from './native.js';
 import { locked, showPremium, toast, loadRemote, onPremiumChange } from './premium.js';
 import { createTemplateRoom } from './room.js';
 import { createInvoiceRoom } from './invoices.js';
+import { createCardRoom } from './card.js';
 import { initHub } from './hub.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -108,6 +109,7 @@ export function initExtras(api) {
     lettres: createTemplateRoom({ id: 'lettres', title: 'Lettres et emails', items: LETTERS, cats: LETTER_CATS, sender: true, getIdentity, onBack }),
     documents: createTemplateRoom({ id: 'documents', title: 'Contrats et reçus', items: DOCS, cats: DOC_CATS, sender: false, note: DOC_NOTE, getIdentity, onBack }),
     factures: createInvoiceRoom({ onBack }),
+    carte: createCardRoom({ getIdentity, onBack }),
   };
 
   hub = initHub({
