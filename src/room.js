@@ -1,7 +1,9 @@
 import { esc } from './cv.js';
 import { SENDER, labelsOf, defaults, buildDoc, fillText } from './letters-core.js';
 import { locked, showPremium, toast } from './premium.js';
-import { shareText, copyText, isNative } from './native.js';
+import { copyText, isNative } from './native.js';
+import { exportDocument, printPage } from './pdf.js';
+import { PAGES } from './design.js';
 
 const build = (it, vals, html) => (it.format === 'doc' ? fillText(it.corps, vals, html) : buildDoc(it, vals, html));
 
@@ -17,10 +19,12 @@ export function createTemplateRoom({ id, title, items, cats, note = '', sender =
       <div data-r="detail" hidden>
         <div class="card"><h2 data-r="name"></h2><div data-r="fields"></div></div>
         ${note ? `<p class="doc-note">${esc(note)}</p>` : ''}
+        <p class="hint">Format de page</p>
+        <div class="seg" data-r="formats"></div>
         <div class="ltr-actions">
-          <button type="button" class="primary" data-act="copy">Copier le texte</button>
-          <button type="button" class="btn2" data-act="share">Partager</button>
-          <button type="button" class="btn2" data-act="print"${isNative ? ' hidden' : ''}>Imprimer ou PDF</button>
+          <button type="button" class="primary" data-act="pdf">${isNative ? 'Partager le PDF' : 'Télécharger le PDF'}</button>
+          <button type="button" class="btn2" data-act="copy">Copier le texte</button>
+          <button type="button" class="btn2" data-act="print"${isNative ? ' hidden' : ''}>Imprimer</button>
         </div>
         <div class="letter-paper" data-r="paper"></div>
       </div>
@@ -32,6 +36,12 @@ export function createTemplateRoom({ id, title, items, cats, note = '', sender =
   let cat = 'all';
   let cur = null;
   let vals = {};
+  let fmt = 'A4';
+  let busy = false;
+
+  const renderFormats = () => {
+    q('formats').innerHTML = ['A4', 'A5', 'Letter'].map((f) => `<button type="button" data-format="${f}"${fmt === f ? ' class="on"' : ''}>${PAGES[f].nom}</button>`).join('');
+  };
 
   function renderList() {
     const chips = [{ id: 'all', nom: 'Tous' }, ...cats]
@@ -71,6 +81,7 @@ export function createTemplateRoom({ id, title, items, cats, note = '', sender =
     q('list').hidden = true;
     q('detail').hidden = false;
     back.textContent = '← Liste';
+    renderFormats();
     renderPaper();
     el.querySelector('.ov-body').scrollTop = 0;
   }
@@ -91,6 +102,33 @@ export function createTemplateRoom({ id, title, items, cats, note = '', sender =
     return !!cur;
   };
 
+  async function exportPDF() {
+    if (busy || !gate()) return;
+    busy = true;
+    toast('Création du PDF…');
+    try {
+      const r = await exportDocument({
+        fmt,
+        filename: `${cur.titre}.pdf`.replace(/[^\w.-]+/g, '-'),
+        title: cur.titre,
+        build: (stage, page) => {
+          const d = document.createElement('div');
+          d.className = 'letter-paper pdf';
+          d.style.cssText = `width:${page.w}px;min-height:${page.h}px;padding:${Math.round(page.w * 0.1)}px ${Math.round(page.w * 0.09)}px;box-sizing:border-box;box-shadow:none;border-radius:0`;
+          d.innerHTML = build(cur, vals, true);
+          stage.appendChild(d);
+          return d;
+        },
+      });
+      if (r === 'downloaded') toast('PDF téléchargé');
+      if (r === 'failed') toast('Partage impossible');
+    } catch {
+      toast('Création du PDF impossible');
+    } finally {
+      busy = false;
+    }
+  }
+
   el.addEventListener('click', async (e) => {
     const c = e.target.closest('[data-cat]');
     if (c) {
@@ -100,22 +138,22 @@ export function createTemplateRoom({ id, title, items, cats, note = '', sender =
     }
     const it = e.target.closest('[data-id]');
     if (it) return openItem(items.find((x) => x.id === it.dataset.id));
+    const fm = e.target.closest('[data-format]');
+    if (fm) {
+      fmt = fm.dataset.format;
+      return renderFormats();
+    }
     const act = e.target.closest('[data-act]');
     if (!act) return;
     const a = act.dataset.act;
     if (a === 'back') return cur ? toList() : onBack();
+    if (a === 'pdf') return exportPDF();
     if (!gate()) return;
-    const text = build(cur, vals, false);
-    if (a === 'copy') toast((await copyText(text)) ? 'Texte copié' : 'Copie impossible');
-    if (a === 'share') {
-      const r = await shareText(cur.titre, text);
-      if (r === 'copied') toast('Texte copié');
-      if (r === 'failed') toast('Partage impossible');
-    }
+    if (a === 'copy') toast((await copyText(build(cur, vals, false))) ? 'Texte copié' : 'Copie impossible');
     if (a === 'print') {
       el.classList.add('printing');
       document.body.dataset.print = '1';
-      window.print();
+      printPage(fmt);
     }
   });
 
