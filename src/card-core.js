@@ -308,6 +308,8 @@ const ICON = {
   globe: 'M12 3a9 9 0 1 0 0 18a9 9 0 0 0 0-18z M3 12h18 M12 3c3 3 3 15 0 18 M12 3c-3 3-3 15 0 18',
   pin: 'M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z M12 7.5a2.5 2.5 0 1 0 0 5a2.5 2.5 0 0 0 0-5z',
   at: 'M16 12a4 4 0 1 1-8 0a4 4 0 0 1 8 0z M16 12v1.5a2.5 2.5 0 0 0 5 0V12a9 9 0 1 0-3.5 7.1',
+  check: 'M5 12.5l4.5 4.5L19 7',
+  calendar: 'M4 6h16v14H4z M4 10.5h16 M9 3v5 M15 3v5',
 };
 function icon(c, name, x, y, size, color) {
   c.save();
@@ -1037,3 +1039,6 @@ export function renderCard(canvas, data, img, face = 'recto') {
   else (DESIGNS[data.design] || DESIGNS['carte-moderne'])(c, data, img, a);
   c.restore();
 }
+
+// Primitives réutilisées par les affiches
+export { txt, wrapLines, para, rect, circle, rpath, poly, icon, wax, glow, onColor, inkOn, lift, lum, hexRgb, initials, caps, FONT, SERIF, INK };
