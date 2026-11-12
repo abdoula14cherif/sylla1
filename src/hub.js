@@ -61,8 +61,15 @@ export function initHub({ modules, getCvHint }) {
   const hour = new Date().getHours();
   home.innerHTML = `
     <header class="home-head">
+      <div class="beam" aria-hidden="true"></div>
+      <div class="flare" aria-hidden="true"></div>
+      <div class="reel" aria-hidden="true">
+        <div class="sheet s-cv"><i></i><b></b><u class="s"></u><u></u><u></u><u class="s"></u></div>
+        <div class="sheet s-inv"><b></b><u></u><u></u><u></u><em></em></div>
+        <div class="sheet s-card"><i></i><b></b><u class="s"></u></div>
+      </div>
       <div class="home-brand" id="home-brand">${logoSVG(36, true)}<span>Digiform</span></div>
-      <h1>${hour < 18 ? 'Bonjour' : 'Bonsoir'},<br>que voulez-vous créer ?</h1>
+      <h1><span class="ln"><span>${hour < 18 ? 'Bonjour,' : 'Bonsoir,'}</span></span><span class="ln"><span>que voulez-vous</span></span><span class="ln"><span>créer ?</span></span></h1>
       <p>Vos documents pro, prêts en quelques minutes.</p>
       <div class="home-chips"><span>${TOTAL_MODELS} modèles</span><span>Données sur votre téléphone</span></div>
     </header>
@@ -80,11 +87,37 @@ export function initHub({ modules, getCvHint }) {
       const lock = r.salle && locked(r.salle);
       const tag = r.soon ? '<span class="pill soon">Bientôt</span>' : lock ? '<span class="pill lock">Premium</span>' : '';
       return `<button type="button" class="rcard tone-${r.tone || 'soon'}${r.wide ? ' wide' : ''}${r.soon ? ' soon-card' : ''}" style="--i:${i}" data-room="${r.id}">
+        <span class="wm" aria-hidden="true">${icon(r.icon)}</span>
         <span class="ic">${icon(r.icon)}</span>
         <span class="ct"><strong>${esc(r.titre)}</strong><small>${esc(hintOf(r))}</small></span>${tag}
       </button>`;
     }).join('');
   }
+
+  /* Reflet lumineux qui suit le doigt ou la souris sur les affiches */
+  const grid = $('#home-grid');
+  grid.addEventListener('pointermove', (e) => {
+    const c = e.target.closest('.rcard');
+    if (!c) return;
+    const r = c.getBoundingClientRect();
+    c.style.setProperty('--mx', `${e.clientX - r.left}px`);
+    c.style.setProperty('--my', `${e.clientY - r.top}px`);
+    c.classList.add('lit');
+  });
+  grid.addEventListener('pointerout', (e) => {
+    const c = e.target.closest('.rcard');
+    if (c) c.classList.remove('lit');
+  });
+  /* Le faisceau oscille et les documents montent doucement quand on fait défiler */
+  home.addEventListener(
+    'scroll',
+    () => {
+      const y = home.scrollTop;
+      home.style.setProperty('--sy', String(y));
+      home.querySelector('.beam').style.setProperty('--sway', `${Math.min(y / 40, 8)}deg`);
+    },
+    { passive: true }
+  );
 
   $('#home-grid').addEventListener('click', (e) => {
     const b = e.target.closest('[data-room]');
