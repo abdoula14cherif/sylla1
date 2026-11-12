@@ -102,6 +102,7 @@ body[data-room='cv'] .layout { animation: fadeUp 0.35s var(--ease); }
 .tone-gold { --tone: #b7791f; --tone-bg: #fbf1dc; --tone-line: #ebd39b; }
 .tone-rose { --tone: #be185d; --tone-bg: #fdeaf2; --tone-line: #f4c3d8; }
 .tone-indigo { --tone: #4338ca; --tone-bg: #ebebfd; --tone-line: #c7c8f3; }
+.tone-orange { --tone: #c2410c; --tone-bg: #fff0e4; --tone-line: #f6cba8; }
 .rcard.wide { grid-column: 1 / -1; flex-direction: row; align-items: center; min-height: 0; gap: 16px; padding: 18px; }
 .rcard.wide .ic { width: 54px; height: 54px; border-radius: 18px; }
 .rcard.wide strong { font-size: 19px; }
@@ -177,6 +178,14 @@ body[data-room='cv'] .layout { animation: fadeUp 0.35s var(--ease); }
 .hint { margin: 10px 0 6px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
 .card-sheet { display: none; }
 
+/* ---------- Affiches ---------- */
+.af-canvas { display: block; width: auto; height: auto; max-width: 100%; max-height: 44vh; margin: 0 auto; border-radius: 10px; background: #fff; box-shadow: 0 8px 26px rgba(20, 33, 61, 0.28); }
+.af-design { width: auto; min-width: 96px; }
+.af-design canvas { width: auto; height: 150px; max-width: none; }
+.af-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.af-img { display: grid; justify-items: start; gap: 8px; }
+.af-prev { width: 100%; height: 96px; border-radius: 12px; background-color: #eef1f6; background-size: contain; background-position: center; background-repeat: no-repeat; border: 1px dashed #b5becb; }
+
 /* ---------- Suivi des candidatures ---------- */
 .sv-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
 .sv-tile { padding: 12px 6px; border: 1px solid var(--line); border-radius: 14px; background: #fff; text-align: center; }
@@ -240,4 +249,7 @@ body[data-room='cv'] .layout { animation: fadeUp 0.35s var(--ease); }
   .card-sheet .pg { display: grid; grid-template-columns: 90mm 90mm; grid-auto-rows: 50mm; justify-content: center; align-content: center; width: 210mm; height: 297mm; break-after: page; background: #fff; }
   .card-sheet .pg:last-child { break-after: auto; }
   .card-sheet img { display: block; width: 90mm; height: 50mm; outline: 0.1mm solid #d5d5d5; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .aff-sheet .pg { display: flex; grid-template-columns: none; align-items: center; justify-content: center; }
+  .aff-sheet img { width: auto; height: auto; max-width: 210mm; max-height: 297mm; outline: none; }
+  .aff-sheet img.full { width: 210mm; height: 297mm; }
 }
