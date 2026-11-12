@@ -100,6 +100,7 @@ body[data-room='cv'] .layout { animation: fadeUp 0.35s var(--ease); }
 .tone-navy .ic { color: #14213d; }
 .tone-slate { --tone: #475569; --tone-bg: #edf0f4; --tone-line: #cdd4de; }
 .tone-gold { --tone: #b7791f; --tone-bg: #fbf1dc; --tone-line: #ebd39b; }
+.tone-rose { --tone: #be185d; --tone-bg: #fdeaf2; --tone-line: #f4c3d8; }
 .rcard.wide { grid-column: 1 / -1; flex-direction: row; align-items: center; min-height: 0; gap: 16px; padding: 18px; }
 .rcard.wide .ic { width: 54px; height: 54px; border-radius: 18px; }
 .rcard.wide strong { font-size: 19px; }
@@ -153,6 +154,28 @@ body[data-room='cv'] .layout { animation: fadeUp 0.35s var(--ease); }
 .facture-encadre { border: 2px solid var(--inv); font-family: Georgia, 'Times New Roman', serif; }
 .facture-encadre .inv-table th, .facture-encadre .inv-table td { border: 1px solid var(--inv); }
 
+/* ---------- Carte de visite ---------- */
+.cd-stage { position: sticky; top: -14px; z-index: 6; margin: -14px -14px 14px; padding: 14px 14px 10px; background: var(--desk); box-shadow: 0 10px 14px -12px rgba(20, 33, 61, 0.5); }
+@media (max-height: 660px) { .cd-stage { position: static; margin-bottom: 8px; box-shadow: none; } }
+.cd-canvas { display: block; width: 100%; max-width: 420px; aspect-ratio: 1050 / 600; margin: 0 auto; border-radius: 12px; background: #fff; box-shadow: 0 8px 26px rgba(20, 33, 61, 0.28); }
+.cd-bar { display: flex; justify-content: center; margin-top: 10px; }
+.cd-demo { display: block; margin-top: 8px; text-align: center; font-size: 12.5px; font-weight: 700; color: var(--ink-2); }
+.cd-designs { display: flex; gap: 10px; overflow-x: auto; margin: 0 -4px; padding: 4px 4px 12px; scroll-snap-type: x proximity; scrollbar-width: none; }
+.cd-design { flex: none; width: 138px; padding: 4px; border: 2px solid transparent; border-radius: 12px; background: none; text-align: center; cursor: pointer; scroll-snap-align: start; transition: transform 0.12s; }
+.cd-design:active { transform: scale(0.97); }
+.cd-design canvas { display: block; width: 100%; aspect-ratio: 1050 / 600; border-radius: 7px; box-shadow: 0 2px 8px rgba(20, 33, 61, 0.22); }
+.cd-design span { display: block; margin-top: 6px; font-size: 12.5px; font-weight: 700; }
+.cd-design.on { border-color: var(--amber); background: #fff7e0; }
+.cd-colors { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.cd-colors button, .cd-custom { position: relative; width: 36px; height: 36px; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 0 1px var(--line); cursor: pointer; }
+.cd-colors button.on, .cd-custom.on { box-shadow: 0 0 0 3px var(--ink); }
+.cd-custom { overflow: hidden; background: conic-gradient(#e11d48, #f59e0b, #84cc16, #06b6d4, #6366f1, #d946ef, #e11d48); }
+.cd-custom input { position: absolute; inset: -10px; width: 60px; height: 60px; opacity: 0; cursor: pointer; }
+.cd-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.cd-actions .btn2 { padding: 12px 8px; font-size: 14px; }
+.hint { margin: 10px 0 6px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.card-sheet { display: none; }
+
 /* ---------- Animations ---------- */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -180,4 +203,8 @@ body[data-room='cv'] .layout { animation: fadeUp 0.35s var(--ease); }
   .printing .letter-paper mark { background: none; }
   .printing .inv-paper { max-width: none; width: 210mm; padding: 14mm; box-shadow: none; animation: none; }
   .printing .facture-pro .inv-head { margin: -14mm -14mm 14px; }
+  body[data-print] .card-sheet.printing { display: block !important; }
+  .card-sheet .pg { display: grid; grid-template-columns: 90mm 90mm; grid-auto-rows: 50mm; justify-content: center; align-content: center; width: 210mm; height: 297mm; break-after: page; background: #fff; }
+  .card-sheet .pg:last-child { break-after: auto; }
+  .card-sheet img { display: block; width: 90mm; height: 50mm; outline: 0.1mm solid #d5d5d5; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
