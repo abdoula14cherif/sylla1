@@ -8,6 +8,7 @@ import { locked, showPremium, toast, loadRemote, onPremiumChange } from './premi
 import { createTemplateRoom } from './room.js';
 import { createInvoiceRoom } from './invoices.js';
 import { createCardRoom } from './card.js';
+import { createTrackerRoom } from './suivi.js';
 import { initHub } from './hub.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -110,6 +111,7 @@ export function initExtras(api) {
     documents: createTemplateRoom({ id: 'documents', title: 'Contrats et reçus', items: DOCS, cats: DOC_CATS, sender: false, note: DOC_NOTE, getIdentity, onBack }),
     factures: createInvoiceRoom({ onBack }),
     carte: createCardRoom({ getIdentity, onBack }),
+    suivi: createTrackerRoom({ getIdentity, onBack }),
   };
 
   hub = initHub({
