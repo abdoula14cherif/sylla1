@@ -9,6 +9,7 @@ import { createTemplateRoom } from './room.js';
 import { createInvoiceRoom } from './invoices.js';
 import { createCardRoom } from './card.js';
 import { createTrackerRoom } from './suivi.js';
+import { createAfficheRoom } from './affiche.js';
 import { initHub } from './hub.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -112,6 +113,7 @@ export function initExtras(api) {
     factures: createInvoiceRoom({ onBack }),
     carte: createCardRoom({ getIdentity, onBack }),
     suivi: createTrackerRoom({ getIdentity, onBack }),
+    affiches: createAfficheRoom({ onBack }),
   };
 
   hub = initHub({
