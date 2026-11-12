@@ -32,7 +32,7 @@ const ROOMS = [
   { id: 'affiches', titre: 'Affiches', icon: 'image', soon: true, desc: 'Flyers et visuels pour vos ventes' },
   { id: 'posts', titre: 'Posts avec IA', icon: 'spark', soon: true, desc: 'Une semaine de publications en un clic' },
   { id: 'carte', salle: 'salle-carte', titre: 'Carte de visite', icon: 'card', tone: 'rose', desc: () => `${CARD_DESIGNS.length} modèles, QR code et contact en un scan` },
-  { id: 'suivi', titre: 'Suivi des candidatures', icon: 'list', soon: true, desc: 'Relances et réponses au même endroit' },
+  { id: 'suivi', salle: 'salle-suivi', titre: 'Suivi des candidatures', icon: 'list', tone: 'indigo', desc: () => 'Relances et réponses au même endroit' },
 ];
 const descOf = (r) => (typeof r.desc === 'function' ? r.desc() : r.desc);
 const TOTAL_MODELS = LAYOUTS.length + PROFILES.length + LETTERS.length + DOCS.length + INVOICE_STYLES.length + CARD_DESIGNS.length;
