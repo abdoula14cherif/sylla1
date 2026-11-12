@@ -42,6 +42,17 @@ export async function shareText(title, text) {
   }
 }
 
+// Ouvre un lien (WhatsApp, email…) dans l'application adaptée
+export function openLink(url) {
+  const a = document.createElement('a');
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
 /* ---------- Fichiers (images, contact .vcf) ---------- */
 const blobToBase64 = (blob) =>
   new Promise((resolve, reject) => {
