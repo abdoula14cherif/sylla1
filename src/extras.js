@@ -13,6 +13,7 @@ import { createStampRoom } from './stamp.js';
 import { createCardRoom } from './card.js';
 import { createTrackerRoom } from './suivi.js';
 import { createAfficheRoom } from './affiche.js';
+import { createPostsRoom } from './posts.js';
 import { initHub } from './hub.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -32,8 +33,13 @@ export function initExtras(api) {
 
   /* ----- Logo vectoriel partout ----- */
   document.querySelectorAll('.mark').forEach((m) => (m.innerHTML = logoSVG(30)));
-  const fav = document.querySelector('link[rel="icon"]');
-  if (fav) fav.href = logoDataURI();
+  let fav = document.querySelector('link[rel="icon"]');
+  if (!fav) {
+    fav = document.createElement('link');
+    fav.rel = 'icon';
+    document.head.appendChild(fav);
+  }
+  fav.href = logoDataURI();
 
   /* ----- CV : bouton retour à l'accueil ----- */
   const homeBtn = document.createElement('button');
@@ -249,6 +255,7 @@ export function initExtras(api) {
     carte: createCardRoom({ getIdentity, onBack }),
     suivi: createTrackerRoom({ getIdentity, onBack }),
     affiches: createAfficheRoom({ onBack }),
+    posts: createPostsRoom({ getIdentity, onBack }),
   };
 
   hub = initHub({
