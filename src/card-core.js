@@ -16,6 +16,12 @@ const SERIF = 'Georgia, "Times New Roman", serif';
 const INK = '#14213d';
 
 export const CARD_DESIGNS = [
+  { id: 'carte-executif', nom: 'Exécutif', neuf: true },
+  { id: 'carte-onyx', nom: 'Onyx', neuf: true },
+  { id: 'carte-atelier', nom: 'Atelier', neuf: true },
+  { id: 'carte-monogramme', nom: 'Monogramme', neuf: true },
+  { id: 'carte-studio', nom: 'Studio', neuf: true },
+  { id: 'carte-ruban', nom: 'Ruban', neuf: true },
   { id: 'carte-moderne', nom: 'Moderne' },
   { id: 'carte-classique', nom: 'Classique' },
   { id: 'carte-sombre', nom: 'Nuit' },
@@ -49,6 +55,8 @@ export const blankCard = () => ({
   forme: 'rond', // rond | carre | logo
   image: '',
   qr: 'contact', // contact | whatsapp | site
+  finition: 'mat', // mat | brillant | aucune
+  scene: 'marbre', // marbre | bois | ardoise | couleur
   nom: '',
   titre: '',
   entreprise: '',
@@ -164,15 +172,25 @@ export function cardText(d) {
   return L.join('\n');
 }
 
-export function contactLines(d) {
+const rgba = (col, al) => {
+  const [R, G, B] = hexRgb(col);
+  return `rgba(${R},${G},${B},${al})`;
+};
+
+// Sur une vraie carte on garde l'essentiel : 4 lignes au maximum, téléphones regroupés
+export function contactLines(d, max = 4, split = false) {
   const L = [];
-  if (d.tel.trim()) L.push({ icon: 'phone', text: fmtTel(d.tel) });
-  if (d.whatsapp.trim() && intl(d.whatsapp) !== intl(d.tel)) L.push({ icon: 'chat', text: fmtTel(d.whatsapp) });
+  const t1 = d.tel.trim() ? fmtTel(d.tel) : '';
+  const t2 = d.whatsapp.trim() && intl(d.whatsapp) !== intl(d.tel) ? fmtTel(d.whatsapp) : '';
+  const tels = [t1, t1 && t2 ? t2.replace(/^\+\d{3}\s/, '') : t2].filter(Boolean);
+  if (split && t1 && t2) {
+    L.push({ icon: 'phone', text: t1 }, { icon: 'chat', text: t2 });
+  } else if (tels.length) L.push({ icon: 'phone', text: tels.join('  ·  ') });
   if (d.email.trim()) L.push({ icon: 'mail', text: d.email.trim() });
   if (d.site.trim()) L.push({ icon: 'globe', text: siteLabel(d.site) });
   if (d.adresse.trim()) L.push({ icon: 'pin', text: d.adresse.trim() });
-  if (d.reseau.trim()) L.push({ icon: 'at', text: d.reseau.trim().replace(/^@/, '@') });
-  return L;
+  if (d.reseau.trim() && L.length < max) L.push({ icon: 'at', text: d.reseau.trim() });
+  return L.slice(0, max);
 }
 
 /* ---------- Images ---------- */
@@ -587,7 +605,7 @@ const DESIGNS = {
     txt(c, d.nom.trim() || 'Votre nom', 70, 112, { size: 58, weight: '800', color: fg, maxW: 650 });
     if (d.titre.trim()) txt(c, d.titre.trim(), 70, 162, { size: 28, weight: '600', color: fg, alpha: 0.92, maxW: 650 });
     pic(c, img, d, 895, 215, 90, { ring: '#fff', needs: true, accent: a });
-    const items = contactLines(d);
+    const items = contactLines(d, 6, true);
     const left = items.length > 3 ? items.slice(0, 3) : items;
     const right = items.length > 3 ? items.slice(3) : [];
     lines(c, left, 70, 305, { size: 26, gap: 56, maxW: right.length ? 420 : 600, iconColor: ac });
@@ -666,7 +684,7 @@ const DESIGNS = {
     if (d.titre.trim()) txt(c, d.titre.trim(), 100, 250, { size: 29, fam: SERIF, weight: '400', italic: true, color: gold, maxW: 660 });
     if (d.entreprise.trim()) txt(c, caps(d.entreprise.trim()), 100, 300, { size: 21, weight: '700', color: '#fff', alpha: 0.6, spacing: 4, maxW: 660 });
     rect(c, 100, 326, 160, 2, gold);
-    const items = contactLines(d);
+    const items = contactLines(d, 6, true);
     const o = { size: 26, gap: 56, color: '#ece7d8', iconColor: gold };
     if (items.length > 3) {
       lines(c, items.slice(0, 3), 100, 392, { ...o, maxW: 400 });
@@ -686,7 +704,7 @@ const DESIGNS = {
     if (d.entreprise.trim()) txt(c, caps(d.entreprise.trim()), 70, 238, { size: 22, weight: '700', color: '#5b6475', spacing: 3, maxW: 700 });
     wave(c, 285, 0, mix(a, '#ffffff', 0.55));
     wave(c, 330, 0, a);
-    const items = contactLines(d);
+    const items = contactLines(d, 6, true);
     const o = { size: 26, gap: 50, color: fg, iconColor: fg };
     if (items.length > 3) {
       lines(c, items.slice(0, 3), 70, 472, { ...o, maxW: 430 });
@@ -741,7 +759,7 @@ const DESIGNS = {
     if (d.titre.trim()) txt(c, d.titre.trim(), 70, 242, { size: 30, weight: '700', color: tg, maxW: 660 });
     if (d.entreprise.trim()) txt(c, caps(d.entreprise.trim()), 70, 286, { size: 21, weight: '700', color: '#fff', alpha: 0.6, spacing: 4, maxW: 660 });
     rect(c, 70, 312, 110, 5, tg);
-    const items = contactLines(d);
+    const items = contactLines(d, 6, true);
     const o = { size: 26, gap: 54, color: '#e5ecff', iconColor: t2 };
     if (items.length > 3) {
       lines(c, items.slice(0, 3), 70, 378, { ...o, maxW: 420 });
@@ -811,7 +829,7 @@ const DESIGNS = {
       ty += 46;
     }
     if (d.entreprise.trim()) txt(c, caps(d.entreprise.trim()), 70, ty + 50, { size: 22, weight: '700', color: '#5b6475', spacing: 3, maxW: 640 });
-    const items = contactLines(d);
+    const items = contactLines(d, 6, true);
     items.forEach((it, i) => {
       const col = items.length > 3 ? Math.floor(i / 3) : 0;
       const row = items.length > 3 ? i % 3 : i;
@@ -1030,6 +1048,293 @@ function drawBack(c, d, a0, theme) {
 /* =====================================================
    Rendu : s'adapte à la taille du canvas (aperçu, vignette, export)
    ===================================================== */
+
+/* =====================================================
+   Finition réaliste : grain du papier, reflet, relief
+   ===================================================== */
+let grainCv = null;
+function grainPattern(c) {
+  if (!grainCv) {
+    grainCv = document.createElement('canvas');
+    grainCv.width = grainCv.height = 256;
+    const x = grainCv.getContext('2d');
+    const im = x.createImageData(256, 256);
+    let s = 1234567;
+    for (let i = 0; i < im.data.length; i += 4) {
+      s = (Math.imul(s, 1664525) + 1013904223) >>> 0;
+      const v = (s >>> 24) & 255;
+      im.data[i] = v;
+      im.data[i + 1] = v;
+      im.data[i + 2] = v;
+      im.data[i + 3] = 255;
+    }
+    x.putImageData(im, 0, 0);
+  }
+  return c.createPattern(grainCv, 'repeat');
+}
+
+export const FINITIONS = [
+  { id: 'mat', nom: 'Mat', desc: 'Papier épais, léger grain' },
+  { id: 'brillant', nom: 'Brillant', desc: 'Pelliculage avec reflet' },
+  { id: 'aucune', nom: 'Aucune', desc: 'Aplat net (impression directe)' },
+];
+
+function finish(c, kind) {
+  if (kind === 'aucune') return;
+  c.save();
+  c.globalCompositeOperation = 'soft-light';
+  c.globalAlpha = kind === 'brillant' ? 0.1 : 0.3;
+  c.fillStyle = grainPattern(c);
+  c.fillRect(0, 0, W, H);
+  c.restore();
+  c.save();
+  const v = c.createRadialGradient(W * 0.45, H * 0.4, H * 0.35, W / 2, H / 2, W * 0.75);
+  v.addColorStop(0, 'rgba(0,0,0,0)');
+  v.addColorStop(1, kind === 'brillant' ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.07)');
+  c.fillStyle = v;
+  c.fillRect(0, 0, W, H);
+  if (kind === 'brillant') {
+    const g = c.createLinearGradient(0, H, W, 0);
+    g.addColorStop(0, 'rgba(255,255,255,0)');
+    g.addColorStop(0.34, 'rgba(255,255,255,0)');
+    g.addColorStop(0.44, 'rgba(255,255,255,0.2)');
+    g.addColorStop(0.5, 'rgba(255,255,255,0.04)');
+    g.addColorStop(0.56, 'rgba(255,255,255,0.13)');
+    g.addColorStop(0.7, 'rgba(255,255,255,0)');
+    c.fillStyle = g;
+    c.fillRect(0, 0, W, H);
+    const t = c.createLinearGradient(0, 0, 0, 90);
+    t.addColorStop(0, 'rgba(255,255,255,0.18)');
+    t.addColorStop(1, 'rgba(255,255,255,0)');
+    c.fillStyle = t;
+    c.fillRect(0, 0, W, 90);
+  }
+  c.restore();
+}
+
+/* =====================================================
+   6 modèles haut de gamme : sobres, peu de lignes
+   ===================================================== */
+const foilGrad = (c, x0, y0, x1, y1, base) => {
+  const g = c.createLinearGradient(x0, y0, x1, y1);
+  [[0, mix(base, '#ffffff', 0.55)], [0.28, base], [0.5, mix(base, '#ffffff', 0.4)], [0.74, mix(base, '#000000', 0.28)], [1, mix(base, '#ffffff', 0.3)]].forEach(([o, col]) => g.addColorStop(o, col));
+  return g;
+};
+
+function plainLines(c, items, x, y, o = {}) {
+  const { size = 25, gap = 46, color = '#3a4458', bullet = null, maxW = 560, weight = '500' } = o;
+  items.forEach((it, i) => {
+    const yy = y + i * gap;
+    let tx = x;
+    if (bullet) {
+      circle(c, x + 5, yy - size * 0.32, 5, bullet);
+      tx = x + 28;
+    }
+    txt(c, it.text, tx, yy, { size, weight, color, maxW: maxW - (tx - x) });
+  });
+  return y + items.length * gap;
+}
+
+const PRO_DESIGNS = {
+  /* Bleu profond, double filet doré, monogramme */
+  'carte-executif'(c, d, img, a) {
+    const bg = mix(a, '#05070d', 0.72);
+    const gold = goldOf(a);
+    c.fillStyle = (() => {
+      const g = c.createLinearGradient(0, 0, W, H);
+      g.addColorStop(0, mix(bg, '#ffffff', 0.1));
+      g.addColorStop(1, mix(bg, '#000000', 0.4));
+      return g;
+    })();
+    c.fillRect(0, 0, W, H);
+    c.save();
+    c.strokeStyle = foilGrad(c, 0, 0, W, H, gold);
+    c.lineWidth = 3;
+    c.strokeRect(30, 30, W - 60, H - 60);
+    c.globalAlpha = 0.55;
+    c.lineWidth = 1.5;
+    c.strokeRect(46, 46, W - 92, H - 92);
+    c.restore();
+    c.save();
+    c.strokeStyle = foilGrad(c, 100, 190, 280, 410, gold);
+    c.lineWidth = 4;
+    c.beginPath();
+    c.arc(195, 300, 112, 0, Math.PI * 2);
+    c.stroke();
+    c.restore();
+    if (img) pic(c, img, d, 195, 300, 98);
+    else txt(c, initials(d), 195, 335, { size: 96, fam: SERIF, weight: '700', color: foilGrad(c, 120, 230, 270, 370, gold), align: 'center' });
+    c.save();
+    c.fillStyle = foilGrad(c, 0, 150, 0, 450, gold);
+    c.fillRect(352, 150, 2, 300);
+    c.restore();
+    txt(c, d.nom.trim() || 'Votre nom', 410, 185, { size: 54, fam: SERIF, weight: '700', color: '#fff', maxW: 580 });
+    if (d.titre.trim()) txt(c, caps(d.titre.trim()), 410, 232, { size: 22, weight: '700', color: foilGrad(c, 410, 0, 800, 0, gold), spacing: 4, maxW: 580 });
+    if (d.entreprise.trim()) txt(c, d.entreprise.trim(), 410, 274, { size: 24, weight: '500', color: '#fff', alpha: 0.7, maxW: 580 });
+    c.save();
+    c.fillStyle = foilGrad(c, 410, 0, 520, 0, gold);
+    c.fillRect(410, 300, 90, 3);
+    c.restore();
+    plainLines(c, contactLines(d), 410, 360, { size: 25, gap: 44, color: '#e9edf6', bullet: gold, maxW: 580 });
+    if (d.slogan.trim()) txt(c, d.slogan.trim(), 410, 540, { size: 21, fam: SERIF, weight: '400', italic: true, color: '#fff', alpha: 0.6, maxW: 580 });
+  },
+
+  /* Atelier : papier blanc, grille fine, contacts étiquetés */
+  'carte-atelier'(c, d, img, a) {
+    const ac = inkOn(a);
+    rect(c, 0, 0, W, H, '#fbfbf8');
+    rect(c, 0, 0, W, 16, a);
+    c.save();
+    c.fillStyle = 'rgba(20,33,61,0.16)';
+    c.fillRect(612, 96, 1.5, 408);
+    c.fillRect(70, 292, 480, 1.5);
+    c.restore();
+    txt(c, d.nom.trim() || 'Votre nom', 70, 160, { size: 56, weight: '800', color: INK, maxW: 500 });
+    if (d.titre.trim()) txt(c, d.titre.trim(), 70, 212, { size: 27, weight: '600', color: ac, maxW: 500 });
+    if (d.entreprise.trim()) txt(c, caps(d.entreprise.trim()), 70, 350, { size: 23, weight: '800', color: INK, spacing: 4, maxW: 500 });
+    if (d.slogan.trim()) para(c, d.slogan.trim(), 70, 392, { size: 23, weight: '400', italic: true, color: '#5b6475' }, 470, 32, 3);
+    const L = { phone: 'T', chat: 'M', mail: 'E', globe: 'W', pin: 'A', at: '@' };
+    const rows = [];
+    contactLines(d, 5).forEach((it) => (it.text.includes('  ·  ') ? it.text.split('  ·  ').forEach((t, j) => rows.push({ icon: j ? 'chat' : it.icon, text: t })) : rows.push(it)));
+    rows.slice(0, 5).forEach((it, i) => {
+      const y = 170 + i * 62;
+      txt(c, L[it.icon] || '•', 650, y, { size: 19, weight: '800', color: ac, spacing: 2 });
+      txt(c, it.text, 700, y, { size: 25, weight: '500', color: INK, maxW: 300 });
+    });
+    if (img) pic(c, img, d, 930, 480, 46);
+  },
+
+  /* Monogramme géant en filigrane, serif classique */
+  'carte-monogramme'(c, d, img, a) {
+    const ac = inkOn(a);
+    rect(c, 0, 0, W, H, '#f8f2e4');
+    c.save();
+    c.globalAlpha = 0.07;
+    txt(c, initials(d), W + 30, H + 40, { size: 480, fam: SERIF, weight: '700', color: ac, align: 'right' });
+    c.restore();
+    c.save();
+    c.strokeStyle = rgba(ac, 0.5);
+    c.lineWidth = 2;
+    c.strokeRect(34, 34, W - 68, H - 68);
+    c.restore();
+    txt(c, d.nom.trim() || 'Votre nom', 90, 200, { size: 62, fam: SERIF, weight: '700', color: INK, maxW: 700 });
+    if (d.titre.trim()) txt(c, d.titre.trim(), 90, 250, { size: 30, fam: SERIF, weight: '400', italic: true, color: ac, maxW: 700 });
+    c.save();
+    c.fillStyle = ac;
+    [0, 1, 2].forEach((i) => poly(c, [[92 + i * 22, 292], [100 + i * 22, 284], [108 + i * 22, 292], [100 + i * 22, 300]], ac));
+    c.restore();
+    if (d.entreprise.trim()) txt(c, caps(d.entreprise.trim()), 90, 346, { size: 21, weight: '700', color: '#5b6475', spacing: 4, maxW: 600 });
+    plainLines(c, contactLines(d), 90, 404, { size: 25, gap: 42, color: '#3a4458', bullet: ac, maxW: 560 });
+    if (img) pic(c, img, d, 880, 140, 74, { ring: '#fff' });
+  },
+
+  /* Studio : grand nom, grille de contacts étiquetés */
+  'carte-studio'(c, d, img, a) {
+    const t = lift(a);
+    const g = c.createLinearGradient(0, 0, W, H);
+    g.addColorStop(0, '#0b0d12');
+    g.addColorStop(1, '#171c28');
+    c.fillStyle = g;
+    c.fillRect(0, 0, W, H);
+    c.save();
+    c.globalAlpha = 0.28;
+    glow(c, W - 60, 40, 460, t, 1);
+    c.restore();
+    c.save();
+    c.strokeStyle = rgba(t, 0.3);
+    c.lineWidth = 2;
+    c.beginPath();
+    c.arc(W - 40, H + 40, 250, 0, Math.PI * 2);
+    c.stroke();
+    c.beginPath();
+    c.arc(W - 40, H + 40, 190, 0, Math.PI * 2);
+    c.stroke();
+    c.restore();
+    if (d.entreprise.trim()) txt(c, caps(d.entreprise.trim()), 70, 92, { size: 21, weight: '800', color: '#fff', alpha: 0.7, spacing: 5, maxW: 640 });
+    if (img) pic(c, img, d, 930, 110, 56, { ring: t });
+    txt(c, d.nom.trim() || 'Votre nom', 70, 215, { size: 78, weight: '800', color: '#fff', maxW: 900 });
+    if (d.titre.trim()) txt(c, caps(d.titre.trim()), 70, 272, { size: 25, weight: '700', color: t, spacing: 4, maxW: 760 });
+    const lab = { phone: 'TÉLÉPHONE', mail: 'EMAIL', globe: 'SITE WEB', pin: 'ADRESSE', at: 'RÉSEAU', chat: 'WHATSAPP' };
+    contactLines(d).forEach((it, i) => {
+      const x = 70 + (i % 2) * 470;
+      const y = 380 + Math.floor(i / 2) * 105;
+      txt(c, lab[it.icon] || '', x, y, { size: 15, weight: '800', color: t, spacing: 4 });
+      txt(c, it.text, x, y + 36, { size: 26, weight: '500', color: '#eef1f8', maxW: 430 });
+    });
+  },
+
+  /* Ruban vertical coloré, lignes à puces */
+  'carte-ruban'(c, d, img, a) {
+    rect(c, 0, 0, W, H, '#fff');
+    const g = c.createLinearGradient(0, 0, 130, 0);
+    g.addColorStop(0, mix(a, '#000000', 0.2));
+    g.addColorStop(1, mix(a, '#ffffff', 0.12));
+    c.fillStyle = g;
+    c.fillRect(0, 0, 132, H);
+    rect(c, 132, 0, 7, H, mix(a, '#ffffff', 0.55));
+    c.save();
+    c.translate(76, H / 2);
+    c.rotate(-Math.PI / 2);
+    txt(c, caps(d.entreprise.trim() || d.nom.trim() || ''), 0, 10, { size: 28, weight: '800', color: onColor(a), spacing: 8, align: 'center', maxW: 480 });
+    c.restore();
+    const ac = inkOn(a);
+    txt(c, d.nom.trim() || 'Votre nom', 200, 175, { size: 60, weight: '800', color: INK, maxW: img ? 560 : 780 });
+    if (d.titre.trim()) txt(c, d.titre.trim(), 200, 225, { size: 29, weight: '600', color: ac, maxW: img ? 560 : 780 });
+    rect(c, 200, 262, 70, 5, a);
+    plainLines(c, contactLines(d), 200, 340, { size: 26, gap: 54, color: '#26314a', bullet: a, maxW: 650 });
+    if (img) pic(c, img, d, 900, 135, 76, { ring: a });
+    if (d.slogan.trim()) txt(c, d.slogan.trim(), 990, 552, { size: 22, weight: '400', italic: true, color: '#5b6475', align: 'right', maxW: 380 });
+  },
+
+  /* Onyx : noir mat, médaillon doré, effet vernis sélectif */
+  'carte-onyx'(c, d, img, a) {
+    const gold = goldOf(a);
+    const bg = c.createRadialGradient(260, 260, 40, 400, 300, 760);
+    bg.addColorStop(0, '#1c1c1f');
+    bg.addColorStop(1, '#070708');
+    c.fillStyle = bg;
+    c.fillRect(0, 0, W, H);
+    c.save();
+    c.beginPath();
+    c.arc(230, 300, 176, 0, Math.PI * 2);
+    c.fillStyle = (() => {
+      const g = c.createLinearGradient(100, 150, 360, 450);
+      g.addColorStop(0, '#222226');
+      g.addColorStop(1, '#0d0d0f');
+      return g;
+    })();
+    c.fill();
+    c.strokeStyle = foilGrad(c, 60, 130, 400, 470, gold);
+    c.lineWidth = 4;
+    c.stroke();
+    c.beginPath();
+    c.arc(230, 300, 176, 0, Math.PI * 2);
+    c.clip();
+    if (img) pic(c, img, d, 230, 300, 160);
+    else txt(c, initials(d), 230, 345, { size: 150, fam: SERIF, weight: '700', color: foilGrad(c, 130, 200, 330, 400, gold), align: 'center' });
+    c.fillStyle = 'rgba(255,255,255,0.07)';
+    c.beginPath();
+    c.moveTo(40, 190);
+    c.lineTo(230, 110);
+    c.lineTo(310, 130);
+    c.lineTo(80, 260);
+    c.closePath();
+    c.fill();
+    c.restore();
+    txt(c, caps(d.nom.trim() || 'Votre nom'), 500, 190, { size: 42, fam: SERIF, weight: '700', color: '#fff', spacing: 4, maxW: 500 });
+    if (d.titre.trim()) txt(c, d.titre.trim(), 500, 238, { size: 27, fam: SERIF, weight: '400', italic: true, color: foilGrad(c, 500, 0, 900, 0, gold), maxW: 500 });
+    c.save();
+    c.fillStyle = foilGrad(c, 500, 0, 600, 0, gold);
+    c.fillRect(500, 266, 80, 3);
+    c.restore();
+    if (d.entreprise.trim()) txt(c, caps(d.entreprise.trim()), 500, 312, { size: 19, weight: '700', color: '#b9bcc6', spacing: 5, maxW: 500 });
+    plainLines(c, contactLines(d), 500, 376, { size: 24, gap: 44, color: '#d4d6de', bullet: gold, maxW: 500 });
+    if (d.slogan.trim()) txt(c, d.slogan.trim(), 500, 556, { size: 20, fam: SERIF, weight: '400', italic: true, color: '#fff', alpha: 0.5, maxW: 500 });
+  },
+};
+Object.assign(DESIGNS, PRO_DESIGNS);
+Object.assign(BACK, { 'carte-executif': 'luxe', 'carte-atelier': 'light', 'carte-monogramme': 'cream', 'carte-studio': 'dark', 'carte-ruban': 'light', 'carte-onyx': 'luxe' });
+
 export function renderCard(canvas, data, img, face = 'recto') {
   const c = canvas.getContext('2d');
   const k = canvas.width / W;
@@ -1042,7 +1347,163 @@ export function renderCard(canvas, data, img, face = 'recto') {
   const a = /^#[0-9a-f]{6}$/i.test(data.accent) ? data.accent : '#14213D';
   if (face === 'verso') drawBack(c, data, a, BACK[data.design] || 'light');
   else (DESIGNS[data.design] || DESIGNS['carte-moderne'])(c, data, img, a);
+  finish(c, data.finition || 'mat');
   c.restore();
+}
+
+/* =====================================================
+   Aperçu réaliste : cartes posées sur une table
+   ===================================================== */
+export const SCENES = [
+  { id: 'marbre', nom: 'Marbre' },
+  { id: 'bois', nom: 'Bois' },
+  { id: 'ardoise', nom: 'Ardoise' },
+  { id: 'couleur', nom: 'Couleur' },
+];
+export const MW = 1600;
+export const MH = 1000;
+
+function seeded(seed) {
+  let s = seed >>> 0;
+  return () => {
+    s = (Math.imul(s, 1664525) + 1013904223) >>> 0;
+    return s / 4294967296;
+  };
+}
+
+function drawScene(c, scene, a) {
+  const rnd = seeded(77);
+  if (scene === 'bois') {
+    const n = 6;
+    const ph = MH / n;
+    for (let i = 0; i < n; i += 1) {
+      const base = mix('#8a5a34', i % 2 ? '#b07a4a' : '#6f4526', 0.25 + rnd() * 0.5);
+      c.fillStyle = base;
+      c.fillRect(0, i * ph, MW, ph);
+      c.save();
+      c.beginPath();
+      c.rect(0, i * ph, MW, ph);
+      c.clip();
+      for (let k = 0; k < 26; k += 1) {
+        const y = i * ph + rnd() * ph;
+        c.strokeStyle = rnd() > 0.5 ? 'rgba(40,20,8,0.16)' : 'rgba(255,220,170,0.1)';
+        c.lineWidth = 1 + rnd() * 2.2;
+        c.beginPath();
+        c.moveTo(0, y);
+        c.bezierCurveTo(MW * 0.3, y + (rnd() - 0.5) * 16, MW * 0.65, y + (rnd() - 0.5) * 16, MW, y + (rnd() - 0.5) * 10);
+        c.stroke();
+      }
+      c.restore();
+      c.fillStyle = 'rgba(20,8,0,0.55)';
+      c.fillRect(0, i * ph, MW, 3);
+    }
+  } else if (scene === 'ardoise') {
+    const g = c.createLinearGradient(0, 0, MW, MH);
+    g.addColorStop(0, '#2a3242');
+    g.addColorStop(1, '#0f141d');
+    c.fillStyle = g;
+    c.fillRect(0, 0, MW, MH);
+  } else if (scene === 'couleur') {
+    const g = c.createLinearGradient(0, 0, MW, MH);
+    g.addColorStop(0, mix(a, '#ffffff', 0.22));
+    g.addColorStop(1, mix(a, '#000000', 0.5));
+    c.fillStyle = g;
+    c.fillRect(0, 0, MW, MH);
+    c.save();
+    c.globalAlpha = 0.1;
+    circle(c, MW * 0.9, 80, 380, '#fff');
+    circle(c, 60, MH, 300, '#fff');
+    c.restore();
+  } else {
+    const g = c.createLinearGradient(0, 0, MW, MH);
+    g.addColorStop(0, '#f6f6f4');
+    g.addColorStop(1, '#d9d9d6');
+    c.fillStyle = g;
+    c.fillRect(0, 0, MW, MH);
+    for (let i = 0; i < 9; i += 1) {
+      c.strokeStyle = `rgba(110,115,125,${0.05 + rnd() * 0.09})`;
+      c.lineWidth = 1 + rnd() * 3;
+      c.beginPath();
+      const y0 = rnd() * MH;
+      c.moveTo(-20, y0);
+      c.bezierCurveTo(MW * 0.3, y0 + (rnd() - 0.5) * 420, MW * 0.6, y0 + (rnd() - 0.5) * 420, MW + 20, y0 + (rnd() - 0.5) * 300);
+      c.stroke();
+    }
+  }
+  // lumière douce venant du haut gauche + grain + vignette
+  const l = c.createRadialGradient(MW * 0.3, MH * 0.15, 80, MW * 0.5, MH * 0.5, MW * 0.85);
+  l.addColorStop(0, 'rgba(255,255,255,0.22)');
+  l.addColorStop(1, 'rgba(0,0,0,0.28)');
+  c.fillStyle = l;
+  c.fillRect(0, 0, MW, MH);
+  c.save();
+  c.globalCompositeOperation = 'soft-light';
+  c.globalAlpha = 0.35;
+  c.fillStyle = grainPattern(c);
+  c.fillRect(0, 0, MW, MH);
+  c.restore();
+}
+
+function putCard(c, cv, cx, cy, rot, cw) {
+  const ch = (cw * H) / W;
+  const r = 14;
+  c.save();
+  c.translate(cx, cy);
+  c.rotate(rot);
+  // ombre portée large + ombre de contact serrée
+  c.shadowColor = 'rgba(0,0,0,0.38)';
+  c.shadowBlur = 60;
+  c.shadowOffsetX = 14;
+  c.shadowOffsetY = 34;
+  rpath(c, -cw / 2, -ch / 2 + 6, cw, ch, r);
+  c.fillStyle = '#cfcac0';
+  c.fill();
+  c.shadowColor = 'rgba(0,0,0,0.55)';
+  c.shadowBlur = 8;
+  c.shadowOffsetX = 3;
+  c.shadowOffsetY = 6;
+  rpath(c, -cw / 2, -ch / 2 + 6, cw, ch, r);
+  c.fill();
+  c.shadowColor = 'transparent';
+  // tranche du carton
+  rpath(c, -cw / 2, -ch / 2 + 6, cw, ch, r);
+  c.fillStyle = '#e9e5db';
+  c.fill();
+  // face
+  c.save();
+  rpath(c, -cw / 2, -ch / 2, cw, ch, r);
+  c.clip();
+  c.drawImage(cv, -cw / 2, -ch / 2, cw, ch);
+  const g = c.createLinearGradient(-cw / 2, -ch / 2, cw / 2, ch / 2);
+  g.addColorStop(0, 'rgba(255,255,255,0.16)');
+  g.addColorStop(0.5, 'rgba(255,255,255,0)');
+  g.addColorStop(1, 'rgba(0,0,0,0.14)');
+  c.fillStyle = g;
+  c.fillRect(-cw / 2, -ch / 2, cw, ch);
+  c.restore();
+  rpath(c, -cw / 2 + 0.75, -ch / 2 + 0.75, cw - 1.5, ch - 1.5, r);
+  c.strokeStyle = 'rgba(255,255,255,0.5)';
+  c.lineWidth = 1.5;
+  c.stroke();
+  c.restore();
+}
+
+export function renderMockup(canvas, data, img, scene = 'marbre') {
+  const c = canvas.getContext('2d');
+  const k = canvas.width / MW;
+  c.setTransform(k, 0, 0, k, 0, 0);
+  c.clearRect(0, 0, MW, MH);
+  const a = /^#[0-9a-f]{6}$/i.test(data.accent) ? data.accent : '#14213D';
+  drawScene(c, scene, a);
+  const face = (f) => {
+    const cv = document.createElement('canvas');
+    cv.width = W;
+    cv.height = H;
+    renderCard(cv, data, img, f);
+    return cv;
+  };
+  putCard(c, face('verso'), 520, 560, -0.13, 720);
+  putCard(c, face('recto'), 1010, 470, 0.08, 760);
 }
 
 // Primitives réutilisées par les affiches
