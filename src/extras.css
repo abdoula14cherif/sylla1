@@ -432,3 +432,18 @@ body[data-room='cv'] .layout { animation: fadeUp 0.35s var(--ease); }
 .tone-rose { --tone: #be185d; --tone-bg: #fdeaf2; --tone-line: #f4c3d8; }
 .tone-indigo { --tone: #4338ca; --tone-bg: #ebebfd; --tone-line: #c7c8f3; }
 .tone-orange { --tone: #c2410c; --tone-bg: #fff0e4; --tone-line: #f6cba8; }
+
+.cd-mock{display:block;width:100%;height:auto;border-radius:14px;box-shadow:0 6px 24px rgba(15,23,42,.18)}
+
+/* ---------- Posts avec IA ---------- */
+.tone-sky { --tone: #0369a1; --tone-bg: #e5f2fb; --tone-line: #b8d9ee; }
+.plan-head { margin: 4px 2px 10px; font-size: 15px; }
+.mode-note { margin: 10px 0 0; font-size: 13px; line-height: 1.5; color: var(--ink-2); }
+.post-card { margin-bottom: 12px; padding: 14px; border: 1px solid var(--line); border-radius: 16px; background: #fff; animation: rise 0.4s var(--ease) both; animation-delay: calc(var(--i, 0) * 50ms); }
+.post-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
+.post-top strong { font-size: 15px; }
+.post-text { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: #f9fafc; font-size: 15px; line-height: 1.5; resize: vertical; }
+.post-tags { width: 100%; margin-top: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 14px; color: #0369a1; }
+.post-visu, .post-time { margin: 8px 0 0; font-size: 13px; line-height: 1.45; color: var(--ink-2); }
+.post-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+.post-actions .btn2 { padding: 10px 4px; font-size: 13.5px; }
