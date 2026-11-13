@@ -1,7 +1,7 @@
 import { esc } from './cv.js';
 import { locked, showPremium, toast } from './premium.js';
 import { copyText, shareText, shareFiles, saveFile, isNative } from './native.js';
-import { CARD_DESIGNS, CARD_COLORS, blankCard, isEmpty, withDemo, renderCard, loadImage, vcard, cardText, W, H } from './card-core.js';
+import { CARD_DESIGNS, CARD_COLORS, FINITIONS, SCENES, MW, MH, blankCard, isEmpty, withDemo, renderCard, renderMockup, loadImage, vcard, cardText, W, H } from './card-core.js';
 
 const KEY = 'digiform.card.v1';
 const load = () => {
@@ -54,6 +54,17 @@ export function createCardRoom({ getIdentity, onBack }) {
         <div class="cd-designs" data-r="designs"></div>
         <p class="hint">Couleur</p>
         <div class="cd-colors" data-r="colors"></div>
+        <p class="hint">Finition du papier</p>
+        <div class="seg wrap">${FINITIONS.map((f) => `<button type="button" data-fin="${f.id}">${f.nom}</button>`).join('')}</div>
+        <p class="hint" data-r="findesc"></p>
+      </div>
+
+      <div class="card">
+        <h2>Aperçu réaliste</h2>
+        <canvas class="cd-mock" width="800" height="500" data-r="mock"></canvas>
+        <div class="seg wrap gap-top">${SCENES.map((x) => `<button type="button" data-scene="${x.id}">${x.nom}</button>`).join('')}</div>
+        <button type="button" class="btn2 wide gap-top" data-act="png-mock">Enregistrer cet aperçu (image)</button>
+        <p class="hint">Idéal pour présenter votre carte à un client ou la publier sur WhatsApp et Facebook.</p>
       </div>
 
       <div class="card">
@@ -133,6 +144,7 @@ export function createCardRoom({ getIdentity, onBack }) {
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(() => {
       renderCard(canvas, shown(), img, face);
+      renderMockup(q('mock'), shown(), img, state.scene || 'marbre');
       q('demo').hidden = !isEmpty(state);
     });
   }
@@ -171,6 +183,10 @@ export function createCardRoom({ getIdentity, onBack }) {
     el.querySelectorAll('[data-face]').forEach((b) => b.classList.toggle('on', b.dataset.face === face));
     el.querySelectorAll('[data-forme]').forEach((b) => b.classList.toggle('on', b.dataset.forme === state.forme));
     el.querySelectorAll('[data-qr]').forEach((b) => b.classList.toggle('on', b.dataset.qr === state.qr));
+    el.querySelectorAll('[data-fin]').forEach((b) => b.classList.toggle('on', b.dataset.fin === (state.finition || 'mat')));
+    el.querySelectorAll('[data-scene]').forEach((b) => b.classList.toggle('on', b.dataset.scene === (state.scene || 'marbre')));
+    const fd = FINITIONS.find((x) => x.id === (state.finition || 'mat'));
+    q('findesc').textContent = fd ? fd.desc : '';
     q('prev').style.backgroundImage = state.image ? `url(${state.image})` : '';
     el.querySelector('[data-act="rmimg"]').hidden = !state.image;
     const d = CARD_DESIGNS.find((x) => x.id === state.design);
@@ -316,6 +332,21 @@ export function createCardRoom({ getIdentity, onBack }) {
       draw();
       return schedThumbs();
     }
+    const fin = t.closest('[data-fin]');
+    if (fin) {
+      state.finition = fin.dataset.fin;
+      persist();
+      syncSimple();
+      draw();
+      return schedThumbs();
+    }
+    const sc = t.closest('[data-scene]');
+    if (sc) {
+      state.scene = sc.dataset.scene;
+      persist();
+      syncSimple();
+      return draw();
+    }
     const qr = t.closest('[data-qr]');
     if (qr) {
       state.qr = qr.dataset.qr;
@@ -367,6 +398,14 @@ export function createCardRoom({ getIdentity, onBack }) {
       const f = a === 'png-recto' ? 'recto' : 'verso';
       const r = await saveFile('Ma carte de visite', await toBlob(faceCanvas(f)), filename(`-${f}.png`));
       return report(r, 'Image enregistrée');
+    }
+    if (a === 'png-mock') {
+      const cv = document.createElement('canvas');
+      cv.width = MW;
+      cv.height = MH;
+      renderMockup(cv, state, img, state.scene || 'marbre');
+      const r = await saveFile('Aperçu de ma carte', await toBlob(cv), filename('-apercu.png'));
+      return report(r, 'Aperçu enregistré');
     }
     if (a === 'vcf') {
       const blob = new Blob([vcard(state, true)], { type: 'text/vcard' });
