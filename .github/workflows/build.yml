@@ -29,6 +29,9 @@ jobs:
       - name: Créer le projet Android
         run: |
           npx cap add android
+          # Icône et écran de démarrage Digiform (remplacent ceux par défaut)
+          npm install --no-save sharp
+          node scripts/make-icons.mjs
           npx cap sync android
 
       - name: Compiler l'APK
