@@ -1,0 +1,103 @@
+name: Google Play (AAB gratuit)
+
+# Fabrique le fichier .aab à envoyer sur Google Play (version 100 % gratuite, sans paiement dans l'app).
+# 1re fois : lancez ce workflow avec « creer_cle » coché, puis suivez les instructions (secrets).
+on:
+  workflow_dispatch:
+    inputs:
+      creer_cle:
+        description: "1re fois seulement : créer ma clé de signature (ne compile pas l'app)"
+        type: boolean
+        default: false
+
+jobs:
+  cle:
+    if: ${{ inputs.creer_cle }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Créer la clé de signature
+        run: |
+          PASS=$(openssl rand -hex 12)
+          keytool -genkeypair -storetype PKCS12 -keystore digiform.jks -alias digiform \
+            -keyalg RSA -keysize 2048 -validity 10000 -storepass "$PASS" \
+            -dname "CN=Digiform, O=Digiform, C=CM"
+          base64 -w0 digiform.jks > KEYSTORE_BASE64.txt
+          echo -n "$PASS" > KEYSTORE_PASSWORD.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cle-signature-A-GARDER
+          path: |
+            digiform.jks
+            KEYSTORE_BASE64.txt
+            KEYSTORE_PASSWORD.txt
+
+  aab:
+    if: ${{ !inputs.creer_cle }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Vérifier la clé de signature
+        env:
+          KS: ${{ secrets.KEYSTORE_BASE64 }}
+          PW: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          if [ -z "$KS" ] || [ -z "$PW" ]; then
+            echo "::error::Secrets KEYSTORE_BASE64 et KEYSTORE_PASSWORD manquants. Lancez d'abord ce workflow avec « creer_cle » coché."
+            exit 1
+          fi
+
+      - name: Installer les dépendances (Capacitor 8, exigé par Google Play)
+        run: |
+          npm install
+          npm install --no-save @capacitor/core@8 @capacitor/android@8 @capacitor/cli@8 @capacitor/app@8 @capacitor/share@8 @capacitor/filesystem@8
+
+      - name: Compiler le site (version gratuite Play)
+        run: npm run build
+        env:
+          VITE_STORE: play
+
+      - name: Créer le projet Android
+        run: |
+          npx cap add android
+          npm install --no-save sharp
+          node scripts/make-icons.mjs
+          M=android/app/src/main/AndroidManifest.xml
+          sed -i 's/android:allowBackup="true"/android:allowBackup="false"/' "$M"
+          sed -i "s/versionCode 1/versionCode ${{ github.run_number }}/" android/app/build.gradle
+          npx cap sync android
+
+      - name: Compiler l'AAB
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew bundleRelease
+
+      - name: Signer l'AAB
+        env:
+          KS: ${{ secrets.KEYSTORE_BASE64 }}
+          PW: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          echo "$KS" | base64 -d > "$RUNNER_TEMP/digiform.jks"
+          jarsigner -keystore "$RUNNER_TEMP/digiform.jks" -storepass "$PW" \
+            -sigalg SHA256withRSA -digestalg SHA-256 \
+            android/app/build/outputs/bundle/release/app-release.aab digiform
+          rm -f "$RUNNER_TEMP/digiform.jks"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: digiform-google-play-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
