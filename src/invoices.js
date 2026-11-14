@@ -4,7 +4,7 @@ import { copyText, isNative } from './native.js';
 import { exportDocument, printPage } from './pdf.js';
 import { PAGES, PALETTE, isHex } from './design.js';
 import { getAssets, setAsset, clearAsset, onAssets } from './assets.js';
-import { INVOICE_STYLES, DEVISES, blankDoc, invoiceHTML, invoiceText, totals, fmtMoney, num, defaultObj } from './invoice-core.js';
+import { INVOICE_STYLES, DOC_TYPES, PAYS, MODELES, DEVISES, blankDoc, invoiceHTML, invoiceText, totals, fmtMoney, num, defaultObj } from './invoice-core.js';
 
 const KEY = 'digiform.inv.v1';
 const load = () => {
@@ -62,6 +62,7 @@ function fileToLogo(file, cb) {
 export function createInvoiceRoom({ onBack, goStamp }) {
   const saved = load();
   let counters = (saved && saved.counters) || { facture: 1 };
+  const TV = (v) => String(v).replace('.', ',');
   const base = blankDoc((saved && saved.doc && saved.doc.type) || 'facture', 1);
   const sd = (saved && saved.doc) || {};
   let doc = {
@@ -90,7 +91,13 @@ export function createInvoiceRoom({ onBack, goStamp }) {
       <section data-view="form">
         <div class="card">
           <h2>Document</h2>
-          <div class="seg"><button type="button" data-type="facture">Facture</button><button type="button" data-type="devis">Devis</button></div>
+          <div class="seg wrap">${Object.entries(DOC_TYPES).map(([k, v]) => `<button type="button" data-type="${k}">${v.nom}</button>`).join('')}</div>
+          <p class="hint">Pays (adapte la devise, la TVA et les identifiants)</p>
+          <label class="f"><select data-f="pays">${Object.entries(PAYS).map(([k, v]) => `<option value="${k}">${v.drap} ${v.nom}</option>`).join('')}</select></label>
+          <p class="hint" data-r="pays-note"></p>
+          <button type="button" class="link-btn" data-act="apply-tva" hidden></button>
+          <p class="hint">Modèle d'activité (lignes d'exemple à modifier)</p>
+          <div class="seg wrap" data-r="modeles">${MODELES.map((m) => `<button type="button" data-modele="${m.id}">${esc(m.nom)}</button>`).join('')}</div>
           <p class="hint">Style</p>
           <div class="seg wrap" data-r="styles"></div>
           <p class="hint">Couleur</p>
@@ -109,13 +116,17 @@ export function createInvoiceRoom({ onBack, goStamp }) {
           ${input('Nom', 'emetteur.nom', 'autocomplete="organization"')}
           ${input('Adresse', 'emetteur.adresse')}
           <div class="grid2">${input('Téléphone', 'emetteur.tel', 'type="tel"')}${input('Email', 'emetteur.email', 'type="email"')}</div>
-          ${input('NIU ou numéro de contribuable', 'emetteur.niu')}
+          ${input('Forme juridique et capital (ex. SARL au capital de 1 000 000 FCFA)', 'emetteur.forme')}
+          <div class="grid2"><label class="f"><span data-r="id1">NIU</span><input data-f="emetteur.niu"></label><label class="f"><span data-r="id2">RCCM</span><input data-f="emetteur.rccm"></label></div>
+          ${input('Compte bancaire / IBAN (facultatif)', 'emetteur.compte')}
         </div>
         <div class="card">
           <h2>Client</h2>
           ${input('Nom', 'client.nom')}
           ${input('Adresse', 'client.adresse')}
           ${input('Téléphone', 'client.tel', 'type="tel"')}
+          ${input('NIU du client (facultatif, utile pour les entreprises)', 'client.niu')}
+          ${input('Objet du document (facultatif)', 'objet')}
         </div>
         <div class="card">
           <h2>Lignes</h2>
@@ -126,7 +137,7 @@ export function createInvoiceRoom({ onBack, goStamp }) {
           <h2>Montants et paiement</h2>
           <div class="grid2">${input('TVA en %', 'tva', 'inputmode="decimal"')}${input('Remise en %', 'remise', 'inputmode="decimal"')}</div>
           <div class="grid2">${input('Acompte déjà versé', 'acompte', 'inputmode="decimal"')}
-            <label class="f"><span>Devise</span><select data-f="devise">${Object.keys(DEVISES).map((k) => `<option value="${k}">${k === 'FCFA' ? 'FCFA' : k === 'EUR' ? 'Euro (€)' : 'Dollar ($)'}</option>`).join('')}</select></label></div>
+            <label class="f"><span>Devise</span><select data-f="devise">${Object.entries(DEVISES).map(([k, v]) => `<option value="${k}">${v.nom}</option>`).join('')}</select></label></div>
           <label class="f"><span>Paiement (MoMo, Orange Money, banque…)</span><textarea rows="2" data-f="paiement"></textarea></label>
           <label class="f"><span>Conditions et mentions (garantie, délai, pénalités…)</span><textarea rows="3" data-f="conditions"></textarea></label>
           <label class="f"><span>Notes</span><textarea rows="2" data-f="notes"></textarea></label>
@@ -165,6 +176,16 @@ export function createInvoiceRoom({ onBack, goStamp }) {
   const pageOf = () => PAGES[doc.format] || PAGES.A4;
 
   /* ----- Rendu des contrôles ----- */
+  function renderPays() {
+    const P = PAYS[doc.pays] || PAYS.CM;
+    q('id1').textContent = `${P.id1} (numéro de contribuable)`;
+    q('id2').textContent = P.id2;
+    const b = el.querySelector('[data-act="apply-tva"]');
+    const diff = String(num(doc.tva)) !== String(num(P.tva));
+    q('pays-note').textContent = P.tvaNote || 'TVA : renseignez le taux applicable dans votre pays.';
+    b.hidden = !(diff && num(P.tva) > 0);
+    b.textContent = `Appliquer la TVA ${TV(P.tva)} %`;
+  }
   function renderStyles() {
     q('styles').innerHTML = INVOICE_STYLES.map((s) => `<button type="button" data-style="${s.id}"${doc.style === s.id ? ' class="on"' : ''}>${esc(s.nom)}${locked(s.id) ? ' 🔒' : ''}</button>`).join('');
   }
@@ -250,7 +271,9 @@ export function createInvoiceRoom({ onBack, goStamp }) {
   function syncForm() {
     el.querySelectorAll('[data-f]').forEach((n) => (n.value = getPath(doc, n.dataset.f) ?? ''));
     el.querySelectorAll('[data-type]').forEach((b) => b.classList.toggle('on', b.dataset.type === doc.type));
-    q('lim').textContent = doc.type === 'devis' ? "Valable jusqu'au" : 'Échéance de paiement';
+    q('lim').textContent = doc.type === 'devis' || doc.type === 'proforma' ? "Valable jusqu'au" : 'Échéance de paiement';
+    renderPays();
+    el.querySelectorAll('[data-modele]').forEach((m) => m.classList.remove('on'));
     renderStyles();
     renderColors();
     renderFormats();
@@ -285,7 +308,7 @@ export function createInvoiceRoom({ onBack, goStamp }) {
     if (busy || !gate()) return;
     busy = true;
     toast('Création du PDF…');
-    const name = doc.type === 'devis' ? 'Devis' : 'Facture';
+    const name = DOC_TYPES[doc.type].court;
     try {
       const r = await exportDocument({
         fmt: doc.format,
@@ -310,6 +333,14 @@ export function createInvoiceRoom({ onBack, goStamp }) {
     }
   }
 
+  function applyPays() {
+    const P = PAYS[doc.pays] || PAYS.CM;
+    doc.devise = P.devise;
+    if (!doc.paiement.trim()) doc.paiement = P.paiement;
+    if (!doc.conditions.trim()) doc.conditions = P.conditions;
+    syncForm();
+  }
+
   /* ----- Événements ----- */
   el.addEventListener('input', (e) => {
     const t = e.target;
@@ -320,6 +351,8 @@ export function createInvoiceRoom({ onBack, goStamp }) {
     } else if (t.dataset.line !== undefined) doc.lignes[Number(t.dataset.line)][t.dataset.k] = t.value;
     else if (t.dataset.rng && placing) doc[placing][t.dataset.rng] = Number(t.value);
     else return;
+    if (t.dataset.f === 'pays') applyPays();
+    if (t.dataset.f === 'tva') renderPays();
     update(!t.dataset.rng);
   });
 
@@ -358,8 +391,20 @@ export function createInvoiceRoom({ onBack, goStamp }) {
     const ty = e.target.closest('[data-type]');
     if (ty) {
       doc.type = ty.dataset.type;
-      if (/^[FD]-\d+$/.test(doc.numero)) doc.numero = (doc.type === 'devis' ? 'D' : 'F') + doc.numero.slice(1);
+      if (/^[A-Z]{1,2}-\d+$/.test(doc.numero)) doc.numero = `${DOC_TYPES[doc.type].p}-${String(counters[doc.type] || 1).padStart(4, '0')}`;
       return syncForm();
+    }
+    const mo = e.target.closest('[data-modele]');
+    if (mo) {
+      const m = MODELES.find((x) => x.id === mo.dataset.modele);
+      const filled = doc.lignes.some((l) => l.desc.trim() || num(l.pu));
+      if (filled && !confirm('Remplacer vos lignes actuelles par ce modèle d’exemple ?')) return;
+      doc.lignes = m.lignes.map(([desc, qte, pu]) => ({ desc, qte, pu }));
+      doc.objet = m.objet;
+      doc.conditions = m.conditions;
+      syncForm();
+      el.querySelectorAll('[data-modele]').forEach((b) => b.classList.toggle('on', b === mo));
+      return toast('Modèle appliqué : modifiez les lignes');
     }
     const st = e.target.closest('[data-style]');
     if (st) { doc.style = st.dataset.style; renderStyles(); return update(false); }
@@ -385,6 +430,7 @@ export function createInvoiceRoom({ onBack, goStamp }) {
     const act = e.target.closest('[data-act]');
     if (!act) return;
     const a = act.dataset.act;
+    if (a === 'apply-tva') { doc.tva = (PAYS[doc.pays] || PAYS.CM).tva; syncForm(); return toast('TVA appliquée'); }
     if (a === 'goto-stamp') { e.preventDefault(); return goStamp(); }
     if (a === 'back') return view === 'preview' ? setView('form') : onBack();
     if (a === 'add') {
@@ -399,7 +445,7 @@ export function createInvoiceRoom({ onBack, goStamp }) {
     if (a === 'del-logo') { clearAsset('logo'); return toast('Logo retiré'); }
     if (a === 'new') {
       if (!confirm('Commencer un nouveau document ? Votre entreprise, votre logo et votre cachet sont conservés.')) return;
-      counters[doc.type] = (counters[doc.type] || 0) + 1;
+      counters[doc.type] = (counters[doc.type] || 1) + 1;
       doc = blankDoc(doc.type, counters[doc.type], doc);
       syncForm();
       setView('form');
