@@ -9,7 +9,27 @@ export const SHAPES = [
   { id: 'rect', nom: 'Rectangle' },
   { id: 'ovale', nom: 'Ovale' },
 ];
-export const defaultSpec = () => ({ shape: 'rond', l1: '', l2: '', l3: '', l4: '', color: '#1D4ED8', trait: 'normal', encre: true });
+export const defaultSpec = () => ({ shape: 'rond', l1: '', l2: '', l3: '', l4: '', color: '#1D4ED8', trait: 'normal', encre: true, angle: 0 });
+
+// Texte d'exemple affiché tant que le client n'a rien saisi
+export const DEMO_STAMP = { l1: 'Boutique Soleil', l2: 'Direction', l3: 'Douala, Cameroun', l4: '+237 6 00 00 00 00' };
+export const isBlank = (sp) => !((sp.l1 || '').trim() || (sp.l2 || '').trim() || (sp.l3 || '').trim() || (sp.l4 || '').trim());
+
+const today = () => new Date().toLocaleDateString('fr-FR');
+// Modèles prêts à l'emploi (la ligne du haut garde le nom de l'entreprise déjà saisi)
+export const PRESETS = [
+  { id: 'entreprise', nom: 'Entreprise', make: () => ({ shape: 'rond', l2: '', l3: '', l4: '', color: '#1D4ED8', trait: 'normal', angle: -6 }), keep: true },
+  { id: 'paye', nom: 'Payé', make: () => ({ shape: 'rect', l2: 'PAYÉ', l3: `Le ${today()}`, l4: '', color: '#B91C1C', trait: 'epais', angle: -9 }) },
+  { id: 'recu', nom: 'Reçu', make: () => ({ shape: 'rect', l2: 'REÇU', l3: `Le ${today()}`, l4: '', color: '#0B7A4B', trait: 'epais', angle: -7 }) },
+  { id: 'acquit', nom: 'Pour acquit', make: () => ({ shape: 'ovale', l2: 'POUR ACQUIT', l3: `Le ${today()}`, l4: '', color: '#1D4ED8', trait: 'normal', angle: -5 }) },
+  { id: 'conforme', nom: 'Copie conforme', make: () => ({ shape: 'rect', l2: 'COPIE CERTIFIÉE', l3: 'CONFORME À L’ORIGINAL', l4: '', color: '#14213D', trait: 'normal', angle: -4 }) },
+];
+
+// Taille réelle du dessin (une inclinaison demande un peu de marge pour ne pas rogner les coins)
+export function stampSize(spec) {
+  if (spec.shape === 'rond') return [300, 300];
+  return Math.abs(spec.angle || 0) > 0.5 ? [400, 260] : [360, 220];
+}
 
 const WIDTH = { fin: 3, normal: 5, epais: 8 };
 const fit = (txt, base, maxW) => Math.max(9, Math.min(base, maxW / Math.max(1, txt.length * 0.62)));
@@ -26,8 +46,9 @@ export function stampSVG(spec) {
   const filter = spec.encre
     ? `<filter id="ink" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed="7" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 1.75" result="m"/><feComposite in="SourceGraphic" in2="m" operator="in"/></filter>`
     : '';
-  const open = (vb, wd, ht) =>
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" width="${wd}" height="${ht}"><defs>${filter}</defs><g${spec.encre ? ' filter="url(#ink)"' : ''} fill="${c}" stroke="none" font-family="Arial,Helvetica,sans-serif" font-weight="700" text-anchor="middle">`;
+  const ang = Math.max(-25, Math.min(25, Number(spec.angle) || 0));
+  const open = (vb, wd, ht, cx, cy) =>
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" width="${wd}" height="${ht}"><defs>${filter}</defs><g${spec.encre ? ' filter="url(#ink)"' : ''} fill="${c}" stroke="none" font-family="Arial,Helvetica,sans-serif" font-weight="700" text-anchor="middle"><g transform="rotate(${ang} ${cx} ${cy})">`;
   const T = (x, y, size, t) => (t ? `<text x="${x}" y="${y}" font-size="${size.toFixed(1)}">${esc(t)}</text>` : '');
 
   if (spec.shape === 'rect' || spec.shape === 'ovale') {
@@ -37,19 +58,19 @@ export function stampSVG(spec) {
       ? `<ellipse cx="180" cy="110" rx="172" ry="104" fill="none" stroke="${c}" stroke-width="${w}"/><ellipse cx="180" cy="110" rx="${172 - w - 7}" ry="${104 - w - 7}" fill="none" stroke="${c}" stroke-width="${(w * 0.55).toFixed(1)}"/>`
       : `<rect x="6" y="6" width="348" height="208" rx="16" fill="none" stroke="${c}" stroke-width="${w}"/><rect x="${6 + w + 6}" y="${6 + w + 6}" width="${348 - 2 * (w + 6)}" height="${208 - 2 * (w + 6)}" rx="8" fill="none" stroke="${c}" stroke-width="${(w * 0.55).toFixed(1)}"/>`;
     return (
-      open('0 0 360 220', 360, 220) +
+      open(Math.abs(ang) > 0.5 ? '-20 -20 400 260' : '0 0 360 220', ...stampSize(spec), 180, 110) +
       frame +
       T(180, oval ? 64 : 62, fit(l1, 26, mw), l1) +
       T(180, 108, fit(l2, 38, mw), l2) +
       T(180, 146, fit(l3, 22, mw), l3) +
       T(180, oval ? 178 : 182, fit(l4, 19, mw), l4) +
-      '</g></svg>'
+      '</g></g></svg>'
     );
   }
 
   const star = (x) => `<text x="${x}" y="158" font-size="15">★</text>`;
   return (
-    open('0 0 300 300', 300, 300) +
+    open('0 0 300 300', 300, 300, 150, 150) +
     `<circle cx="150" cy="150" r="140" fill="none" stroke="${c}" stroke-width="${w}"/><circle cx="150" cy="150" r="${98}" fill="none" stroke="${c}" stroke-width="${(w * 0.55).toFixed(1)}"/>` +
     `<defs><path id="pt" d="M42 150A108 108 0 0 1 258 150"/><path id="pb" d="M24 150A126 126 0 0 0 276 150"/></defs>` +
     (l1 ? `<text font-size="${fit(l1, 22, 300).toFixed(1)}"><textPath href="#pt" startOffset="50%">${esc(l1)}</textPath></text>` : '') +
@@ -58,7 +79,7 @@ export function stampSVG(spec) {
     T(150, 178, fit(l3, 19, 170), l3) +
     star(30) +
     star(270) +
-    '</g></svg>'
+    '</g></g></svg>'
   );
 }
 
@@ -109,12 +130,17 @@ export function createStampRoom({ onBack }) {
 
       <section data-pane="cachet">
         <div class="stamp-preview" data-r="preview"></div>
+        <p class="hint stamp-demo" data-r="demo" hidden>Exemple : saisissez vos informations ci-dessous.</p>
+        <div class="card">
+          <h2>Type de cachet</h2>
+          <div class="seg wrap" data-r="presets">${PRESETS.map((x) => `<button type="button" data-preset="${x.id}">${x.nom}</button>`).join('')}</div>
+        </div>
         <div class="card">
           <h2>Texte du cachet</h2>
-          <label class="f"><span>Ligne du haut (nom de l'entreprise)</span><input data-s="l1" maxlength="40"></label>
-          <label class="f"><span>Texte principal (grand)</span><input data-s="l2" maxlength="28"></label>
-          <label class="f"><span>Texte secondaire</span><input data-s="l3" maxlength="32"></label>
-          <label class="f"><span>Ligne du bas (ville, téléphone, NIU)</span><input data-s="l4" maxlength="40"></label>
+          <label class="f"><span>Ligne du haut (nom de l'entreprise)</span><input data-s="l1" maxlength="40" placeholder="${DEMO_STAMP.l1}"></label>
+          <label class="f"><span>Texte principal (grand)</span><input data-s="l2" maxlength="28" placeholder="${DEMO_STAMP.l2}"></label>
+          <label class="f"><span>Texte secondaire</span><input data-s="l3" maxlength="32" placeholder="${DEMO_STAMP.l3}"></label>
+          <label class="f"><span>Ligne du bas (ville, téléphone, NIU)</span><input data-s="l4" maxlength="40" placeholder="${DEMO_STAMP.l4}"></label>
         </div>
         <div class="card">
           <h2>Forme</h2>
@@ -123,7 +149,12 @@ export function createStampRoom({ onBack }) {
           <div class="sw sw-big" data-r="colors">${swatches('data-color', STAMP_COLORS)}<label class="color-custom" title="Couleur personnalisée"><input type="color" data-s-color value="#1D4ED8"></label></div>
           <h2 class="gap-top">Trait</h2>
           <div class="seg" data-r="traits"><button type="button" data-trait="fin">Fin</button><button type="button" data-trait="normal">Normal</button><button type="button" data-trait="epais">Épais</button></div>
+          <label class="f gap-top"><span>Inclinaison : <b data-r="angle-val">0°</b> (un vrai tampon n'est jamais parfaitement droit)</span><input type="range" min="-20" max="20" step="1" data-s-angle></label>
           <label class="chk gap-top"><input type="checkbox" data-s-encre> Effet tampon encré</label>
+        </div>
+        <div class="card">
+          <h2>Aperçu sur un document</h2>
+          <div class="paper" data-r="paper"></div>
         </div>
         <div class="card">
           <button type="button" class="primary" data-act="save-stamp">Enregistrer mon cachet</button>
@@ -135,6 +166,7 @@ export function createStampRoom({ onBack }) {
       <section data-pane="signature" hidden>
         <div class="card">
           <h2>Dessinez votre signature</h2>
+          <p class="hint">Signez avec le doigt, sur la ligne.</p>
           <canvas class="sig-pad" width="640" height="240" data-r="pad"></canvas>
           <div class="sw sw-big gap-top" data-r="inks">${swatches('data-ink', INKS)}</div>
           <div class="grid2 gap-top">
@@ -174,12 +206,26 @@ export function createStampRoom({ onBack }) {
       /* rien */
     }
   }
+  const shownSpec = () => (isBlank(spec) ? { ...spec, ...DEMO_STAMP } : spec);
+  function drawPaper() {
+    const sig = getAssets().signature;
+    const bar = (w) => `<i style="width:${w}%"></i>`;
+    q('paper').innerHTML = `<div class="paper-lines">${bar(46)}${bar(92)}${bar(88)}${bar(94)}${bar(60)}</div>
+      <div class="paper-foot"><span>Fait à Douala, le ${today()}</span><div class="paper-sign">${sig ? `<img alt="" class="p-sig" src="${sig}">` : '<svg class="p-sig" viewBox="0 0 160 60"><path d="M6 40c14-30 22-34 26-20s-10 28 4 22 18-30 30-22-6 24 6 20 20-14 34-12" fill="none" stroke="#1D4ED8" stroke-width="3" stroke-linecap="round"/></svg>'}<div class="p-stamp">${stampSVG(shownSpec())}</div></div></div>`;
+  }
   function drawStamp() {
-    q('preview').innerHTML = stampSVG(spec);
-    el.querySelectorAll('[data-s]').forEach((n) => (n.value = spec[n.dataset.s] || ''));
+    q('demo').hidden = !isBlank(spec);
+    q('preview').innerHTML = stampSVG(shownSpec());
+    q('angle-val').textContent = `${spec.angle || 0}°`;
+    el.querySelector('[data-s-angle]').value = spec.angle || 0;
+    drawPaper();
+    if (document.activeElement && document.activeElement.dataset && document.activeElement.dataset.s) {
+      /* on ne réécrit pas le champ en cours de saisie */
+    } else el.querySelectorAll('[data-s]').forEach((n) => (n.value = spec[n.dataset.s] || ''));
     el.querySelector('[data-s-encre]').checked = !!spec.encre;
     el.querySelector('[data-s-color]').value = isHex(spec.color) ? spec.color : '#1D4ED8';
     el.querySelectorAll('[data-shape]').forEach((b) => b.classList.toggle('on', b.dataset.shape === spec.shape));
+    el.querySelectorAll('[data-preset]').forEach((b) => b.classList.toggle('on', b.dataset.preset === spec.preset));
     el.querySelectorAll('[data-trait]').forEach((b) => b.classList.toggle('on', b.dataset.trait === spec.trait));
     el.querySelectorAll('[data-color]').forEach((b) => b.classList.toggle('on', b.dataset.color.toLowerCase() === String(spec.color).toLowerCase()));
     q('stamp-status').textContent = getAssets().cachet ? 'Cachet enregistré : vous pouvez l’apposer sur vos factures.' : 'Pas encore de cachet enregistré.';
@@ -239,6 +285,7 @@ export function createStampRoom({ onBack }) {
     out.getContext('2d').drawImage(t, 0, 0, out.width, out.height);
     setAsset('signature', out.toDataURL('image/png'));
     drawSaved();
+    drawPaper();
     toast('Signature enregistrée');
   }
 
@@ -280,6 +327,7 @@ export function createStampRoom({ onBack }) {
     if (t.dataset.s) spec[t.dataset.s] = t.value;
     else if ('sColor' in t.dataset) spec.color = t.value;
     else if ('sEncre' in t.dataset) spec.encre = t.checked;
+    else if ('sAngle' in t.dataset) spec.angle = Number(t.value);
     else return;
     drawStamp();
   });
@@ -294,6 +342,14 @@ export function createStampRoom({ onBack }) {
     }
     const sh = e.target.closest('[data-shape]');
     if (sh) { spec.shape = sh.dataset.shape; return drawStamp(); }
+    const pr = e.target.closest('[data-preset]');
+    if (pr) {
+      const pre = PRESETS.find((x) => x.id === pr.dataset.preset);
+      const keepL1 = spec.l1;
+      Object.assign(spec, defaultSpec(), pre.make(), { preset: pre.id, l1: keepL1 });
+      if (pre.keep) Object.assign(spec, { l2: spec.l2, l3: spec.l3, l4: spec.l4 });
+      return drawStamp();
+    }
     const tr = e.target.closest('[data-trait]');
     if (tr) { spec.trait = tr.dataset.trait; return drawStamp(); }
     const co = e.target.closest('[data-color]');
@@ -306,10 +362,11 @@ export function createStampRoom({ onBack }) {
     if (a === 'back') return onBack();
     if (a === 'clear-pad') return clearPad();
     if (a === 'save-sig') return saveSignatureCanvas(pad);
-    if (a === 'del-sig') { clearAsset('signature'); drawSaved(); return toast('Signature supprimée'); }
+    if (a === 'del-sig') { clearAsset('signature'); drawSaved(); drawPaper(); return toast('Signature supprimée'); }
     if (a === 'del-stamp') { clearAsset('cachet', 'cachetSpec'); drawStamp(); return toast('Cachet supprimé'); }
     if (a === 'save-stamp') {
-      const vb = spec.shape === 'rond' ? [300, 300] : [360, 220];
+      if (isBlank(spec)) return toast('Ajoutez d’abord le texte de votre cachet');
+      const vb = stampSize(spec);
       try {
         const png = await svgToPNG(stampSVG(spec), vb[0], vb[1], 2);
         setAsset('cachetSpec', { ...spec });
