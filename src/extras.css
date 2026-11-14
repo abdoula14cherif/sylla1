@@ -540,3 +540,18 @@ body[data-room='cv'] .layout { animation: fadeUp 0.35s var(--ease); }
 .facture-societe .inv-legal { padding: 10px; background: #f4f6fa; border-top: 3px solid var(--inv); }
 /* Reçu : en-tête allégé */
 .t-recu .inv-table th:nth-child(2), .t-recu .inv-table td:nth-child(2) { width: 52px; }
+
+/* ===== Cachet et signature sur les contrats, reçus et lettres ===== */
+.letter-paper { position: relative; }
+.letter-paper.placing { outline: 2px dashed var(--amber); outline-offset: 4px; cursor: crosshair; }
+.pay-price { margin-top: 10px !important; font-size: 22px; font-weight: 800; color: var(--ink); }
+.modal-box .linkbtn { display: block; margin: 6px 0; text-align: center; text-decoration: none; }
+.code-row { display: flex; gap: 8px; margin-top: 14px; }
+.code-row input { flex: 1; min-width: 0; padding: 11px 12px; border: 1px solid var(--line); border-radius: 10px; font: inherit; letter-spacing: 0.08em; text-transform: uppercase; }
+.code-row .btn2 { margin: 0; width: auto; padding: 0 16px; }
+
+/* ===== Plein écran Android récent : marges des barres système ===== */
+:root { --sat: var(--safe-area-inset-top, env(safe-area-inset-top, 0px)); --sab: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)); }
+.ov-top { box-sizing: content-box; height: 52px; padding-top: var(--sat); }
+.top { box-sizing: content-box; padding-top: var(--sat); }
+.overlay { padding-bottom: var(--sab); }
