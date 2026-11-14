@@ -15,6 +15,7 @@ import { createTrackerRoom } from './suivi.js';
 import { createAfficheRoom } from './affiche.js';
 import { createPostsRoom } from './posts.js';
 import { initHub } from './hub.js';
+import { initBackButton } from './native-back.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const NAMES = new Map([...LAYOUTS, ...PROFILES].map((x) => [x.id, x.nom]));
@@ -265,6 +266,8 @@ export function initExtras(api) {
       return n ? `Reprendre le CV de ${n}` : null;
     },
   });
+
+  initBackButton();
 
   /* ----- Démarrage ----- */
   const refresh = () => {
