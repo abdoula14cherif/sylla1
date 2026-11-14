@@ -263,6 +263,15 @@ function poly(c, pts, fill) {
   c.fill();
 }
 
+let FX = 'mat'; // finition en cours de rendu (relief, dorure…)
+const colorLum = (col) => {
+  if (typeof col !== 'string') return null;
+  const m = col.trim().match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (!m) return null;
+  const h = m[1].length === 3 ? m[1].split('').map((d) => d + d).join('') : m[1];
+  return lum(`#${h}`);
+};
+
 function txt(c, text, x, y, o) {
   const { size, weight = '700', fam = FONT, color = INK, align = 'left', maxW, alpha = 1, spacing = 0, italic = false } = o;
   const font = (n) => `${italic ? 'italic ' : ''}${weight} ${n}px ${fam}`;
@@ -285,7 +294,39 @@ function txt(c, text, x, y, o) {
   c.fillStyle = color;
   c.textAlign = align;
   c.textBaseline = 'alphabetic';
-  c.fillText(t, x, y);
+  const L = colorLum(color);
+  if (FX === 'dorure' && s >= 38 && L !== null && L >= 0.5) {
+    // feuille d'or à chaud : dégradé métallique + léger relief
+    const w = c.measureText(t).width;
+    const x0 = align === 'center' ? x - w / 2 : align === 'right' ? x - w : x;
+    const g = c.createLinearGradient(x0, y - s, x0 + w, y + s * 0.2);
+    [[0, '#fff3b8'], [0.22, '#e3b73d'], [0.5, '#f7e08a'], [0.72, '#b8860b'], [1, '#f1d56b']].forEach(([k, col]) => g.addColorStop(k, col));
+    c.shadowColor = 'rgba(0,0,0,0.35)';
+    c.shadowBlur = 2;
+    c.shadowOffsetY = 1.5;
+    c.fillStyle = g;
+    c.fillText(t, x, y);
+    c.shadowColor = 'transparent';
+    c.globalAlpha = alpha * 0.5;
+    c.strokeStyle = 'rgba(255,255,255,0.7)';
+    c.lineWidth = 0.8;
+    c.strokeText(t, x, y);
+  } else if (FX === 'relief' && L !== null) {
+    // impression en creux (letterpress) : lumière en bas du trait sur fond clair, ombre en haut sur fond foncé
+    if (L < 0.5) {
+      c.shadowColor = 'rgba(255,255,255,0.75)';
+      c.shadowOffsetY = 1.6;
+    } else {
+      c.shadowColor = 'rgba(0,0,0,0.5)';
+      c.shadowOffsetY = -1.6;
+    }
+    c.shadowBlur = 0;
+    c.fillText(t, x, y);
+    c.shadowColor = 'transparent';
+    c.globalAlpha = alpha * 0.28;
+    c.fillStyle = L < 0.5 ? '#000000' : '#ffffff';
+    c.fillText(t, x + 0.6, y + 0.6);
+  } else c.fillText(t, x, y);
   c.restore();
   return s;
 }
@@ -1076,6 +1117,8 @@ function grainPattern(c) {
 export const FINITIONS = [
   { id: 'mat', nom: 'Mat', desc: 'Papier épais, léger grain' },
   { id: 'brillant', nom: 'Brillant', desc: 'Pelliculage avec reflet' },
+  { id: 'relief', nom: 'Relief', desc: 'Texte imprimé en creux (letterpress)' },
+  { id: 'dorure', nom: 'Dorure or', desc: 'Nom et titres en feuille d’or à chaud' },
   { id: 'aucune', nom: 'Aucune', desc: 'Aplat net (impression directe)' },
 ];
 
@@ -1345,8 +1388,13 @@ export function renderCard(canvas, data, img, face = 'recto') {
   c.rect(0, 0, W, H);
   c.clip();
   const a = /^#[0-9a-f]{6}$/i.test(data.accent) ? data.accent : '#14213D';
-  if (face === 'verso') drawBack(c, data, a, BACK[data.design] || 'light');
-  else (DESIGNS[data.design] || DESIGNS['carte-moderne'])(c, data, img, a);
+  FX = data.finition || 'mat';
+  try {
+    if (face === 'verso') drawBack(c, data, a, BACK[data.design] || 'light');
+    else (DESIGNS[data.design] || DESIGNS['carte-moderne'])(c, data, img, a);
+  } finally {
+    FX = 'mat';
+  }
   finish(c, data.finition || 'mat');
   c.restore();
 }
@@ -1359,6 +1407,7 @@ export const SCENES = [
   { id: 'bois', nom: 'Bois' },
   { id: 'ardoise', nom: 'Ardoise' },
   { id: 'couleur', nom: 'Couleur' },
+  { id: 'perspective', nom: '3D' },
 ];
 export const MW = 1600;
 export const MH = 1000;
@@ -1488,13 +1537,126 @@ function putCard(c, cv, cx, cy, rot, cw) {
   c.restore();
 }
 
+
+/* ---------- Perspective 3D : carte déformée par une vraie homographie ---------- */
+function homography(q) {
+  const [x0, y0] = q[0];
+  const [x1, y1] = q[1];
+  const [x2, y2] = q[2];
+  const [x3, y3] = q[3];
+  const dx1 = x1 - x2;
+  const dx2 = x3 - x2;
+  const dx3 = x0 - x1 + x2 - x3;
+  const dy1 = y1 - y2;
+  const dy2 = y3 - y2;
+  const dy3 = y0 - y1 + y2 - y3;
+  const det = dx1 * dy2 - dx2 * dy1;
+  const g = (dx3 * dy2 - dx2 * dy3) / det;
+  const h = (dx1 * dy3 - dx3 * dy1) / det;
+  const a = x1 - x0 + g * x1;
+  const b = x3 - x0 + h * x3;
+  const d = y1 - y0 + g * y1;
+  const e = y3 - y0 + h * y3;
+  return (u, v) => {
+    const w = g * u + h * v + 1;
+    return [(a * u + b * v + x0) / w, (d * u + e * v + y0) / w];
+  };
+}
+
+function texTriangle(c, img, s0, s1, s2, d0, d1, d2) {
+  const den = s0[0] * (s1[1] - s2[1]) + s1[0] * (s2[1] - s0[1]) + s2[0] * (s0[1] - s1[1]);
+  if (!den) return;
+  const A = (d0[0] * (s1[1] - s2[1]) + d1[0] * (s2[1] - s0[1]) + d2[0] * (s0[1] - s1[1])) / den;
+  const B = (d0[1] * (s1[1] - s2[1]) + d1[1] * (s2[1] - s0[1]) + d2[1] * (s0[1] - s1[1])) / den;
+  const C = (d0[0] * (s2[0] - s1[0]) + d1[0] * (s0[0] - s2[0]) + d2[0] * (s1[0] - s0[0])) / den;
+  const D = (d0[1] * (s2[0] - s1[0]) + d1[1] * (s0[0] - s2[0]) + d2[1] * (s1[0] - s0[0])) / den;
+  const E = (d0[0] * (s1[0] * s2[1] - s2[0] * s1[1]) + d1[0] * (s2[0] * s0[1] - s0[0] * s2[1]) + d2[0] * (s0[0] * s1[1] - s1[0] * s0[1])) / den;
+  const F = (d0[1] * (s1[0] * s2[1] - s2[0] * s1[1]) + d1[1] * (s2[0] * s0[1] - s0[0] * s2[1]) + d2[1] * (s0[0] * s1[1] - s1[0] * s0[1])) / den;
+  const cx = (d0[0] + d1[0] + d2[0]) / 3;
+  const cy = (d0[1] + d1[1] + d2[1]) / 3;
+  const grow = (p) => {
+    const dx = p[0] - cx;
+    const dy = p[1] - cy;
+    const l = Math.hypot(dx, dy) || 1;
+    return [p[0] + (dx / l) * 0.7, p[1] + (dy / l) * 0.7];
+  };
+  const [g0, g1, g2] = [grow(d0), grow(d1), grow(d2)];
+  c.save();
+  c.beginPath();
+  c.moveTo(g0[0], g0[1]);
+  c.lineTo(g1[0], g1[1]);
+  c.lineTo(g2[0], g2[1]);
+  c.closePath();
+  c.clip();
+  c.transform(A, B, C, D, E, F);
+  c.drawImage(img, 0, 0);
+  c.restore();
+}
+
+function warpCard(c, img, quad, n = 16) {
+  const P = homography(quad);
+  const w = img.width;
+  const h = img.height;
+  for (let i = 0; i < n; i += 1) {
+    for (let j = 0; j < n; j += 1) {
+      const u0 = i / n;
+      const u1 = (i + 1) / n;
+      const v0 = j / n;
+      const v1 = (j + 1) / n;
+      const s = [[u0 * w, v0 * h], [u1 * w, v0 * h], [u1 * w, v1 * h], [u0 * w, v1 * h]];
+      const d = [P(u0, v0), P(u1, v0), P(u1, v1), P(u0, v1)];
+      texTriangle(c, img, s[0], s[1], s[2], d[0], d[1], d[2]);
+      texTriangle(c, img, s[0], s[2], s[3], d[0], d[2], d[3]);
+    }
+  }
+}
+
+function perspectiveCard(c, cv, quad, opts = {}) {
+  const { blur = 0, thick = 7, shadow = 1 } = opts;
+  c.save();
+  if (blur) c.filter = `blur(${blur}px)`;
+  // ombre portée au sol
+  c.save();
+  c.fillStyle = `rgba(0,0,0,${0.32 * shadow})`;
+  c.shadowColor = `rgba(0,0,0,${0.5 * shadow})`;
+  c.shadowBlur = 50;
+  c.shadowOffsetX = 26;
+  c.shadowOffsetY = 46;
+  c.beginPath();
+  quad.forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y)));
+  c.closePath();
+  c.fill();
+  c.restore();
+  // tranche du carton (la face est décalée vers le haut)
+  c.fillStyle = '#d8d3c8';
+  c.beginPath();
+  quad.forEach(([x, y], i) => (i ? c.lineTo(x, y + thick) : c.moveTo(x, y + thick)));
+  c.closePath();
+  c.fill();
+  warpCard(c, cv, quad);
+  // reflet de lumière sur la face
+  c.save();
+  c.beginPath();
+  quad.forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y)));
+  c.closePath();
+  c.clip();
+  const g = c.createLinearGradient(quad[0][0], quad[0][1], quad[2][0], quad[2][1]);
+  g.addColorStop(0, 'rgba(255,255,255,0.18)');
+  g.addColorStop(0.45, 'rgba(255,255,255,0)');
+  g.addColorStop(1, 'rgba(0,0,0,0.16)');
+  c.fillStyle = g;
+  c.fillRect(0, 0, MW, MH);
+  c.restore();
+  c.restore();
+}
+
 export function renderMockup(canvas, data, img, scene = 'marbre') {
   const c = canvas.getContext('2d');
   const k = canvas.width / MW;
   c.setTransform(k, 0, 0, k, 0, 0);
   c.clearRect(0, 0, MW, MH);
   const a = /^#[0-9a-f]{6}$/i.test(data.accent) ? data.accent : '#14213D';
-  drawScene(c, scene, a);
+  drawScene(c, scene === 'perspective' ? 'marbre' : scene, a);
   const face = (f) => {
     const cv = document.createElement('canvas');
     cv.width = W;
@@ -1502,6 +1664,12 @@ export function renderMockup(canvas, data, img, scene = 'marbre') {
     renderCard(cv, data, img, f);
     return cv;
   };
+  if (scene === 'perspective') {
+    // le verso est plus loin (flou léger), le recto au premier plan
+    perspectiveCard(c, face('verso'), [[170, 210], [790, 190], [830, 520], [110, 548]], { blur: 1.6, thick: 5, shadow: 0.8 });
+    perspectiveCard(c, face('recto'), [[640, 400], [1370, 372], [1450, 770], [560, 812]], { thick: 9 });
+    return;
+  }
   putCard(c, face('verso'), 520, 560, -0.13, 720);
   putCard(c, face('recto'), 1010, 470, 0.08, 760);
 }
