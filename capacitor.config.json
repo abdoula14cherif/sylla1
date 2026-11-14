@@ -1,5 +1,8 @@
 {
   "appId": "com.digiform.app",
   "appName": "Digiform",
-  "webDir": "dist"
-}
+  "webDir": "dist",
+  "backgroundColor": "#14213D",
+  "android": {
+    "allowMixedContent": false,
+    "webContentsDebuggingEnabled": false
