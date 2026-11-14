@@ -1,4 +1,4 @@
-import { CONFIG } from './config.js';
+import { CONFIG, FREE_BUILD } from './config.js';
 import { LAYOUTS, PROFILES, LETTERS } from './catalog.js';
 import { DOCS } from './docs-data.js';
 import { INVOICE_STYLES } from './invoice-core.js';
@@ -7,7 +7,7 @@ import { AFFICHE_DESIGNS } from './affiche-core.js';
 import { esc } from './cv.js';
 import { logoSVG } from './logo.js';
 import { copyText } from './native.js';
-import { locked, getPremiumIds, getUnlockAll, onPremiumChange, showPremium, showSoon, toast } from './premium.js';
+import { locked, getPremiumIds, getUnlockAll, getPay, getCodeHashes, sha256, normCode, onPremiumChange, showPremium, showSoon, toast } from './premium.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 
@@ -107,6 +107,20 @@ export function initHub({ modules, getCvHint }) {
       <p class="doc-note">Activez « Premium » sur ce que vous voulez verrouiller. Copiez ensuite le fichier, ouvrez GitHub, collez-le à la place du contenu de <b>premium.json</b> puis enregistrez (Commit). Les téléphones le lisent au lancement de l'app.</p>
       <div data-r="groups"></div>
       <div class="card">
+        <h2>Paiement et codes</h2>
+        <p class="hint">Collez ici votre lien de paiement (Mobile Money, Wave, PayPal, Stripe…). Il s'affiche dans la fenêtre « Contenu premium ». Vous pouvez le changer quand vous voulez : recopiez le fichier sur GitHub.</p>
+        <label class="f"><span>Lien de paiement (https://…)</span><input data-pay="lien" type="url" inputmode="url" placeholder="https://…"></label>
+        <div class="grid2">
+          <label class="f"><span>Prix affiché</span><input data-pay="prix" placeholder="2 000 FCFA"></label>
+          <label class="f"><span>Texte du bouton</span><input data-pay="libelle" placeholder="Payer maintenant"></label>
+        </div>
+        <label class="f"><span>WhatsApp de l'admin (avec indicatif)</span><input data-pay="whatsapp" type="tel" inputmode="tel" placeholder="237675371857"></label>
+        <p class="hint">Après paiement, donnez au client un code d'activation. Il le tape une fois dans l'app et tout le premium s'ouvre sur son téléphone.</p>
+        <button type="button" class="btn2" data-act="newcode">Créer un code d'activation</button>
+        <pre class="adm-json" data-r="newcodes" hidden></pre>
+        <p class="hint" data-r="codecount"></p>
+      </div>
+      <div class="card">
         <label class="adm-row nob"><span>Tout débloquer (promotion)</span><input type="checkbox" class="sw-toggle" data-unlock></label>
         <div class="adm-actions">
           <button type="button" class="btn2" data-act="free">Tout gratuit</button>
@@ -120,7 +134,11 @@ export function initHub({ modules, getCvHint }) {
   document.body.appendChild(admin);
   let draft = new Set();
   let draftUnlock = false;
-  const jsonText = () => JSON.stringify({ premium: [...draft], unlockAll: draftUnlock }, null, 2);
+  let draftPay = { lien: '', prix: '', libelle: '', whatsapp: CONFIG.adminWhatsapp };
+  let draftCodes = new Set();
+  let madeCodes = [];
+  const jsonText = () =>
+    JSON.stringify({ premium: [...draft], unlockAll: draftUnlock, paiement: draftPay, codes: [...draftCodes] }, null, 2);
 
   function renderAdmin() {
     $('[data-r="groups"]', admin).innerHTML = adminGroups()
@@ -131,6 +149,8 @@ export function initHub({ modules, getCvHint }) {
       )
       .join('');
     $('[data-unlock]', admin).checked = draftUnlock;
+    admin.querySelectorAll('[data-pay]').forEach((i) => (i.value = draftPay[i.dataset.pay] || ''));
+    $('[data-r="codecount"]', admin).textContent = `${draftCodes.size} code(s) actif(s)`;
     $('[data-r="json"]', admin).textContent = jsonText();
   }
   function refreshAdminCounts() {
@@ -146,11 +166,30 @@ export function initHub({ modules, getCvHint }) {
     else return;
     refreshAdminCounts();
   });
+  admin.addEventListener('input', (e) => {
+    const k = e.target.dataset.pay;
+    if (!k) return;
+    draftPay = { ...draftPay, [k]: e.target.value.trim() };
+    refreshAdminCounts();
+  });
   admin.addEventListener('click', async (e) => {
     const a = e.target.closest('[data-act]');
     if (!a) return;
     const act = a.dataset.act;
     if (act === 'back') return back();
+    if (act === 'newcode') {
+      const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      const r = crypto.getRandomValues(new Uint8Array(8));
+      const code = [...r].map((n) => abc[n % abc.length]).join('');
+      draftCodes.add(await sha256(normCode(code)));
+      madeCodes.push(`${code.slice(0, 4)}-${code.slice(4)}`);
+      const box = $('[data-r="newcodes"]', admin);
+      box.hidden = false;
+      box.textContent = `Codes créés (notez-les, ils ne seront plus affichés) :\n${madeCodes.join('\n')}`;
+      $('[data-r="codecount"]', admin).textContent = `${draftCodes.size} code(s) actif(s)`;
+      $('[data-r="json"]', admin).textContent = jsonText();
+      return toast('Code créé : copiez ensuite le fichier');
+    }
     if (act === 'free') {
       draft = new Set();
       renderAdmin();
@@ -196,6 +235,10 @@ export function initHub({ modules, getCvHint }) {
     if (r === 'admin' && last !== 'admin') {
       draft = new Set(getPremiumIds());
       draftUnlock = getUnlockAll();
+      draftPay = { lien: '', prix: '', libelle: '', whatsapp: CONFIG.adminWhatsapp, ...getPay() };
+      draftCodes = new Set(getCodeHashes());
+      madeCodes = [];
+      $('[data-r="newcodes"]', admin).hidden = true;
       renderAdmin();
     }
     if (r === 'home') renderCards();
@@ -213,6 +256,7 @@ export function initHub({ modules, getCvHint }) {
   let taps = 0;
   let timer;
   $('#home-brand').addEventListener('click', () => {
+    if (FREE_BUILD) return;
     taps += 1;
     clearTimeout(timer);
     timer = setTimeout(() => (taps = 0), 1500);
