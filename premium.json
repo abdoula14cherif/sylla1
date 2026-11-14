@@ -1,4 +1,11 @@
 {
   "premium": [],
-  "unlockAll": false
+  "unlockAll": false,
+  "paiement": {
+    "lien": "",
+    "prix": "",
+    "libelle": "Payer maintenant",
+    "whatsapp": "237675371857"
+  },
+  "codes": []
 }
