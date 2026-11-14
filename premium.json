@@ -1,11 +1,43 @@
 {
-  "premium": [],
+  "premium": [
+    "salle-carte",
+    "bandeau",
+    "creatif",
+    "lateral",
+    "duo",
+    "demande-avance",
+    "demande-augmentation",
+    "email-accepter-offre",
+    "email-negocier-salaire",
+    "doc-recu-paiement",
+    "doc-attestation-hebergement",
+    "facture-societe",
+    "facture-luxe",
+    "facture-bande",
+    "facture-classique",
+    "facture-wax",
+    "facture-pro",
+    "carte-pastilles",
+    "carte-portrait",
+    "carte-neon",
+    "carte-vague",
+    "carte-luxe",
+    "carte-geometrique",
+    "carte-sombre",
+    "carte-classique",
+    "carte-studio",
+    "salle-posts",
+    "salle-cachet"
+  ],
   "unlockAll": false,
   "paiement": {
     "lien": "",
-    "prix": "",
+    "prix": "2000",
     "libelle": "Payer maintenant",
     "whatsapp": "237675371857"
   },
-  "codes": []
+  "codes": [
+    "5b0b7a14a05822e365edad2d98bcaac003a6f309201eb25a3808727f299dbfdf",
+    "c2530f328f3530250f62f80b7077e928b3281fcf50b7cfc0c4b0090eb5446d21"
+  ]
 }
